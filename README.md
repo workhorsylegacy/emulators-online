@@ -4,9 +4,7 @@ HTML based front end for video game console emulators
 After cloning the repository, remember to get the submodules too:
 
 ~~~bash
-git submodule update --init --recursive
-cd games
-git checkout master
+git clone http://github.com/workhorsy/emu_archive_meta_data games
 ~~~
 
 # Requirements
