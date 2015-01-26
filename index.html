@@ -104,7 +104,7 @@
 
 		<div id="game_dialogs"></div>
 
-		<div id="game_selector"></div>
+		<div id="game_selector" style="overflow: auto;"></div>
 
 		<br style="clear: both"/>
 
@@ -228,6 +228,12 @@ function on_search() {
 	if(search_raw.length == 0) {
 		var i = 0;
 		$.each(db, function(console_name, console_data) {
+			// Add console name as header
+			var d = document.createElement('h1');
+			d.innerHTML = console_name;
+			d.style.clear = "both";
+			document.getElementById('game_selector').appendChild(d);
+
 			$.each(console_data, function(name, data) {
 				make_game_icon(console_name, name, data, i);
 				++i;
@@ -362,6 +368,12 @@ function on_search() {
 	// Create new icons from the search
 	var i = 0;
 	$.each(db, function(console_name, console_data) {
+		// Add console name as header
+		var d = document.createElement('h1');
+		d.innerHTML = console_name;
+		d.style.clear = "both";
+		document.getElementById('game_selector').appendChild(d);
+
 		$.each(console_data, function(name, data) {
 ///*
 			// Genre matches

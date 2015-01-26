@@ -19,6 +19,13 @@ Thumbs.db
 *.ccd
 *.img
 *.sub
+*.rar
+*.zip
+*.7z
+*.html
+*.sfv
+*.nfo
+*.gcm
 db/*
 games/*
 emulators/*

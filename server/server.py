@@ -81,7 +81,8 @@ def make_db(file_name, path_prefix):
 			'.cdi',
 			'.gdi',
 			'.n64',
-			'.img'
+			'.img',
+			'.gcm'
 		]
 
 		# Get the game binary
