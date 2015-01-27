@@ -3,6 +3,8 @@
 	<head>
 		<title>Configure - Emu Archive</title>
 		<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+		<script src="emu_archive.js"></script>
+		<link type="text/css" href="default.css" media="screen" rel="Stylesheet" />
 	</head>
 	<body>
 		<div id="not_connected" style="display: none">
@@ -21,9 +23,6 @@
 </html>
 
 <script language="JavaScript">
-
-var db = {};
-var socket = null;
 
 jQuery(function($) {
 
@@ -47,40 +46,6 @@ function setup_ui() {
 		var message = JSON.stringify(message);
 		socket.send(message);
 	});
-}
-
-function setup_websocket() {
-	var host = "ws://localhost:9090/ws";
-	socket = new WebSocket(host);
-
-	// event handlers for websocket
-	if(socket) {
-		socket.onopen = function() {
-			$("#not_connected").hide();
-		}
-
-		socket.onmessage = function(msg) {
-			showServerResponse(msg.data);
-		}
-
-		socket.onclose = function() {
-			$("#not_connected").show();
-		}
-	} else {
-		console.log("invalid socket");
-	}
-
-	function showServerResponse(txt) {
-		if(txt == "playing") {
-			
-		} else if(txt == "downloading") {
-			
-		} else {
-			var p = document.createElement('p');
-			p.innerHTML = txt;
-			document.getElementById('output').appendChild(p);
-		}
-	}
 }
 
 });
