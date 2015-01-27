@@ -135,6 +135,9 @@ if(!("WebSocket" in window)) {
 		$.getJSON("db/playstation.json", function (data) {
 			db['Playstation'] = data;
 		}),
+		$.getJSON("db/playstation2.json", function (data) {
+			db['Playstation2'] = data;
+		}),
 		$.getJSON("db/gamecube.json", function (data) {
 			db['GameCube'] = data;
 		}),

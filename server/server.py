@@ -339,13 +339,24 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			elif data['console'] == 'Playstation':
 				# Run the game
 				os.chdir("emulators/pcsxr/")
-				game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
+				game_path = goodJoin('../../', data['path'] + '/' + data['binary'])
 				command = '"pcsxr.exe" -nogui -cdfile "' + game_path + '"'
 				emu_runner = EmuRunner(command, 'PCSXR', full_screen_alt_enter=True)
 				emu_runner.run()
 				os.chdir("../..")
 				self.write_message("playing")
 				print('Running PCSX-R ...')
+
+			elif data['console'] == 'Playstation2':
+				# Run the game
+				os.chdir("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/")
+				game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
+				command = '"pcsx2.exe" --nogui "' + game_path + '"'
+				emu_runner = EmuRunner(command, 'GSdx', full_screen_alt_enter=True)
+				emu_runner.run()
+				os.chdir("../..")
+				self.write_message("playing")
+				print('Running PCSX2 ...')
 
 		# Unknown message from the client
 		else:
@@ -365,6 +376,7 @@ if __name__ == "__main__":
 	make_db('saturn.json', 'games/Sega/Saturn')
 	make_db('dreamcast.json', 'games/Sega/Dreamcast')
 	make_db('playstation.json', 'games/Sony/Playstation')
+	make_db('playstation2.json', 'games/Sony/Playstation2')
 
 	port = 9090
 	application.listen(port)
