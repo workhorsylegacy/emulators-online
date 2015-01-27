@@ -27,6 +27,7 @@ Thumbs.db
 *.nfo
 *.gcm
 db/*
+downloads/*
 games/*
 emulators/*
 server/build/

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Configure - Emu Archive</title>
+		<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+	</head>
+	<body>
+		<div id="not_connected" style="display: none">
+			Not connected to server!
+		</div>
+
+		<input id="btn_download_nulldc" type="button" value="Download NullDC" />
+
+		<div id="output"></div>
+
+		<div id="game_selector" style="overflow: auto;"></div>
+			<p>Copyright &copy; 2015 Matthew Brennan Jones</p>
+			<p><a href="https://github.com/workhorsy/emu_archive">https://github.com/workhorsy/emu_archive</a></p>
+		</footer>
+	</body>
+</html>
+
+<script language="JavaScript">
+
+var db = {};
+var socket = null;
+
+jQuery(function($) {
+
+if(!("WebSocket" in window)) {
+	alert("Your browser does not support web sockets");
+} else {
+	setup_websocket();
+	setup_ui();
+}
+
+function setup_ui() {
+	// Have the dialog play button launch the game
+	var btn = $("#btn_download_nulldc");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'nullDC_104_r136.7z',
+			'url' : 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z',
+			'dir' : 'downloads'
+		}
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+}
+
+function setup_websocket() {
+	var host = "ws://localhost:9090/ws";
+	socket = new WebSocket(host);
+
+	// event handlers for websocket
+	if(socket) {
+		socket.onopen = function() {
+			$("#not_connected").hide();
+		}
+
+		socket.onmessage = function(msg) {
+			showServerResponse(msg.data);
+		}
+
+		socket.onclose = function() {
+			$("#not_connected").show();
+		}
+	} else {
+		console.log("invalid socket");
+	}
+
+	function showServerResponse(txt) {
+		if(txt == "playing") {
+			
+		} else if(txt == "downloading") {
+			
+		} else {
+			var p = document.createElement('p');
+			p.innerHTML = txt;
+			document.getElementById('output').appendChild(p);
+		}
+	}
+}
+
+});
+</script>

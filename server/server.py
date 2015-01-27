@@ -28,7 +28,6 @@
 """
 TODO:
 . Add searching by developer, publisher, year, and console
-. Move the images to jpg and use their own repository
 . How do we deal with games that use multiple disks in the UI?
 . Update the dialog generation to be on click
 . Give an option to upload a binary too.
@@ -48,6 +47,8 @@ import win32con
 import win32api
 import platform
 import json
+import threading
+import stat
 import subprocess
 import tornado.ioloop
 import tornado.web
@@ -58,10 +59,15 @@ import time
 PY2 = sys.version_info[0] == 2
 
 if PY2:
+	from urllib2 import urlopen
 	import ConfigParser as configparser
 else:
+	from urllib.request import urlopen
 	import configparser
 
+
+
+emu_runner = None
 
 
 def make_db(file_name, path_prefix):
@@ -118,6 +124,7 @@ def make_db(file_name, path_prefix):
 	with open('db/{0}'.format(file_name), 'wb') as f:
 		f.write(json.dumps(db, sort_keys=True, indent=4, separators=(',', ': ')))
 
+
 class FileMounter(object):
 	def __init__(self, letter):
 		self.letter = letter
@@ -152,6 +159,7 @@ class FileMounter(object):
 			if os.system("vol {0}: 2>nul>nul".format(self.letter)) == 0:
 				break
 			time.sleep(1)
+
 
 class EmuRunner(object):
 	def __init__(self, command, emu_title_bar_text, full_screen_alt_enter=False):
@@ -239,12 +247,83 @@ class EmuRunner(object):
 			output = output.decode(encoding='UTF-8')
 		return output
 
-emu_runner = None
+class Downloader(threading.Thread):
+	def __init__(self, url, file_name, dir_name):
+		super(Downloader, self).__init__()
 
+		self.url = url
+		self.file_name = file_name
+		self.dir_name = dir_name
+		self.is_success = False
+		self.message = None
+
+	def run(self):
+		# Get the file name for script
+		full_file_name = os.path.join(self.dir_name, self.file_name)
+
+		# Download the file and call the cb after each chunk
+		self._download_file(self.url, full_file_name)
+
+		# Make the file executable
+		os.chmod(full_file_name, 0o775 | stat.S_IXOTH)
+
+	def _download_file(self, url, file_name):
+		CHUNK_SIZE = 1024
+
+		try:
+			# Connect with HTTP
+			response = urlopen(url)
+			if response.code != 200:
+				self.is_success = False
+				self.message = 'Download failed. Exiting ...'
+				exit(1)
+
+			# Read the HTTP header
+			content_length = int(response.headers['Content-Length'])
+			data = b''
+			data_length = 0
+
+			# Read the HTTP body
+			while True:
+				chunk = response.read(CHUNK_SIZE)
+				if not chunk:
+					break
+
+				data += chunk
+				data_length += len(chunk)
+				percent = round((float(data_length) / content_length)*100, 2)
+
+				self._cb_dl_progress(file_name, chunk, data_length, CHUNK_SIZE, content_length, percent)
+		except Exception as e:
+			self.is_success = False
+			self.message = 'Download failed. Exiting ...\n{0}\n{1}'.format(str(e), self.url)
+			exit(1)
+
+		# Write the file to disk
+		self._cb_dl_done(file_name, data)
+
+	def _cb_dl_progress(self, file_name, chunk, data_length, chunk_size, content_length, percent):
+		pass
+
+	def _cb_dl_done(self, file_name, data):
+		# Save the file
+		with open(file_name, 'wb') as f:
+			f.write(data)
+
+		self.is_success = True
+		self.message = '    {0}'.format(file_name)
+
+
+# FIXME: We should only need one handler for sending html files
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
 		loader = tornado.template.Loader(".")
 		self.write(loader.load("index.html").generate())
+
+class ConfigureHandler(tornado.web.RequestHandler):
+	def get(self):
+		loader = tornado.template.Loader(".")
+		self.write(loader.load("configure.html").generate())
 
 def goodJoin(path_a, path_b):
 	path = path_a + path_b
@@ -358,6 +437,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				self.write_message("playing")
 				print('Running PCSX2 ...')
 
+		# Client wants to download a file
+		elif data['action'] == 'download':
+			if data['file'] == 'nulldc':
+				t = Downloader(data['url'], data['file'], data['dir'])
+				t.daemon = True
+				t.start()
+				t.join()
+				if not t.is_success:
+					print(t.message)
+					exit(1)
+
 		# Unknown message from the client
 		else:
 			self.write_message("Unknown message from client: {0}".format(message))
@@ -367,6 +457,7 @@ application = tornado.web.Application([
 	(r'/ws', WebSocketHandler),
 	(r'/', MainHandler),
 	(r'/index.html', MainHandler),
+	(r'/configure.html', ConfigureHandler),
 	(r"/(.*)", tornado.web.StaticFileHandler, {"path" : r"./"}),
 ])
 
