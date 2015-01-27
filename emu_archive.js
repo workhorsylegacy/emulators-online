@@ -74,6 +74,8 @@ function get_searchable_words(search_string) {
 function on_search() {
 	var search_text = $('#search_text');
 
+	document.getElementById('game_selector').innerHTML = "";
+	
 	// Get the words to search for
 	var search_raw = search_text.val();
 ///*
