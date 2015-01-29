@@ -9,9 +9,9 @@ function make_game_icon(console_name, name, data, i) {
 			"<a href=\"#dialog_" + name + "\" id=\"preview_" + i + "\">";
 			
 	if(data["binary"])
-		text += "<img src=\"" + data["path"] + "00000000.png\" />";
+		text += "<img src=\"" + data["path"] + "title_small.png\" />";
 	else
-		text += "<img src=\"" + data["path"] + "00000000.png\" class=\"blackAndWhite\" />";
+		text += "<img src=\"" + data["path"] + "title_small.png\" class=\"blackAndWhite\" />";
 
 	text += "<br />" + 
 		name + "</a>";
@@ -25,7 +25,7 @@ function make_game_icon(console_name, name, data, i) {
 	"<div>" +
 	"	<a href=\"#closeGameDialog\" class=\"closeGameDialog\">X</a>" + 
 	"	<h2>" + name + "</h2>" + 
-	"	<img src=\"" + data["path"] + "00000000.png\" />" +
+	"	<img src=\"" + data["path"] + "title_big.png\" />" +
 	"	<input id=\"btn_" + i + "\" type=\"button\" value=\"play\" \>" +
 	"	<br />";
 
