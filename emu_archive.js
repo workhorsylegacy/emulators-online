@@ -7,7 +7,7 @@ function make_game_icon(console_name, name, data, i) {
 	// Create the icon
 	var text = "" +
 			"<a href=\"#dialog_" + name + "\" id=\"preview_" + i + "\">";
-			
+
 	if(data["binary"])
 		text += "<img src=\"" + data["path"] + "title_small.png\" />";
 	else
@@ -75,7 +75,7 @@ function on_search() {
 	var search_text = $('#search_text');
 
 	document.getElementById('game_selector').innerHTML = "";
-	
+
 	// Get the words to search for
 	var search_raw = search_text.val();
 ///*
