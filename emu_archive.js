@@ -98,11 +98,35 @@ function on_search() {
 	}
 //*/
 ///*
+	// Match game developer
+	var match_developer_db = [];
+	var lower_search = search_raw.toLowerCase();
+	$.each(db, function(console_name, console_data) {
+		$.each(console_data, function(name, data) {
+			if('developer' in data && data['developer'].toLowerCase() == lower_search) {
+				//console.log(name + " : " + data['developer']);
+				match_developer_db.push(name);
+			}
+		});
+	});
+//*/
+///*
 	// Match game genre
 	var match_genre_db = [];
 	var lower_search = search_raw.toLowerCase();
 	$.each(db, function(console_name, console_data) {
 		$.each(console_data, function(name, data) {
+			// Skip if game was found in the developer search
+			var already_searched = false;
+			$.each(match_developer_db, function(n, gname) {
+				if(name.toLowerCase() == gname.toLowerCase()) {
+					already_searched = true;
+					return false;
+				}
+			});
+			if(already_searched)
+				return false;
+
 			if('genre' in data && data['genre'].toLowerCase() == lower_search) {
 				//console.log(name + " : " + data['genre']);
 				match_genre_db.push(name);
@@ -230,6 +254,13 @@ function on_search() {
 		document.getElementById('game_selector').appendChild(d);
 
 		$.each(console_data, function(name, data) {
+///*
+			// Developer matches
+			$.each(match_developer_db, function(n, gname) {
+				if(name == gname)
+					make_game_icon(console_name, name, data, i);
+			});
+//*/
 ///*
 			// Genre matches
 			$.each(match_genre_db, function(n, gname) {
