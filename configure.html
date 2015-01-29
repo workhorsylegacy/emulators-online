@@ -11,7 +11,13 @@
 			Not connected to server!
 		</div>
 
-		<input id="btn_download_nulldc" type="button" value="Download NullDC" />
+		<p>
+			<input id="btn_download_nulldc" type="button" value="Download NullDC" />
+		</p>
+		
+		<p>
+			<input id="btn_download_demul" type="button" value="Download Demul" />
+		</p>
 
 		<div id="output"></div>
 
@@ -34,7 +40,6 @@ if(!("WebSocket" in window)) {
 }
 
 function setup_ui() {
-	// Have the dialog play button launch the game
 	var btn = $("#btn_download_nulldc");
 	btn.on('click', function() {
 		var message = {
@@ -46,6 +51,19 @@ function setup_ui() {
 		var message = JSON.stringify(message);
 		socket.send(message);
 	});
+
+	btn = $("#btn_download_demul");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'demul0582.rar',
+			'url' : 'http://demul.emulation64.com/files/demul0582.rar',
+			'dir' : 'downloads'
+		}
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+	http://demul.emulation64.com/files/demul0582.rar
 }
 
 });

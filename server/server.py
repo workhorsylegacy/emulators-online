@@ -255,14 +255,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running PCSX2 ...')
 
 	def _download_file(self, data):
-		if data['file'] == 'nulldc':
-			t = downloader.Downloader(data['url'], data['file'], data['dir'])
-			t.daemon = True
-			t.start()
-			t.join()
-			if not t.is_success:
-				print(t.message)
-				exit(1)
+		t = downloader.Downloader(data['url'], data['file'], data['dir'])
+		t.daemon = True
+		t.start()
+		t.join()
+		if not t.is_success:
+			print(t.message)
+			exit(1)
 
 application = tornado.web.Application([
 	(r'/ws', WebSocketHandler),
