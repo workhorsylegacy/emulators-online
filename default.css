@@ -83,6 +83,14 @@ img.blackAndWhite {
 	background: #FF0000;
 }
 
+.installTable {
+	padding: 10px;
+}
+
+.installTable td {
+	padding: 20px;
+}
+
 #not_connected {
 	background-color: red;
 	font-size: 250%;

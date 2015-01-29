@@ -11,13 +11,71 @@
 			Not connected to server!
 		</div>
 
-		<p>
-			<input id="btn_download_nulldc" type="button" value="Download NullDC" />
-		</p>
-		
-		<p>
-			<input id="btn_download_demul" type="button" value="Download Demul" />
-		</p>
+		<table class="installTable">
+			<tr>
+				<th>Program Name</th>
+				<th>Status</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Virtual Clone Drive</td>
+				<td><input id="btn_install_vcd" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+					Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
+				</span></td>
+			</tr>
+			<tr>
+				<td>NullDC</td>
+				<td><input id="btn_download_nulldc" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Sega Dreamcast Emulator.
+				</span></td>
+			</tr>
+			<tr>
+				<td>Demul</td>
+				<td><input id="btn_install_demul" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Sega Dreamcast emulator.
+				</span></td>
+			</tr>
+			<tr>
+				<td>SSF</td>
+				<td><input id="btn_install_ssf" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
+				</span></td>
+			</tr>
+			<tr>
+				<td>Dolphin</td>
+				<td><input id="btn_install_dolphin" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Nintendo GameCube and Wii emulator.
+				</span></td>
+			</tr>
+			<tr>
+				<td>PCSX-Reloaded</td>
+				<td><input id="btn_install_pcsxr" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Sony Playstation emulator.
+				</span></td>
+			</tr>
+
+			<tr>
+				<td>PCSX2</td>
+				<td><input id="btn_install_pcsx2" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Sony Playstation 2 emulator.
+				</span></td>
+			</tr>
+
+			<tr>
+				<td>Mupen 64 Plus</td>
+				<td><input id="btn_install_mupen64plus" type="button" value="Install" /></td>
+				<td><span id="status_nulldc">
+				A Nintendo 64 emulator. Runs from the command line only.
+				</span></td>
+			</tr>
+		</table>
 
 		<div id="output"></div>
 
@@ -40,7 +98,7 @@ if(!("WebSocket" in window)) {
 }
 
 function setup_ui() {
-	var btn = $("#btn_download_nulldc");
+	var btn = $("#btn_install_nulldc");
 	btn.on('click', function() {
 		var message = {
 			'action' : 'download',
@@ -52,7 +110,7 @@ function setup_ui() {
 		socket.send(message);
 	});
 
-	btn = $("#btn_download_demul");
+	btn = $("#btn_install_demul");
 	btn.on('click', function() {
 		var message = {
 			'action' : 'download',
