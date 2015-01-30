@@ -74,6 +74,7 @@ function get_searchable_words(search_string) {
 function on_search() {
 	var search_text = $('#search_text');
 
+	// Clear the old icons
 	document.getElementById('game_selector').innerHTML = "";
 
 	// Get the words to search for
@@ -116,17 +117,6 @@ function on_search() {
 	var lower_search = search_raw.toLowerCase();
 	$.each(db, function(console_name, console_data) {
 		$.each(console_data, function(name, data) {
-			// Skip if game was found in the developer search
-			var already_searched = false;
-			$.each(match_developer_db, function(n, gname) {
-				if(name.toLowerCase() == gname.toLowerCase()) {
-					already_searched = true;
-					return false;
-				}
-			});
-			if(already_searched)
-				return false;
-
 			if('genre' in data && data['genre'].toLowerCase() == lower_search) {
 				//console.log(name + " : " + data['genre']);
 				match_genre_db.push(name);
@@ -140,17 +130,6 @@ function on_search() {
 	var lower_search = search_raw.toLowerCase();
 	$.each(db, function(console_name, console_data) {
 		$.each(console_data, function(name, data) {
-			// Skip if game was found in the genre search
-			var already_searched = false;
-			$.each(match_genre_db, function(n, gname) {
-				if(name.toLowerCase() == gname.toLowerCase()) {
-					already_searched = true;
-					return false;
-				}
-			});
-			if(already_searched)
-				return false;
-
 			if(name.toLowerCase() == lower_search) {
 				match_whole_db.push(name);
 			}
@@ -164,18 +143,6 @@ function on_search() {
 
 	$.each(db, function(console_name, console_data) {
 		$.each(console_data, function(name, data) {
-
-			// Skip if game was found in whole search
-			var already_searched = false;
-			$.each(match_whole_db, function(n, gname) {
-				if(name.toLowerCase() == gname.toLowerCase()) {
-					already_searched = true;
-					return false;
-				}
-			});
-			if(already_searched)
-				return false;
-
 			var game_words = get_searchable_words(name);
 
 			// Count how many words match the search
@@ -206,17 +173,6 @@ function on_search() {
 
 	$.each(db, function(console_name, console_data) {
 		$.each(console_data, function(name, data) {
-			// Skip if game was found in words search
-			var already_searched = false;
-			$.each(match_words_db, function(gname, gcount) {
-				if(name.toLowerCase() == gname.toLowerCase()) {
-					already_searched = true;
-					return false;
-				}
-			});
-			if(already_searched)
-				return false;
-
 			var game_words = get_searchable_words(name);
 
 			// Count how many words match the search
@@ -241,9 +197,6 @@ function on_search() {
 	});
 //*/
 
-	// Clear the old icons
-	document.getElementById('game_selector').innerHTML = "";
-
 	// Create new icons from the search
 	var i = 0;
 	$.each(db, function(console_name, console_data) {
@@ -254,41 +207,55 @@ function on_search() {
 		document.getElementById('game_selector').appendChild(d);
 
 		$.each(console_data, function(name, data) {
+			var is_match = false;
 ///*
 			// Developer matches
 			$.each(match_developer_db, function(n, gname) {
-				if(name == gname)
-					make_game_icon(console_name, name, data, i);
+				if(name == gname) {
+					is_match = true;
+					return false;
+				}
 			});
 //*/
 ///*
 			// Genre matches
 			$.each(match_genre_db, function(n, gname) {
-				if(name == gname)
-					make_game_icon(console_name, name, data, i);
+				if(name == gname) {
+					is_match = true;
+					return false;
+				}
 			});
 //*/
 ///*
 			// Whole matches
 			$.each(match_whole_db, function(n, gname) {
-				if(name == gname)
-					make_game_icon(console_name, name, data, i);
+				if(name == gname) {
+					is_match = true;
+					return false;
+				}
 			});
 //*/
 ///*
 			// Word matches
 			$.each(match_words_db, function(gname, gcount) {
-				if(name == gname)
-					make_game_icon(console_name, name, data, i);
+				if(name == gname) {
+					is_match = true;
+					return false;
+				}
 			});
 //*/
 ///*
 			// Part matches
 			$.each(match_parts_db, function(gname, gcount) {
-				if(name == gname)
-					make_game_icon(console_name, name, data, i);
+				if(name == gname) {
+					is_match = true;
+					return false;
+				}
 			});
 //*/
+			if(is_match)
+				make_game_icon(console_name, name, data, i);
+
 			++i;
 		});
 	});
