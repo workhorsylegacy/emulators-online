@@ -137,9 +137,17 @@ def goodJoin(path_a, path_b):
 	return path
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
+	def write_data(self, data):
+		data = json.dumps(data)
+		self.write_message(data)
+
 	def open(self):
+		data = {
+			'action' : 'log',
+			'value' : 'Server starting ...'
+		}
+		self.write_data(data)
 		print('Server starting ...')
-		self.write_message("Server starting ...")
 
 	def on_close(self):
 		print('Server stopping ...')
@@ -157,9 +165,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'download':
 			self._download_file(data)
 
+		# Client wants to know if a file is installed
+		elif data['action'] == 'is_installed':
+			self._is_installed(data)
+
 		# Unknown message from the client
 		else:
-			self.write_message("Unknown action from client: {0}".format(data['action']))
+			data = {
+				'action' : 'log',
+				'value' : "Unknown action from client: {0}".format(data['action'])
+			}
+			self.write_data(data)
 			print('received:', message)
 
 	def _play_game(self, data):
@@ -171,7 +187,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			runner = emu_runner.EmuRunner(command, 'Dolphin', full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
-			self.write_message("playing")
+
+			data = {
+				'action' : 'log',
+				'value' : 'playing'
+			}
+			self.write_data(data)
 			print('Running Dolphin ...')
 
 		elif data['console'] == 'Nintendo64':
@@ -182,7 +203,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			runner = emu_runner.EmuRunner(command, 'Mupen64plus', full_screen_alt_enter=False)
 			runner.run()
 			os.chdir("../..")
-			self.write_message("playing")
+			data = {
+				'action' : 'log',
+				'value' : 'playing'
+			}
+			self.write_data(data)
 			print('Running Mupen64plus ...')
 
 		elif data['console'] == 'Saturn':
@@ -218,7 +243,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			runner = emu_runner.EmuRunner(command, 'SSF', full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
-			self.write_message("playing")
+			data = {
+				'action' : 'log',
+				'value' : 'playing'
+			}
+			self.write_data(data)
 			print('Running SSF ...')
 
 		elif data['console'] == 'Dreamcast':
@@ -229,7 +258,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			runner = emu_runner.EmuRunner(command, 'gpuDX11hw', full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
-			self.write_message("playing")
+			data = {
+				'action' : 'log',
+				'value' : 'playing'
+			}
+			self.write_data(data)
 			print('Running Demul ...')
 
 		elif data['console'] == 'Playstation':
@@ -240,7 +273,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
-			self.write_message("playing")
+			data = {
+				'action' : 'log',
+				'value' : 'playing'
+			}
+			self.write_data(data)
 			print('Running PCSX-R ...')
 
 		elif data['console'] == 'Playstation2':
@@ -251,7 +288,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			runner = emu_runner.EmuRunner(command, 'GSdx', full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
-			self.write_message("playing")
+			data = {
+				'action' : 'log',
+				'value' : 'playing'
+			}
+			self.write_data(data)
 			print('Running PCSX2 ...')
 
 	def _download_file(self, data):
@@ -262,6 +303,74 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		if not t.is_success:
 			print(t.message)
 			exit(1)
+
+	def _is_installed(self, data):
+		if data['program'] == 'VirtualCloneDrive':
+			exist = os.path.exists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'VirtualCloneDrive'
+			}
+			self.write_data(data)
+		elif data['program'] == 'NullDC':
+			exist = os.path.exists("emulators/nullDC_104_r136/nullDC_Win32_Release-NoTrace.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'NullDC'
+			}
+			self.write_data(data)
+		elif data['program'] == 'Demul':
+			exist = os.path.exists("emulators/demul0582/demul.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'Demul'
+			}
+			self.write_data(data)
+		elif data['program'] == 'SSF':
+			exist = os.path.exists("emulators/SSF_012_beta_R4/SSF.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'SSF'
+			}
+			self.write_data(data)
+		elif data['program'] == 'Dolphin':
+			exist = os.path.exists("emulators/Dolphin-x64/Dolphin.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'Dolphin'
+			}
+			self.write_data(data)
+		elif data['program'] == 'PCSX-Reloaded':
+			exist = os.path.exists("emulators/pcsxr/pcsxr.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'PCSX-Reloaded'
+			}
+			self.write_data(data)
+		elif data['program'] == 'PCSX2':
+			exist = os.path.exists("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/pcsx2.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'PCSX2'
+			}
+			self.write_data(data)
+		elif data['program'] == 'Mupen 64 Plus':
+			exist = os.path.exists("emulators/mupen64plus-bundle-win32-2.0/mupen64plus.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'Mupen 64 Plus'
+			}
+			self.write_data(data)
+		else:
+			print('Unknown program to check if installed: {0}'.format(data['program']))
 
 application = tornado.web.Application([
 	(r'/ws', WebSocketHandler),

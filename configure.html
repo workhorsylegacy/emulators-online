@@ -21,42 +21,42 @@
 			</tr>
 			<tr>
 				<td>Virtual Clone Drive</td>
-				<td><input id="btn_install_vcd" type="button" value="Install" /></td>
+				<td><input id="btn_install_vcd" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 					Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
 				</span></td>
 			</tr>
 			<tr>
 				<td>NullDC</td>
-				<td><input id="btn_download_nulldc" type="button" value="Install" /></td>
+				<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Sega Dreamcast Emulator.
 				</span></td>
 			</tr>
 			<tr>
 				<td>Demul</td>
-				<td><input id="btn_install_demul" type="button" value="Install" /></td>
+				<td><input id="btn_install_demul" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Sega Dreamcast emulator.
 				</span></td>
 			</tr>
 			<tr>
 				<td>SSF</td>
-				<td><input id="btn_install_ssf" type="button" value="Install" /></td>
+				<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
 				</span></td>
 			</tr>
 			<tr>
 				<td>Dolphin</td>
-				<td><input id="btn_install_dolphin" type="button" value="Install" /></td>
+				<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Nintendo GameCube and Wii emulator.
 				</span></td>
 			</tr>
 			<tr>
 				<td>PCSX-Reloaded</td>
-				<td><input id="btn_install_pcsxr" type="button" value="Install" /></td>
+				<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Sony Playstation emulator.
 				</span></td>
@@ -64,7 +64,7 @@
 
 			<tr>
 				<td>PCSX2</td>
-				<td><input id="btn_install_pcsx2" type="button" value="Install" /></td>
+				<td><input id="btn_install_pcsx2" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Sony Playstation 2 emulator.
 				</span></td>
@@ -72,7 +72,7 @@
 
 			<tr>
 				<td>Mupen 64 Plus</td>
-				<td><input id="btn_install_mupen64plus" type="button" value="Install" /></td>
+				<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
 				<td><span id="status_nulldc">
 				A Nintendo 64 emulator. Runs from the command line only.
 				</span></td>
@@ -101,11 +101,176 @@ jQuery(function($) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support web sockets");
 } else {
-	setup_websocket();
+	setup_websocket(on_data);
 	setup_ui();
 }
 
+var is_vcd_installed = false;
+var is_nulldc_installed = false;
+var is_demul_installed = false;
+var is_ssf_installed = false;
+var is_dolphin_installed = false;
+var is_pcsxr_installed = false;
+var is_pcsx2_installed = false;
+var is_mupen_installed = false;
+
+function on_data(data) {
+	if(data['action'] == 'log') {
+		console.log('Log: ' + data['value']);
+	} else if(data['action'] == 'is_installed') {
+		if (data['name'] == 'VirtualCloneDrive') {
+			is_vcd_installed = data['value'];
+			$('#btn_install_vcd').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_vcd').val('Uninstall');
+			else
+				$('#btn_install_vcd').val('Install');
+		} else if (data['name'] == 'NullDC') {
+			is_nulldc_installed = data['value'];
+			$('#btn_install_nulldc').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_nulldc').val('Uninstall');
+			else
+				$('#btn_install_nulldc').val('Install');
+		} else if (data['name'] == 'Demul') {
+			is_demul_installed = data['value'];
+			$('#btn_install_demul').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_demul').val('Uninstall');
+			else
+				$('#btn_install_demul').val('Install');
+		} else if (data['name'] == 'SSF') {
+			is_ssf_installed = data['value'];
+			$('#btn_install_ssf').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_ssf').val('Uninstall');
+			else
+				$('#btn_install_ssf').val('Install');
+		} else if (data['name'] == 'Dolphin') {
+			is_dolphin_installed = data['value'];
+			$('#btn_install_dolphin').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_dolphin').val('Uninstall');
+			else
+				$('#btn_install_dolphin').val('Install');
+		} else if (data['name'] == 'PCSX-Reloaded') {
+			is_pcsxr_installed = data['value'];
+			$('#btn_install_pcsxr').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_pcsxr').val('Uninstall');
+			else
+				$('#btn_install_pcsxr').val('Install');
+		} else if (data['name'] == 'PCSX2') {
+			is_pcsx2_installed = data['value'];
+			$('#btn_install_pcsx2').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_pcsx2').val('Uninstall');
+			else
+				$('#btn_install_pcsx2').val('Install');
+		} else if (data['name'] == 'Mupen 64 Plus') {
+			is_mupen_installed = data['value'];
+			$('#btn_install_mupen64plus').prop('disabled', !data['value']);
+			if(is_vcd_installed)
+				$('#btn_install_mupen64plus').val('Uninstall');
+			else
+				$('#btn_install_mupen64plus').val('Install');
+		}
+		console.log('is installed: ' + data['name'] + ' ' + data['value'])
+	} else {
+		console.log('Data: ' + data);
+	}
+}
+
 function setup_ui() {
+	// FIXME: This should fire after all the websocket stuff is setup
+	setTimeout(function() {
+		// Figure out if VCD is installed
+		var message = {
+			'action' : 'is_installed',
+			'program' : 'VirtualCloneDrive'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if NullDC is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'NullDC'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if Demul is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'Demul'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if SSF is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'SSF'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if Dolphin is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'Dolphin'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if PCSX-Reloaded is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'PCSX-Reloaded'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if PCSX2 is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'PCSX2'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if Mupen 64 Plus is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'Mupen 64 Plus'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	}, 3000);
+
+	btn = $("#btn_install_vcd");
+	btn.on('click', function() {
+		// Download the exe
+		var message = {
+			'action' : 'download',
+			'file' : 'SetupVirtualCloneDrive.exe',
+			'url' : 'http://static.slysoft.com/SetupVirtualCloneDrive.exe',
+			'dir' : 'downloads'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Run the exe
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'SetupVirtualCloneDrive.exe'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+
 	var btn = $("#btn_install_nulldc");
 	btn.on('click', function() {
 		var message = {
@@ -113,7 +278,7 @@ function setup_ui() {
 			'file' : 'nullDC_104_r136.7z',
 			'url' : 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z',
 			'dir' : 'downloads'
-		}
+		};
 		var message = JSON.stringify(message);
 		socket.send(message);
 	});
@@ -125,11 +290,70 @@ function setup_ui() {
 			'file' : 'demul0582.rar',
 			'url' : 'http://demul.emulation64.com/files/demul0582.rar',
 			'dir' : 'downloads'
-		}
+		};
 		var message = JSON.stringify(message);
 		socket.send(message);
 	});
-	http://demul.emulation64.com/files/demul0582.rar
+
+	btn = $("#btn_install_ssf");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'SSF_012_beta_R4.zip',
+			'url' : 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip',
+			'dir' : 'downloads'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $("#btn_install_dolphin");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'dolphin-master-4.0-5363-x64.7z',
+			'url' : 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z',
+			'dir' : 'downloads'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $("#btn_install_pcsxr");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'pcsxr-1.9.93-win32.zip',
+			'url' : 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20959',
+			'dir' : 'downloads'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $("#btn_install_pcsx2");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z',
+			'url' : 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86',
+			'dir' : 'downloads'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $("#btn_install_mupen64plus");
+	btn.on('click', function() {
+		var message = {
+			'action' : 'download',
+			'file' : 'mupen64plus-bundle-win32-2.0.zip',
+			'url' : 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip',
+			'dir' : 'downloads'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+	});
 }
 
 });

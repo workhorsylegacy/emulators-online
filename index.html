@@ -29,10 +29,18 @@
 	<script>
 jQuery(function($) {
 
+function on_data(data) {
+	if(data['action'] == 'log') {
+		console.log('Log: ' + data['value']);
+	} else {
+		console.log('Data: ' + data);
+	}
+}
+
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support web sockets");
 } else {
-	setup_websocket();
+	setup_websocket(on_data);
 
 	// Load the game databases
 	$.when(

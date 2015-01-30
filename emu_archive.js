@@ -294,7 +294,7 @@ function on_search() {
 	});
 }
 
-function setup_websocket() {
+function setup_websocket(on_data) {
 	var host = "ws://localhost:9090/ws";
 	socket = new WebSocket(host);
 
@@ -305,7 +305,8 @@ function setup_websocket() {
 		}
 
 		socket.onmessage = function(msg) {
-			showServerResponse(msg.data);
+			data = JSON.parse(msg.data)
+			on_data(data);
 		}
 
 		socket.onclose = function() {
@@ -314,16 +315,5 @@ function setup_websocket() {
 	} else {
 		console.log("invalid socket");
 	}
-
-	function showServerResponse(txt) {
-		if(txt == "playing") {
-			
-		} else {
-			var p = document.createElement('p');
-			p.innerHTML = txt;
-			document.getElementById('output').appendChild(p);
-		}
-	}
-
 
 }
