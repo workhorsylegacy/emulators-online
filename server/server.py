@@ -29,7 +29,6 @@
 TODO:
 . Add searching by developer, publisher, year, and console
 . How do we deal with games that use multiple disks in the UI?
-. Update the dialog generation to be on click
 . Give an option to upload a binary too.
 . Have the server use a task bar applet for the UI
 . Have Virtual Clone Drive not popup the mounted directory
@@ -200,7 +199,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			os.chdir("emulators/mupen64plus-bundle-win32-2.0/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"Mupen64plus.exe" --fullscreen "' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'Mupen64plus', full_screen_alt_enter=False)
+			runner = emu_runner.EmuRunner(command, 'Mupen64Plus', full_screen_alt_enter=False)
 			runner.run()
 			os.chdir("../..")
 			data = {

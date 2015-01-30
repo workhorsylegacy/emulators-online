@@ -15,46 +15,52 @@ function make_game_icon(console_name, name, data, i) {
 
 	text += "<br />" + 
 		name + "</a>";
+
 	var d = document.createElement('div');
 	d.className = "gameIcon";
 	d.innerHTML = text;
 	document.getElementById('game_selector').appendChild(d);
 
-	// Create the dialog
-	var text = "" +
-	"<div>" +
-	"	<a href=\"#closeGameDialog\" class=\"closeGameDialog\">X</a>" + 
-	"	<h2>" + name + "</h2>" + 
-	"	<img src=\"" + data["path"] + "title_big.png\" />" +
-	"	<input id=\"btn_" + i + "\" type=\"button\" value=\"play\" \>" +
-	"	<br />";
-
-	$.each(data["images"], function(n, image) {
-		if(n != 0)
-			text += "	<img src=\"" + data["path"] + image + "\" />";
-	});
-
-	text += "</div>";
-
-	var d = document.createElement('div');
-	d.id = "dialog_" + name;
-	d.className = "gameDialog";
-	d.innerHTML = text;
-	document.getElementById('game_dialogs').appendChild(d);
-
-	// Have the dialog play button launch the game
-	var btn = $("#btn_" + i);
+	var btn = $("#preview_" + i);
 	btn.on('click', function() {
-		var message = {
-			'action' : 'play',
-			'name' : name,
-			'path' : data['path'],
-			'binary' : data['binary'],
-			'console' : console_name,
-			'bios' : data['bios']
-		}
-		var message = JSON.stringify(message);
-		socket.send(message);
+		// Create the dialog
+		var text = "" +
+		"<div>" +
+		"	<a href=\"#closeGameDialog\" class=\"closeGameDialog\">X</a>" + 
+		"	<h2>" + name + "</h2>" + 
+		"	<img src=\"" + data["path"] + "title_big.png\" />" +
+		"	<input id=\"btn_" + i + "\" type=\"button\" value=\"play\" \>" +
+		"	<br />";
+
+		$.each(data["images"], function(n, image) {
+			if(n != 0)
+				text += "	<img src=\"" + data["path"] + image + "\" />";
+		});
+
+		text += "</div>";
+
+		var d = document.createElement('div');
+		d.id = "dialog_" + name;
+		d.className = "gameDialog";
+		d.innerHTML = text;
+		document.getElementById('game_dialogs').innerHTML = "";
+		document.getElementById('game_dialogs').appendChild(d);
+
+
+		// Have the dialog play button launch the game
+		var btn = $("#btn_" + i);
+		btn.on('click', function() {
+			var message = {
+				'action' : 'play',
+				'name' : name,
+				'path' : data['path'],
+				'binary' : data['binary'],
+				'console' : console_name,
+				'bios' : data['bios']
+			}
+			var message = JSON.stringify(message);
+			socket.send(message);
+		});
 	});
 }
 

@@ -101,7 +101,7 @@ class EmuRunner(object):
 					
 			if got_window:
 				break;
-				
+
 		# Fullscreening the emu window with alt + enter if needed
 		if self.full_screen_alt_enter:
 			time.sleep(wait_time)
@@ -110,7 +110,6 @@ class EmuRunner(object):
 			time.sleep(2)
 			win32api.keybd_event(win32con.VK_RETURN, 0, win32con.KEYEVENTF_KEYUP, 0)
 			win32api.keybd_event(win32con.VK_MENU, 0, win32con.KEYEVENTF_KEYUP, 0)
-
 
 	def stop(self):
 		output = self.emu_proc.stdout.read()
