@@ -217,11 +217,28 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
+			# Read the config file if it exist
+			ini_path = os.path.expanduser('~/Documents/Dolphin Emulator/Config/Dolphin.ini')
+			if os.path.isfile(ini_path):
+				config = configparser.ConfigParser()
+				config.optionxform = str
+				config.read(ini_path)
+
+				# Render to the main window
+				config.set('Display', 'RenderToMain', 'True')
+
+				# Stop popup error dialogs
+				config.set('Interface', 'UsePanicHandlers', 'False')
+
+				# Save changes
+				with open(ini_path, 'w') as f:
+					config.write(f)
+
 			# Run the game
 			os.chdir("emulators/Dolphin-x64/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"Dolphin.exe" --batch --exec="' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'Dolphin', full_screen_alt_enter=True)
+			runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
 
