@@ -27,7 +27,7 @@
 
 """
 TODO:
-. Add searching by developer, publisher, year, and console
+. Add searching by publisher, year, and console
 . How do we deal with games that use multiple disks in the UI?
 . Give an option to upload a binary too.
 . Have the server use a task bar applet for the UI
@@ -61,6 +61,44 @@ else:
 
 
 runner = None
+
+def read_ini_file(file_path):
+	with open(file_path, 'rb') as f:
+		ini_data = f.read()
+
+	# Read the ini file into a dictionary
+	bios_path = os.path.abspath('emulators/demul0582/roms/')
+	sections = ini_data.split('\r\n\r\n\r\n')
+	config = {}
+	header = None
+	for section in sections:
+		for line in section.split('\r\n'):
+			if '[' in line and ']' in line:
+				header = line.split('[')[1].split(']')[0]
+				config[header] = {}
+				#print(header)
+			elif ' = ' in line:
+				key, value = line.split(' = ')
+				config[header][key] = value
+				#print('    {0} = {1}'.format(key, value))
+			else:
+				break
+
+	return config
+
+
+def write_ini_file(file_name, config):
+	with open(file_name, 'wb') as f:
+		for header, pairs in config.items():
+			# Header
+			f.write('[{0}]\r\n'.format(header))
+
+			# Keys and values
+			for key, value in pairs.items():
+				f.write('{0} = {1}\r\n'.format(key, value))
+
+			# Two spaces at the end of a section
+			f.write('\r\n\r\n')
 
 
 def make_db(file_name, path_prefix):
@@ -250,11 +288,38 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running SSF ...')
 
 		elif data['console'] == 'Dreamcast':
+			# FIXME: We have to parse the ini file by hand because ConfigParser cannot read unicode
+			config = read_ini_file('emulators/demul0582/Demul.ini')
+
+			# Bios
+			bios_path = os.path.abspath('emulators/demul0582/roms/')
+			config['files']['roms0'] = bios_path
+			config['files']['romsPathsCount'] = '1'
+
+			# Plugins
+			plugins_path = os.path.abspath('emulators/demul0582/plugins/')
+			config['plugins']['directory'] = plugins_path
+
+			# nvram
+			nvram_path = os.path.abspath('emulators/demul0582/nvram/')
+			config['files']['nvram'] = nvram_path
+
+			# Get the DirectX version
+			directx_dll = config['plugins']['gpu']
+			directx_version = None
+			if directx_dll == 'gpuDX11.dll':
+				directx_version = 'gpuDX11hw'
+			elif directx_dll == 'gpuDX10.dll':
+				directx_version = 'gpuDX10hw'
+
+			# Save the ini file
+			write_ini_file('emulators/demul0582/Demul.ini', config)
+
 			# Run the game
 			os.chdir("emulators/demul0582/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"demul.exe" -run=dc -image="' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'gpuDX11hw', full_screen_alt_enter=True)
+			runner = emu_runner.EmuRunner(command, directx_version, full_screen_alt_enter=True)
 			runner.run()
 			os.chdir("../..")
 			data = {
