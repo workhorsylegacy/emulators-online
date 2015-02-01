@@ -42,11 +42,14 @@ TODO:
 
 import os, sys
 import json
+import subprocess
+
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.template
 
+import tray_icon
 import file_mounter
 import downloader
 import emu_runner
@@ -453,25 +456,104 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		else:
 			print('Unknown program to check if installed: {0}'.format(data['program']))
 
-application = tornado.web.Application([
-	(r'/ws', WebSocketHandler),
-	(r'/', MainHandler),
-	(r'/index.html', MainHandler),
-	(r'/configure.html', ConfigureHandler),
-	(r"/(.*)", tornado.web.StaticFileHandler, {"path" : r"./"}),
-])
 
-if __name__ == "__main__":
-	make_db('gamecube.json', 'games/Nintendo/GameCube')
-	make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
-	make_db('saturn.json', 'games/Sega/Saturn')
-	make_db('dreamcast.json', 'games/Sega/Dreamcast')
-	make_db('playstation.json', 'games/Sony/Playstation')
-	make_db('playstation2.json', 'games/Sony/Playstation2')
-
+if __name__ == '__main__':
+	icon = 'emu_archive.ico'
+	script_path = os.path.dirname(os.path.realpath(__file__))
+	icon = os.path.join(script_path, icon)
+	hover_text = "Emu Archive"
+	application = None
+	server = None
 	port = 9090
-	application.listen(port)
-	print('Server running on http://localhost:{0} ...'.format(port))
-	tornado.ioloop.IOLoop.instance().start()
+	server_thread = None
+
+	def start(trayIcon):
+		import threading
+
+		# Generate the database of games
+		make_db('gamecube.json', 'games/Nintendo/GameCube')
+		make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
+		make_db('saturn.json', 'games/Sega/Saturn')
+		make_db('dreamcast.json', 'games/Sega/Dreamcast')
+		make_db('playstation.json', 'games/Sony/Playstation')
+		make_db('playstation2.json', 'games/Sony/Playstation2')
+
+		def start_server(port):
+			global server
+			global application
+
+			application = tornado.web.Application([
+				(r'/ws', WebSocketHandler),
+				(r'/', MainHandler),
+				(r'/index.html', MainHandler),
+				(r'/configure.html', ConfigureHandler),
+				(r"/(.*)", tornado.web.StaticFileHandler, {"path" : r"./"}),
+			])
+
+			application.listen(port)
+			print('Server running on http://localhost:{0} ...'.format(port))
+			server = tornado.ioloop.IOLoop.instance()
+			server.start()
+
+		# Start the server in its own thread
+		server_thread = threading.Thread(target=start_server, args = (port, ))
+		server_thread.start()
+
+	# FIXME: This does not free the port
+	def stop(trayIcon):
+		global server
+
+		server.stop()
+		tornado.ioloop.IOLoop.instance().stop()
+		print('Server exiting ...')
+
+	def view_in_browser(trayIcon):
+		import webbrowser
+		webbrowser.open_new('http://localhost:{0}'.format(port))
+
+	def demul(trayIcon):
+		run_emulator("emulators/demul0582/", "demul.exe")
+
+	def ssf(trayIcon):
+		run_emulator("emulators/SSF_012_beta_R4/", "SSF.exe")
+
+	def dolphin(trayIcon):
+		run_emulator("emulators/Dolphin-x64/", "Dolphin.exe")
+
+	def mupen64plus(trayIcon):
+		run_emulator("emulators/mupen64plus-bundle-win32-2.0/", "mupen64plus.exe")
+
+	def pcsxr(trayIcon):
+		run_emulator("emulators/pcsxr/", "pcsxr.exe")
+
+	def pcsx2(trayIcon):
+		run_emulator("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/", "pcsx2.exe")
+
+	def run_emulator(path, exe):
+		if not os.path.exists(os.path.join(path, exe)):
+			return
+
+		os.chdir(path)
+		proc = subprocess.Popen(exe, stdout=subprocess.PIPE)
+		os.chdir("../..")
+
+	menu_options = (
+						('Start Server', icon, start),
+						('Stop Server', icon, stop),
+						('View in Browser', icon, view_in_browser),
+						('Emulators', icon,
+							(
+								('Demul', icon, demul),
+								('SSF', icon, ssf),
+								('Dolphin', icon, dolphin),
+								('Mupen 64 Plus', icon, mupen64plus),
+								('PSX-Reloaded', icon, pcsxr),
+								('PCSX2', icon, pcsx2),
+							)
+						)
+					)
+
+	tray_icon.TrayIcon(icon, hover_text, menu_options, on_quit=stop, default_menu_index=1)
+
 
 
