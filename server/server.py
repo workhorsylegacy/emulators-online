@@ -59,7 +59,10 @@ if PY2:
 else:
 	import configparser
 
-
+# Move to the main emu_archive directory no matter what path we are launched from
+current_path = os.path.abspath(os.path.dirname(sys.argv[0]))
+if current_path.endswith('server'):
+	os.chdir(os.path.join(current_path, '..'))
 
 runner = None
 
@@ -456,7 +459,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 
 if __name__ == '__main__':
-	icon = 'emu_archive.ico'
+	icon = 'server/emu_archive.ico'
 	script_path = os.path.dirname(os.path.realpath(__file__))
 	icon = os.path.join(script_path, icon)
 	hover_text = "Emu Archive"
