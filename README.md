@@ -33,14 +33,15 @@ http://www.slysoft.com/en/virtual-clonedrive.html
 cd server
 python setup.py py2exe
 cd ..
+mv server/dist/server.exe server.exe
 rm -R server/build
-mv server/dist/ server_exe/
+rm -R server/dist
 ~~~
 
 # Run the server as an exe
 
 ~~~bash
-server_exe/server.exe
+server.exe
 ~~~
 http://localhost:9090
 
