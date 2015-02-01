@@ -28,6 +28,7 @@ class TrayIcon(object):
 	             hover_text,
 	             menu_options,
 	             on_quit=None,
+				 on_start=None,
 	             default_menu_index=None,
 	             window_class_name=None):
 
@@ -35,6 +36,7 @@ class TrayIcon(object):
 		self.icon = icon
 		self.hover_text = hover_text
 		self.on_quit = on_quit
+		self.on_start = on_start
 		menu_options = menu_options + (('Quit', None, self.QUIT),)
 		self._next_action_id = self.FIRST_ID
 		self.menu_actions_by_id = set()
@@ -76,6 +78,8 @@ class TrayIcon(object):
 		self.notify_id = None
 		self.load_icon()
 
+		if self.on_start: self.on_start(self)
+		
 		win32gui.PumpMessages()
 
 	def command(self, hwnd, msg, wparam, lparam):

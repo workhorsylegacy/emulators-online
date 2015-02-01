@@ -33,7 +33,6 @@ TODO:
 . Have Virtual Clone Drive not popup the mounted directory
 . Have it auto download Virtual Clone Drive for emulators that need it
 . Have it auto download and config emulators
-. Support for games that use more than one disk
 . Controller configs
 . Memory configs
 . Move the mouse cursor to the bottom left corner on start
@@ -554,7 +553,7 @@ if __name__ == '__main__':
 						)
 					)
 
-	tray_icon.TrayIcon(icon, hover_text, menu_options, on_quit=stop, default_menu_index=1)
+	tray_icon.TrayIcon(icon, hover_text, menu_options, on_quit=stop, on_start=start, default_menu_index=1)
 
 
 
