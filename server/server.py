@@ -29,8 +29,7 @@
 TODO:
 . Add searching by publisher, year, and console
 . How do we deal with games that use multiple disks in the UI?
-. Give an option to upload a binary too.
-. Have the server use a task bar applet for the UI
+. Give an option to upload a binary too
 . Have Virtual Clone Drive not popup the mounted directory
 . Have it auto download Virtual Clone Drive for emulators that need it
 . Have it auto download and config emulators
@@ -503,7 +502,9 @@ if __name__ == '__main__':
 	def stop(trayIcon):
 		global server
 
-		server.stop()
+		if server:
+			server.stop()
+		server = None
 		tornado.ioloop.IOLoop.instance().stop()
 		print('Server exiting ...')
 
