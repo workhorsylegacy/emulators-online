@@ -460,8 +460,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 if __name__ == '__main__':
 	icon = 'server/emu_archive.ico'
-	script_path = os.path.dirname(os.path.realpath(__file__))
-	icon = os.path.join(script_path, icon)
 	hover_text = "Emu Archive"
 	application = None
 	server = None
