@@ -30,12 +30,7 @@ http://www.slysoft.com/en/virtual-clonedrive.html
 # Build server exe
 
 ~~~bash
-cd server
-python setup.py py2exe
-cd ..
-mv server/dist/server.exe server.exe
-rm -R server/build
-rm -R server/dist
+./build_exe.sh
 ~~~
 
 # Run the server as an exe
