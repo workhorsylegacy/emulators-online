@@ -13,7 +13,9 @@
 
 		<h1>Install and Configure Programs</h1>
 
-		<table class="installTable">
+		<h1 id="installProgress"></h1>
+		
+		<table id="installTable">
 			<tr>
 				<th>Program Name</th>
 				<th>Status</th>
@@ -117,63 +119,73 @@ var is_mupen_installed = false;
 function on_data(data) {
 	if(data['action'] == 'log') {
 		console.log('Log: ' + data['value']);
+	} else if(data['action'] == 'progress') {
+		if(data['value'] < 100) {
+			$('#installTable').hide();
+			$('#installProgress').text('Downloading ' + data['name'] + ': ' + data['value'] + '%');
+			$('#installProgress').show();
+		} else {
+			$('#installProgress').text('');
+			$('#installProgress').hide();
+			$('#installTable').show();
+		}
 	} else if(data['action'] == 'is_installed') {
 		if (data['name'] == 'VirtualCloneDrive') {
 			is_vcd_installed = data['value'];
-			$('#btn_install_vcd').prop('disabled', !data['value']);
 			if(is_vcd_installed)
 				$('#btn_install_vcd').val('Uninstall');
 			else
 				$('#btn_install_vcd').val('Install');
+			$('#btn_install_vcd').prop('disabled', false);
 		} else if (data['name'] == 'NullDC') {
 			is_nulldc_installed = data['value'];
-			$('#btn_install_nulldc').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_nulldc_installed)
 				$('#btn_install_nulldc').val('Uninstall');
 			else
 				$('#btn_install_nulldc').val('Install');
+			$('#btn_install_nulldc').prop('disabled', false);
 		} else if (data['name'] == 'Demul') {
 			is_demul_installed = data['value'];
-			$('#btn_install_demul').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_demul_installed)
 				$('#btn_install_demul').val('Uninstall');
 			else
 				$('#btn_install_demul').val('Install');
+			$('#btn_install_demul').prop('disabled', false);
 		} else if (data['name'] == 'SSF') {
 			is_ssf_installed = data['value'];
-			$('#btn_install_ssf').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_ssf_installed)
 				$('#btn_install_ssf').val('Uninstall');
 			else
 				$('#btn_install_ssf').val('Install');
+			$('#btn_install_ssf').prop('disabled', false);
 		} else if (data['name'] == 'Dolphin') {
 			is_dolphin_installed = data['value'];
-			$('#btn_install_dolphin').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_dolphin_installed)
 				$('#btn_install_dolphin').val('Uninstall');
 			else
 				$('#btn_install_dolphin').val('Install');
+			$('#btn_install_dolphin').prop('disabled', false);
 		} else if (data['name'] == 'PCSX-Reloaded') {
 			is_pcsxr_installed = data['value'];
-			$('#btn_install_pcsxr').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_pcsxr_installed)
 				$('#btn_install_pcsxr').val('Uninstall');
 			else
 				$('#btn_install_pcsxr').val('Install');
+			$('#btn_install_pcsxr').prop('disabled', false);
 		} else if (data['name'] == 'PCSX2') {
 			is_pcsx2_installed = data['value'];
-			$('#btn_install_pcsx2').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_pcsx2_installed)
 				$('#btn_install_pcsx2').val('Uninstall');
 			else
 				$('#btn_install_pcsx2').val('Install');
+			$('#btn_install_pcsx2').prop('disabled', false);
 		} else if (data['name'] == 'Mupen 64 Plus') {
 			is_mupen_installed = data['value'];
-			$('#btn_install_mupen64plus').prop('disabled', !data['value']);
-			if(is_vcd_installed)
+			if(is_mupen_installed)
 				$('#btn_install_mupen64plus').val('Uninstall');
 			else
 				$('#btn_install_mupen64plus').val('Install');
+			$('#btn_install_mupen64plus').prop('disabled', false);
 		}
 		console.log('is installed: ' + data['name'] + ' ' + data['value'])
 	} else {
@@ -256,7 +268,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'SetupVirtualCloneDrive.exe',
 			'url' : 'http://static.slysoft.com/SetupVirtualCloneDrive.exe',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'Virtual Clone Drive'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -277,7 +290,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'nullDC_104_r136.7z',
 			'url' : 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'NullDC'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -289,7 +303,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'demul0582.rar',
 			'url' : 'http://demul.emulation64.com/files/demul0582.rar',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'Demul'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -301,7 +316,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'SSF_012_beta_R4.zip',
 			'url' : 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'SSF'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -313,7 +329,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'dolphin-master-4.0-5363-x64.7z',
 			'url' : 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'Dolphin'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -325,7 +342,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'pcsxr-1.9.93-win32.zip',
 			'url' : 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20959',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'PCSX Reloaded'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -337,7 +355,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z',
 			'url' : 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'PCSX2'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
@@ -349,7 +368,8 @@ function setup_ui() {
 			'action' : 'download',
 			'file' : 'mupen64plus-bundle-win32-2.0.zip',
 			'url' : 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip',
-			'dir' : 'downloads'
+			'dir' : 'downloads',
+			'name' : 'Mupen 64 Plus'
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);

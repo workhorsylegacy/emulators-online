@@ -83,11 +83,11 @@ img.blackAndWhite {
 	background: #FF0000;
 }
 
-.installTable {
+#installTable {
 	padding: 10px;
 }
 
-.installTable td {
+#installTable td {
 	padding: 20px;
 }
 

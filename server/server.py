@@ -248,6 +248,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'is_installed':
 			self._is_installed(data)
 
+		# Client wants to install a program
+		elif data['action'] == 'install':
+			self._install(data)
+
 		# Unknown message from the client
 		else:
 			data = {
@@ -419,7 +423,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running PCSX2 ...')
 
 	def _download_file(self, data):
-		t = downloader.Downloader(data['url'], data['file'], data['dir'])
+		def progress_cb(name, server, progress):
+			data = {
+				'action' : 'progress',
+				'value' : progress,
+				'name' : name
+			}
+			server.write_data(data)
+
+		t = EmuDownloader(self, progress_cb, data['name'], data['url'], data['file'], data['dir'])
 		t.daemon = True
 		t.start()
 		t.join()
@@ -427,6 +439,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print(t.message)
 			sys.exit(1)
 
+	def _install(self, data):
+		os.chdir(data['dir'])
+		os.popen(data['file'])
+		os.chdir('..')
+	
 	def _is_installed(self, data):
 		if data['program'] == 'VirtualCloneDrive':
 			exist = os.path.exists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
@@ -494,6 +511,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			self.write_data(data)
 		else:
 			print('Unknown program to check if installed: {0}'.format(data['program']))
+
+
+class EmuDownloader(downloader.Downloader):
+	def __init__(self, server, progress_cb, name, url, file_name, dir_name):
+		super(EmuDownloader, self).__init__(url, file_name, dir_name)
+		self.server = server
+		self.progress_cb = progress_cb
+		self.name = name
+
+	def _cb_dl_progress(self, file_name, chunk, data_length, chunk_size, content_length, percent):
+		self.progress_cb(self.name, self.server, percent)
 
 
 if __name__ == '__main__':
