@@ -2,8 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 # Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-osinfo is a Python module to get the OS type, brand, release, and kernel
-# It uses a MIT style license
+# This software uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/emu_archive
 #
 # Permission is hereby granted, free of charge, to any person obtaining
