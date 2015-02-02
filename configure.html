@@ -282,10 +282,19 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Figure out if VCD is installed
+		var message = {
+			'action' : 'is_installed',
+			'program' : 'VirtualCloneDrive'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	var btn = $("#btn_install_nulldc");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'nullDC_104_r136.7z',
@@ -295,10 +304,28 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'nullDC_104_r136.7z'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'NullDC'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	btn = $("#btn_install_demul");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'demul0582.rar',
@@ -308,10 +335,28 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'demul0582.rar'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'Demul'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	btn = $("#btn_install_ssf");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'SSF_012_beta_R4.zip',
@@ -321,10 +366,28 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'SSF_012_beta_R4.zip'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'SSF'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	btn = $("#btn_install_dolphin");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'dolphin-master-4.0-5363-x64.7z',
@@ -334,10 +397,28 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'dolphin-master-4.0-5363-x64.7z'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'Dolphin'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	btn = $("#btn_install_pcsxr");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'pcsxr-1.9.93-win32.zip',
@@ -347,10 +428,28 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'pcsxr-1.9.93-win32.zip'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'PCSX-Reloaded'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	btn = $("#btn_install_pcsx2");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z',
@@ -360,10 +459,28 @@ function setup_ui() {
 		};
 		var message = JSON.stringify(message);
 		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'PCSX2'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
 	});
 
 	btn = $("#btn_install_mupen64plus");
 	btn.on('click', function() {
+		// Download the compressed program
 		var message = {
 			'action' : 'download',
 			'file' : 'mupen64plus-bundle-win32-2.0.zip',
@@ -372,6 +489,23 @@ function setup_ui() {
 			'name' : 'Mupen 64 Plus'
 		};
 		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Uncompress the program
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : 'mupen64plus-bundle-win32-2.0.zip'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if it is installed
+		message = {
+			'action' : 'is_installed',
+			'program' : 'Mupen 64 Plus'
+		};
+		message = JSON.stringify(message);
 		socket.send(message);
 	});
 }

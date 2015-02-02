@@ -51,6 +51,7 @@ import tray_icon
 import file_mounter
 import downloader
 import emu_runner
+import wrap_7zip
 
 PY2 = sys.version_info[0] == 2
 
@@ -281,7 +282,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					config.write(f)
 
 			# Run the game
-			os.chdir("emulators/Dolphin-x64/")
+			os.chdir("emulators/Dolphin/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"Dolphin.exe" --batch --exec="' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen_alt_enter=True)
@@ -297,7 +298,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		elif data['console'] == 'Nintendo64':
 			# Run the game
-			os.chdir("emulators/mupen64plus-bundle-win32-2.0/")
+			os.chdir("emulators/Mupen64Plus/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"Mupen64plus.exe" --fullscreen "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'Mupen64Plus', full_screen_alt_enter=False)
@@ -319,12 +320,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			# Get the bios path
 			bios_path = data['bios']
 			if bios_path:
-				bios_path = os.path.abspath('emulators/SSF_012_beta_R4/bios/' + bios_path)
+				bios_path = os.path.abspath('emulators/SSF/bios/' + bios_path)
 
 			# SSF setup via INI file
 			config = configparser.ConfigParser()
 			config.optionxform = str
-			config.read("emulators/SSF_012_beta_R4/SSF.ini")
+			config.read("emulators/SSF/SSF.ini")
 
 			# Bios
 			config.set("Peripheral", "SaturnBIOS", '"' + bios_path + '"')
@@ -333,11 +334,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			config.set("Other", "ScreenMode", '"0"')
 
 			# Save changes
-			with open('emulators/SSF_012_beta_R4/SSF.ini', 'w') as f:
+			with open('emulators/SSF/SSF.ini', 'w') as f:
 				config.write(f)
 
 			# Run the game
-			os.chdir("emulators/SSF_012_beta_R4/")
+			os.chdir("emulators/SSF/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"SSF.exe" "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'SSF', full_screen_alt_enter=True)
@@ -352,19 +353,19 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		elif data['console'] == 'Dreamcast':
 			# FIXME: We have to parse the ini file by hand because ConfigParser cannot read unicode
-			config = read_ini_file('emulators/demul0582/Demul.ini')
+			config = read_ini_file('emulators/Demul/Demul.ini')
 
 			# Bios
-			bios_path = os.path.abspath('emulators/demul0582/roms/')
+			bios_path = os.path.abspath('emulators/Demul/roms/')
 			config['files']['roms0'] = bios_path
 			config['files']['romsPathsCount'] = '1'
 
 			# Plugins
-			plugins_path = os.path.abspath('emulators/demul0582/plugins/')
+			plugins_path = os.path.abspath('emulators/Demul/plugins/')
 			config['plugins']['directory'] = plugins_path
 
 			# nvram
-			nvram_path = os.path.abspath('emulators/demul0582/nvram/')
+			nvram_path = os.path.abspath('emulators/Demul/nvram/')
 			config['files']['nvram'] = nvram_path
 
 			# Get the DirectX version
@@ -376,10 +377,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				directx_version = 'gpuDX10hw'
 
 			# Save the ini file
-			write_ini_file('emulators/demul0582/Demul.ini', config)
+			write_ini_file('emulators/Demul/Demul.ini', config)
 
 			# Run the game
-			os.chdir("emulators/demul0582/")
+			os.chdir("emulators/Demul/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"demul.exe" -run=dc -image="' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, directx_version, full_screen_alt_enter=True)
@@ -394,7 +395,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		elif data['console'] == 'Playstation':
 			# Run the game
-			os.chdir("emulators/pcsxr/")
+			os.chdir("emulators/PCSXR/")
 			game_path = goodJoin('../../', data['path'] + '/' + data['binary'])
 			command = '"pcsxr.exe" -nogui -cdfile "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen_alt_enter=True)
@@ -409,7 +410,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		elif data['console'] == 'Playstation2':
 			# Run the game
-			os.chdir("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/")
+			os.chdir("emulators/PCSX2/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"pcsx2.exe" --nogui "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'GSdx', full_screen_alt_enter=True)
@@ -440,10 +441,25 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			sys.exit(1)
 
 	def _install(self, data):
-		os.chdir(data['dir'])
-		os.popen(data['file'])
-		os.chdir('..')
-	
+		wrap = wrap_7zip.Wrap7zip()
+
+		if data['file'] == 'SetupVirtualCloneDrive.exe':
+			os.chdir(data['dir'])
+			os.popen(data['file'])
+			os.chdir('..')
+		elif data['file'] == 'nullDC_104_r136.7z':
+			wrap.uncompress(os.path.join(data['dir'], 'nullDC_104_r136.7z'), 'emulators/NullDC')
+		elif data['file'] == 'demul0582.rar':
+			wrap.uncompress(os.path.join(data['dir'], 'demul0582.rar'), 'emulators/Demul')
+		elif data['file'] == 'SSF_012_beta_R4.zip':
+			wrap.uncompress(os.path.join(data['dir'], 'SSF_012_beta_R4.zip'), 'emulators/SSF')
+		elif data['file'] == 'dolphin-master-4.0-5363-x64.7z':
+			wrap.uncompress(os.path.join(data['dir'], 'dolphin-master-4.0-5363-x64.7z'), 'emulators/Dolphin')
+		elif data['file'] == 'mupen64plus-bundle-win32-2.0.zip':
+			wrap.uncompress(os.path.join(data['dir'], 'mupen64plus-bundle-win32-2.0.zip'), 'emulators/Mupen64Plus')
+		elif data['file'] == 'pcsxr-1.9.93-win32.zip':
+			wrap.uncompress(os.path.join(data['dir'], 'pcsxr-1.9.93-win32.zip'), 'emulators/PCSXR')
+
 	def _is_installed(self, data):
 		if data['program'] == 'VirtualCloneDrive':
 			exist = os.path.exists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
@@ -454,7 +470,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'NullDC':
-			exist = os.path.exists("emulators/nullDC_104_r136/nullDC_Win32_Release-NoTrace.exe")
+			exist = os.path.exists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -462,7 +478,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'Demul':
-			exist = os.path.exists("emulators/demul0582/demul.exe")
+			exist = os.path.exists("emulators/Demul/demul.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -470,7 +486,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'SSF':
-			exist = os.path.exists("emulators/SSF_012_beta_R4/SSF.exe")
+			exist = os.path.exists("emulators/SSF/SSF.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -478,7 +494,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'Dolphin':
-			exist = os.path.exists("emulators/Dolphin-x64/Dolphin.exe")
+			exist = os.path.exists("emulators/Dolphin/Dolphin.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -486,7 +502,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'PCSX-Reloaded':
-			exist = os.path.exists("emulators/pcsxr/pcsxr.exe")
+			exist = os.path.exists("emulators/PCSXR/pcsxr.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -494,7 +510,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'PCSX2':
-			exist = os.path.exists("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/pcsx2.exe")
+			exist = os.path.exists("emulators/PCSX2/pcsx2.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -502,7 +518,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'Mupen 64 Plus':
-			exist = os.path.exists("emulators/mupen64plus-bundle-win32-2.0/mupen64plus.exe")
+			exist = os.path.exists("emulators/Mupen64Plus/mupen64plus.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
