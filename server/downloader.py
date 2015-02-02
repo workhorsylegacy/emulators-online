@@ -67,7 +67,7 @@ class Downloader(threading.Thread):
 			if response.code != 200:
 				self.is_success = False
 				self.message = 'Download failed. Exiting ...'
-				exit(1)
+				sys.exit(1)
 
 			# Read the HTTP header
 			content_length = int(response.headers['Content-Length'])
@@ -88,7 +88,7 @@ class Downloader(threading.Thread):
 		except Exception as e:
 			self.is_success = False
 			self.message = 'Download failed. Exiting ...\n{0}\n{1}'.format(str(e), self.url)
-			exit(1)
+			sys.exit(1)
 
 		# Write the file to disk
 		self._cb_dl_done(file_name, data)

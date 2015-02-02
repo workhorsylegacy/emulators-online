@@ -64,6 +64,44 @@ current_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 if current_path.endswith('server'):
 	os.chdir(os.path.join(current_path, '..'))
 
+# If __file__ fails, we are in server.exe. So generate the files
+try:
+	blah = __file__
+except:
+	import base64
+	import static_files
+
+	# Make the directory structure
+	dirs = [
+			'db', 'downloads', 'emulators',
+			'server', 'static', 'games',
+			'games/Nintendo/',
+			'games/Nintendo/GameCube/',
+			'games/Nintendo/Nintendo64/',
+			'games/Sega/',
+			'games/Sega/Saturn/',
+			'games/Sega/Dreamcast/',
+			'games/Sony/',
+			'games/Sony/Playstation/',
+			'games/Sony/Playstation2/'
+	]
+
+	for dir in dirs:
+		if not os.path.exists(dir):
+			os.mkdir(dir)
+
+	# Make the html, css, and js files
+	files = ['configure.html', 'index.html', 'static/default.css', 
+			'static/emu_archive.js', 'static/jquery-2.1.3.min.js',
+			'static/favicon.ico']
+
+	for file in files:
+		if not os.path.isfile(file):
+			with open(file, 'wb') as f:
+				data = static_files.static_files[file]
+				data = base64.b64decode(data)
+				f.write(data)
+
 runner = None
 
 def read_ini_file(file_path):
@@ -387,7 +425,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		t.join()
 		if not t.is_success:
 			print(t.message)
-			exit(1)
+			sys.exit(1)
 
 	def _is_installed(self, data):
 		if data['program'] == 'VirtualCloneDrive':
@@ -459,7 +497,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 
 if __name__ == '__main__':
-	icon = 'server/emu_archive.ico'
+	icon = 'static/favicon.ico'
 	hover_text = "Emu Archive"
 	application = None
 	server = None
