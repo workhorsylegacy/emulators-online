@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 # Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# Py-osinfo is a Python module to get the OS type, brand, release, and kernel
+# emu_archive is a HTML based front end for video game console emulators
 # It uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/emu_archive
 #
