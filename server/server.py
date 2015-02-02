@@ -282,7 +282,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					config.write(f)
 
 			# Run the game
-			os.chdir("emulators/Dolphin/")
+			os.chdir("emulators/Dolphin-x64/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"Dolphin.exe" --batch --exec="' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen_alt_enter=True)
@@ -320,12 +320,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			# Get the bios path
 			bios_path = data['bios']
 			if bios_path:
-				bios_path = os.path.abspath('emulators/SSF/bios/' + bios_path)
+				bios_path = os.path.abspath('emulators/SSF_012_beta_R4/bios/' + bios_path)
 
 			# SSF setup via INI file
 			config = configparser.ConfigParser()
 			config.optionxform = str
-			config.read("emulators/SSF/SSF.ini")
+			config.read("emulators/SSF_012_beta_R4/SSF.ini")
 
 			# Bios
 			config.set("Peripheral", "SaturnBIOS", '"' + bios_path + '"')
@@ -334,11 +334,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			config.set("Other", "ScreenMode", '"0"')
 
 			# Save changes
-			with open('emulators/SSF/SSF.ini', 'w') as f:
+			with open('emulators/SSF_012_beta_R4/SSF.ini', 'w') as f:
 				config.write(f)
 
 			# Run the game
-			os.chdir("emulators/SSF/")
+			os.chdir("emulators/SSF_012_beta_R4/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"SSF.exe" "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'SSF', full_screen_alt_enter=True)
@@ -395,7 +395,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		elif data['console'] == 'Playstation':
 			# Run the game
-			os.chdir("emulators/PCSXR/")
+			os.chdir("emulators/pcsxr/")
 			game_path = goodJoin('../../', data['path'] + '/' + data['binary'])
 			command = '"pcsxr.exe" -nogui -cdfile "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen_alt_enter=True)
@@ -410,7 +410,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		elif data['console'] == 'Playstation2':
 			# Run the game
-			os.chdir("emulators/PCSX2/")
+			os.chdir("emulators/pcsx2-v1.3.1-8-gf88bea5-windows-x86/")
 			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
 			command = '"pcsx2.exe" --nogui "' + game_path + '"'
 			runner = emu_runner.EmuRunner(command, 'GSdx', full_screen_alt_enter=True)
@@ -452,14 +452,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['file'] == 'demul0582.rar':
 			wrap.uncompress(os.path.join(data['dir'], 'demul0582.rar'), 'emulators/Demul')
 		elif data['file'] == 'SSF_012_beta_R4.zip':
-			wrap.uncompress(os.path.join(data['dir'], 'SSF_012_beta_R4.zip'), 'emulators/SSF')
+			wrap.uncompress(os.path.join(data['dir'], 'SSF_012_beta_R4.zip'), 'emulators')
 		elif data['file'] == 'dolphin-master-4.0-5363-x64.7z':
-			wrap.uncompress(os.path.join(data['dir'], 'dolphin-master-4.0-5363-x64.7z'), 'emulators/Dolphin')
+			wrap.uncompress(os.path.join(data['dir'], 'dolphin-master-4.0-5363-x64.7z'), 'emulators')
 		elif data['file'] == 'mupen64plus-bundle-win32-2.0.zip':
 			wrap.uncompress(os.path.join(data['dir'], 'mupen64plus-bundle-win32-2.0.zip'), 'emulators/Mupen64Plus')
 		elif data['file'] == 'pcsxr-1.9.93-win32.zip':
-			wrap.uncompress(os.path.join(data['dir'], 'pcsxr-1.9.93-win32.zip'), 'emulators/PCSXR')
-
+			wrap.uncompress(os.path.join(data['dir'], 'pcsxr-1.9.93-win32.zip'), 'emulators')
+		elif data['file'] == 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z':
+			wrap.uncompress(os.path.join(data['dir'], 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z'), 'emulators')
+			
 	def _is_installed(self, data):
 		if data['program'] == 'VirtualCloneDrive':
 			exist = os.path.exists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
@@ -486,7 +488,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'SSF':
-			exist = os.path.exists("emulators/SSF/SSF.exe")
+			exist = os.path.exists("emulators/SSF_012_beta_R4/SSF.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -494,7 +496,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'Dolphin':
-			exist = os.path.exists("emulators/Dolphin/Dolphin.exe")
+			exist = os.path.exists("emulators/Dolphin-x64/Dolphin.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -502,7 +504,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'PCSX-Reloaded':
-			exist = os.path.exists("emulators/PCSXR/pcsxr.exe")
+			exist = os.path.exists("emulators/pcsxr/pcsxr.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -595,7 +597,7 @@ if __name__ == '__main__':
 		webbrowser.open_new('http://localhost:{0}'.format(port))
 
 	def demul(trayIcon):
-		run_emulator("emulators/demul0582/", "demul.exe")
+		run_emulator("emulators/Demul/", "demul.exe")
 
 	def ssf(trayIcon):
 		run_emulator("emulators/SSF_012_beta_R4/", "SSF.exe")

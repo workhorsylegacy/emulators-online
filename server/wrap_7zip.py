@@ -41,7 +41,7 @@ class Wrap7zip(object):
 			sys.exit()
 
 	def uncompress(self, comprerssed_file, out_dir):
-		command = '"{0}" e -y "{1}" -o{2}'.format(self.exe, comprerssed_file, out_dir)
+		command = '"{0}" x -y "{1}" -o{2}'.format(self.exe, comprerssed_file, out_dir)
 		proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 		out, err = proc.communicate()
 
