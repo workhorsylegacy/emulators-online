@@ -39,6 +39,11 @@ TODO:
 """
 
 import os, sys
+
+if sys.version_info[0] == 3:
+	print("Python 3 is not yet supported. Use python 2.x instead.")
+	sys.exit()
+
 import json
 import subprocess
 
