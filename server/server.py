@@ -188,13 +188,18 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		data = json.dumps(data)
 		self.write_message(data)
 
-	def open(self):
+	def log(self, message, echo=False):
 		data = {
 			'action' : 'log',
-			'value' : 'Server starting ...'
+			'value' : message
 		}
 		self.write_data(data)
-		print('Server starting ...')
+
+		if echo:
+			print(message)
+		
+	def open(self):
+		self.log('Server starting ...', echo=True)
 
 	def on_close(self):
 		print('Server stopping ...')
@@ -222,72 +227,37 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		# Unknown message from the client
 		else:
-			data = {
-				'action' : 'log',
-				'value' : "Unknown action from client: {0}".format(data['action'])
-			}
-			self.write_data(data)
-			print('received:', message)
+			self.log("Unknown action from client: {0}".format(data['action']))
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
 			gamecube.run(data['path'], data['binary'])
-
-			data = {
-				'action' : 'log',
-				'value' : 'playing'
-			}
-			self.write_data(data)
+			self.log('playing')
 			print('Running Dolphin ...')
 
 		elif data['console'] == 'Nintendo64':
 			mupen64plus.run(data['path'], data['binary'])
-
-			data = {
-				'action' : 'log',
-				'value' : 'playing'
-			}
-			self.write_data(data)
+			self.log('playing')
 			print('Running Mupen64plus ...')
 
 		elif data['console'] == 'Saturn':
 			ssf.run(data['path'], data['binary'])
-
-			data = {
-				'action' : 'log',
-				'value' : 'playing'
-			}
-			self.write_data(data)
+			self.log('playing')
 			print('Running SSF ...')
 
 		elif data['console'] == 'Dreamcast':
 			dreamcast.run(data['path'], data['binary'])
-
-			data = {
-				'action' : 'log',
-				'value' : 'playing'
-			}
-			self.write_data(data)
+			self.log('playing')
 			print('Running Demul ...')
 
 		elif data['console'] == 'Playstation':
 			pcsxr.run(data['path'], data['binary'])
-
-			data = {
-				'action' : 'log',
-				'value' : 'playing'
-			}
-			self.write_data(data)
+			self.log('playing')
 			print('Running PCSX-R ...')
 
 		elif data['console'] == 'Playstation2':
 			pcsx2.run(data['path'], data['binary'])
-
-			data = {
-				'action' : 'log',
-				'value' : 'playing'
-			}
-			self.write_data(data)
+			self.log('playing')
 			print('Running PCSX2 ...')
 
 	def _download_file(self, data):
