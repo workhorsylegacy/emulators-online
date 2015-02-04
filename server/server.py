@@ -177,12 +177,6 @@ class ConfigureHandler(tornado.web.RequestHandler):
 		loader = tornado.template.Loader(".")
 		self.write(loader.load("configure.html").generate())
 
-def goodJoin(path_a, path_b):
-	path = path_a + path_b
-	path = os.path.abspath(path)
-	path = path.replace("\\", "/")
-	return path
-
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def write_data(self, data):
 		data = json.dumps(data)
