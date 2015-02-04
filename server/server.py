@@ -53,17 +53,17 @@ import tornado.websocket
 import tornado.template
 
 import tray_icon
-import file_mounter
 import downloader
-import emu_runner
 import wrap_7zip
+import dreamcast
+import ssf
+import gamecube
+import mupen64plus
+import pcsxr
+import pcsx2
 
 PY2 = sys.version_info[0] == 2
 
-if PY2:
-	import ConfigParser as configparser
-else:
-	import configparser
 
 # Move to the main emu_archive directory no matter what path we are launched from
 current_path = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -109,44 +109,6 @@ except:
 				f.write(data)
 
 runner = None
-
-def read_ini_file(file_path):
-	with open(file_path, 'rb') as f:
-		ini_data = f.read()
-
-	# Read the ini file into a dictionary
-	bios_path = os.path.abspath('emulators/demul0582/roms/')
-	sections = ini_data.split('\r\n\r\n\r\n')
-	config = {}
-	header = None
-	for section in sections:
-		for line in section.split('\r\n'):
-			if '[' in line and ']' in line:
-				header = line.split('[')[1].split(']')[0]
-				config[header] = {}
-				#print(header)
-			elif ' = ' in line:
-				key, value = line.split(' = ')
-				config[header][key] = value
-				#print('    {0} = {1}'.format(key, value))
-			else:
-				break
-
-	return config
-
-
-def write_ini_file(file_name, config):
-	with open(file_name, 'wb') as f:
-		for header, pairs in config.items():
-			# Header
-			f.write('[{0}]\r\n'.format(header))
-
-			# Keys and values
-			for key, value in pairs.items():
-				f.write('{0} = {1}\r\n'.format(key, value))
-
-			# Two spaces at the end of a section
-			f.write('\r\n\r\n')
 
 
 def make_db(file_name, path_prefix):
@@ -269,30 +231,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
-			# Read the config file if it exist
-			ini_path = os.path.expanduser('~/Documents/Dolphin Emulator/Config/Dolphin.ini')
-			if os.path.isfile(ini_path):
-				config = configparser.ConfigParser()
-				config.optionxform = str
-				config.read(ini_path)
-
-				# Render to the main window
-				config.set('Display', 'RenderToMain', 'True')
-
-				# Stop popup error dialogs
-				config.set('Interface', 'UsePanicHandlers', 'False')
-
-				# Save changes
-				with open(ini_path, 'w') as f:
-					config.write(f)
-
-			# Run the game
-			os.chdir("emulators/Dolphin-x64/")
-			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
-			command = '"Dolphin.exe" --batch --exec="' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen_alt_enter=True)
-			runner.run()
-			os.chdir("../..")
+			gamecube.run(data['path'], data['binary'])
 
 			data = {
 				'action' : 'log',
@@ -302,13 +241,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running Dolphin ...')
 
 		elif data['console'] == 'Nintendo64':
-			# Run the game
-			os.chdir("emulators/Mupen64Plus/")
-			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
-			command = '"Mupen64plus.exe" --fullscreen "' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'Mupen64Plus', full_screen_alt_enter=False)
-			runner.run()
-			os.chdir("../..")
+			mupen64plus.run(data['path'], data['binary'])
+
 			data = {
 				'action' : 'log',
 				'value' : 'playing'
@@ -317,38 +251,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running Mupen64plus ...')
 
 		elif data['console'] == 'Saturn':
-			# Mount the game
-			mounter = file_mounter.FileMounter("D")
-			mounter.unmount()
-			mounter.mount(data['path'] + '/' + data['binary'])
+			ssf.run(data['path'], data['binary'])
 
-			# Get the bios path
-			bios_path = data['bios']
-			if bios_path:
-				bios_path = os.path.abspath('emulators/SSF_012_beta_R4/bios/' + bios_path)
-
-			# SSF setup via INI file
-			config = configparser.ConfigParser()
-			config.optionxform = str
-			config.read("emulators/SSF_012_beta_R4/SSF.ini")
-
-			# Bios
-			config.set("Peripheral", "SaturnBIOS", '"' + bios_path + '"')
-
-			# Full Screen
-			config.set("Other", "ScreenMode", '"0"')
-
-			# Save changes
-			with open('emulators/SSF_012_beta_R4/SSF.ini', 'w') as f:
-				config.write(f)
-
-			# Run the game
-			os.chdir("emulators/SSF_012_beta_R4/")
-			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
-			command = '"SSF.exe" "' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'SSF', full_screen_alt_enter=True)
-			runner.run()
-			os.chdir("../..")
 			data = {
 				'action' : 'log',
 				'value' : 'playing'
@@ -357,40 +261,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running SSF ...')
 
 		elif data['console'] == 'Dreamcast':
-			# FIXME: We have to parse the ini file by hand because ConfigParser cannot read unicode
-			config = read_ini_file('emulators/Demul/Demul.ini')
+			dreamcast.run(data['path'], data['binary'])
 
-			# Bios
-			bios_path = os.path.abspath('emulators/Demul/roms/')
-			config['files']['roms0'] = bios_path
-			config['files']['romsPathsCount'] = '1'
-
-			# Plugins
-			plugins_path = os.path.abspath('emulators/Demul/plugins/')
-			config['plugins']['directory'] = plugins_path
-
-			# nvram
-			nvram_path = os.path.abspath('emulators/Demul/nvram/')
-			config['files']['nvram'] = nvram_path
-
-			# Get the DirectX version
-			directx_dll = config['plugins']['gpu']
-			directx_version = None
-			if directx_dll == 'gpuDX11.dll':
-				directx_version = 'gpuDX11hw'
-			elif directx_dll == 'gpuDX10.dll':
-				directx_version = 'gpuDX10hw'
-
-			# Save the ini file
-			write_ini_file('emulators/Demul/Demul.ini', config)
-
-			# Run the game
-			os.chdir("emulators/Demul/")
-			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
-			command = '"demul.exe" -run=dc -image="' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, directx_version, full_screen_alt_enter=True)
-			runner.run()
-			os.chdir("../..")
 			data = {
 				'action' : 'log',
 				'value' : 'playing'
@@ -399,13 +271,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running Demul ...')
 
 		elif data['console'] == 'Playstation':
-			# Run the game
-			os.chdir("emulators/pcsxr/")
-			game_path = goodJoin('../../', data['path'] + '/' + data['binary'])
-			command = '"pcsxr.exe" -nogui -cdfile "' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen_alt_enter=True)
-			runner.run()
-			os.chdir("../..")
+			pcsxr.run(data['path'], data['binary'])
+
 			data = {
 				'action' : 'log',
 				'value' : 'playing'
@@ -414,13 +281,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running PCSX-R ...')
 
 		elif data['console'] == 'Playstation2':
-			# Run the game
-			os.chdir("emulators/pcsx2-v1.3.1-8-gf88bea5-windows-x86/")
-			game_path = goodJoin("../../", data['path'] + '/' + data['binary'])
-			command = '"pcsx2.exe" --nogui "' + game_path + '"'
-			runner = emu_runner.EmuRunner(command, 'GSdx', full_screen_alt_enter=True)
-			runner.run()
-			os.chdir("../..")
+			pcsx2.run(data['path'], data['binary'])
+
 			data = {
 				'action' : 'log',
 				'value' : 'playing'
