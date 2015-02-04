@@ -481,13 +481,15 @@ def setup_pad():
 	
 def run(path, binary):
 	# Setup SPU
-	config = {}
-	config['main'] = {}
-	config['main']['spuDisable'] = 'false'
-	config['main']['cddaDisable'] = 'false'
-	config['main']['dspDisable'] = 'false'
-	config['main']['spuRecord'] = 'false'
-	config['main']['bufSize'] = 2048
+	config = {
+		'main' : {
+			'spuDisable' : 'false',
+			'cddaDisable' : 'false',
+			'dspDisable' : 'false',
+			'spuRecord' : 'false',
+			'bufSize' : 2048
+		}
+	}
 	ini.write_ini_file('emulators/Demul/spuDemul.ini', config)
 
 
@@ -496,134 +498,142 @@ def run(path, binary):
 
 
 	# Setup Net
-	config = {}
-	config['main'] = {}
-	config['main']['netEnable'] = 'false'
-	config['main']['swapDisable'] = 'false'
-	config['main']['NameOverride'] = ''
+	config = {
+		'main' : {
+			'netEnable' : 'false',
+			'swapDisable' : 'false',
+			'NameOverride' : ''
+		}
+	}
 	ini.write_ini_file('emulators/Demul/netDemul.ini', config)
 
 
 	# Setup GDR Image
-	config = {}
-	config['main'] = {}
-	config['main']['imageFileName'] = ''
-	config['main']['openDialog'] = 'true'
+	config = {
+		'main' : {
+			'imageFileName' : '',
+			'openDialog' : 'true'
+		}
+	}
 	ini.write_ini_file('emulators/Demul/gdrImage.ini', config)
 
 
 	# Setup DirectX
-	config = {}
-	config['main'] = {}
-	config['main']['Vsync'] = 0
-	config['main']['AutoSort'] = 0
-	config['main']['NetworkSort'] = 0
-	config['main']['OModifier'] = 0
-	config['main']['TModifier'] = 0
-	config['main']['UseFullscreen'] = 0
-	config['main']['rotate'] = 0
-	config['main']['aspect'] = 1
-	config['main']['scaling'] = 1
-	config['main']['MaxLayers'] = 32
-	config['main']['NotAutoRotate'] = 0
-
-	config['resolution'] = {}
-	config['resolution']['Width'] = 640
-	config['resolution']['Height'] = 480
-
-	config['shaders'] = {}
-	config['shaders']['usePass1'] = 0
-	config['shaders']['usePass2'] = 0
-	config['shaders']['shaderPass1'] = ''
-	config['shaders']['shaderPass2'] = ''
+	config = {
+		'main' : {
+			'Vsync' : 0,
+			'AutoSort' : 0,
+			'NetworkSort' : 0,
+			'OModifier' : 0,
+			'TModifier' : 0,
+			'UseFullscreen' : 0,
+			'rotate' : 0,
+			'aspect' : 1,
+			'scaling' : 1,
+			'MaxLayers' : 32,
+			'NotAutoRotate' : 0
+		},
+		'resolution' : {
+			'Width' : 640,
+			'Height' : 480
+		},
+		'shaders' : {
+			'usePass1' : 0,
+			'usePass2' : 0,
+			'shaderPass1' : '',
+			'shaderPass2' : ''
+		}
+	}
 	ini.write_ini_file('emulators/Demul/gpuDX11.ini', config)
 
 
 	# Setup Demul
-	config = {}
-	config['files'] = {}
-	config['files']['nvram'] = os.path.abspath('emulators/Demul/nvram/')
-	config['files']['romsPathsCount'] = 1
-	config['files']['roms0'] = os.path.abspath('emulators/Demul/roms/')
-
-	config['PORTD'] = {}
-	config['PORTD']['device'] = -1
-	config['PORTD']['port4'] = -1
-	config['PORTD']['port2'] = -1
-	config['PORTD']['port3'] = -1
-	config['PORTD']['port0'] = -1
-	config['PORTD']['port1'] = -1
-
-	config['PORTB'] = {}
-	config['PORTB']['device'] = -1
-	config['PORTB']['port4'] = -1
-	config['PORTB']['port2'] = -1
-	config['PORTB']['port3'] = -1
-	config['PORTB']['port0'] = -1
-	config['PORTB']['port1'] = -1
-
-	config['PORTC'] = {}
-	config['PORTC']['device'] = -1
-	config['PORTC']['port4'] = -1
-	config['PORTC']['port2'] = -1
-	config['PORTC']['port3'] = -1
-	config['PORTC']['port0'] = -1
-	config['PORTC']['port1'] = -1
-
-	config['PORTA'] = {}
-	config['PORTA']['device'] = 16777216
-	config['PORTA']['port4'] = -1
-	config['PORTA']['port2'] = -1
-	config['PORTA']['port3'] = -1
-	config['PORTA']['port0'] = 234881024
-	config['PORTA']['port1'] = 65536
-
-	config['plugins'] = {}
-	config['plugins']['gdr'] = 'gdrImage.dll'
-	config['plugins']['spu'] = 'spuDemul.dll'
-	config['plugins']['pad'] = 'padDemul.dll'
-	config['plugins']['directory'] = os.path.abspath('emulators/Demul/plugins/')
-	config['plugins']['gpu'] = 'gpuDX11.dll'
-	config['plugins']['net'] = 'netDemul.dll'
-
-	config['main'] = {}
-	config['main']['windowY'] = 100
-	config['main']['windowX'] = 100
-	config['main']['VMUscreendisable'] = 'false'
-	config['main']['dcBios'] = 3
-	config['main']['region'] = 1
-	config['main']['activateBBA'] = 'false'
-	config['main']['cpumode'] = 1
-	config['main']['hikaruBios'] = 1
-	config['main']['naomiBiosAuto'] = 'true'
-	config['main']['broadcast'] = 1
-	config['main']['lastEmuRunMode'] = 0
-	config['main']['naomifreq'] = 1
-	config['main']['naomiLLEMIE'] = 'false'
-	config['main']['timehack'] = 'true'
-	config['main']['videomode'] = 768
-
-	config['VMS'] = {}
-	config['VMS']['VMSA4'] = ''
-	config['VMS']['VMSA0'] = os.path.abspath('emulators/Demul/memsaves/vms00.bin')
-	config['VMS']['VMSA1'] = ''
-	config['VMS']['VMSA2'] = ''
-	config['VMS']['VMSA3'] = ''
-	config['VMS']['VMSC2'] = ''
-	config['VMS']['VMSD4'] = ''
-	config['VMS']['VMSD0'] = ''
-	config['VMS']['VMSD2'] = ''
-	config['VMS']['VMSD1'] = ''
-	config['VMS']['VMSC3'] = ''
-	config['VMS']['VMSD3'] = ''
-	config['VMS']['VMSC0'] = ''
-	config['VMS']['VMSB4'] = ''
-	config['VMS']['VMSC4'] = ''
-	config['VMS']['VMSC1'] = ''
-	config['VMS']['VMSB1'] = ''
-	config['VMS']['VMSB0'] = ''
-	config['VMS']['VMSB3'] = ''
-	config['VMS']['VMSB2'] = ''
+	config = {
+		'files' : {
+			'nvram' : os.path.abspath('emulators/Demul/nvram/'),
+			'romsPathsCount' : 1,
+			'roms0' : os.path.abspath('emulators/Demul/roms/')
+		},
+		'PORTD' : {
+			'device' : -1,
+			'port4' : -1,
+			'port2' : -1,
+			'port3' : -1,
+			'port0' : -1,
+			'port1' : -1
+		},
+		'PORTB' : {
+			'device' : -1,
+			'port4' : -1,
+			'port2' : -1,
+			'port3' : -1,
+			'port0' : -1,
+			'port1' : -1
+		},
+		'PORTC' : {
+			'device' : -1,
+			'port4' : -1,
+			'port2' : -1,
+			'port3' : -1,
+			'port0' : -1,
+			'port1' : -1
+		},
+		'PORTA' : {
+			'device' : 16777216,
+			'port4' : -1,
+			'port2' : -1,
+			'port3' : -1,
+			'port0' : 234881024,
+			'port1' : 65536
+		},
+		'plugins' : {
+			'gdr' : 'gdrImage.dll',
+			'spu' : 'spuDemul.dll',
+			'pad' : 'padDemul.dll',
+			'directory' : os.path.abspath('emulators/Demul/plugins/'),
+			'gpu' : 'gpuDX11.dll',
+			'net' : 'netDemul.dll'
+		},
+		'main' : {
+			'windowY' : 100,
+			'windowX' : 100,
+			'VMUscreendisable' : 'false',
+			'dcBios' : 3,
+			'region' : 1,
+			'activateBBA' : 'false',
+			'cpumode' : 1,
+			'hikaruBios' : 1,
+			'naomiBiosAuto' : 'true',
+			'broadcast' : 1,
+			'lastEmuRunMode' : 0,
+			'naomifreq' : 1,
+			'naomiLLEMIE' : 'false',
+			'timehack' : 'true',
+			'videomode' : 768
+		},
+		'VMS' : {
+			'VMSA4' : '',
+			'VMSA0' : os.path.abspath('emulators/Demul/memsaves/vms00.bin'),
+			'VMSA1' : '',
+			'VMSA2' : '',
+			'VMSA3' : '',
+			'VMSC2' : '',
+			'VMSD4' : '',
+			'VMSD0' : '',
+			'VMSD2' : '',
+			'VMSD1' : '',
+			'VMSC3' : '',
+			'VMSD3' : '',
+			'VMSC0' : '',
+			'VMSB4' : '',
+			'VMSC4' : '',
+			'VMSC1' : '',
+			'VMSB1' : '',
+			'VMSB0' : '',
+			'VMSB3' : '',
+			'VMSB2' : ''
+		}
+	}
 	ini.write_ini_file('emulators/Demul/Demul.ini', config)
 
 
