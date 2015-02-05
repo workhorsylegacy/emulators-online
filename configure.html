@@ -85,24 +85,20 @@
 
 		<table>
 			<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUp" /></td></tr>
-			<tr><td>Down</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Left</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Right</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Start</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>A</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>B</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>X</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Y</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>L Trigger</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>R Trigger</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned"/></td></tr>
-			<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDown" /></td></tr>
+			<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeft" /></td></tr>
+			<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRight" /></td></tr>
+			<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStart" /></td></tr>
+			<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnA" /></td></tr>
+			<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnB" /></td></tr>
+			<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnX" /></td></tr>
+			<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnY" /></td></tr>
+			<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTrigger" /></td></tr>
+			<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTrigger" /></td></tr>
+			<tr><td>Left Stick Vertical</td><td><input type="button" value="Not Assigned" id="btnLeftStickVertical" /></td></tr>
+			<tr><td>Left Stick Horizontal</td><td><input type="button" value="Not Assigned" id="btnLeftStickHorizontal" /></td></tr>
+			<tr><td>Right Stick Vertical</td><td><input type="button" value="Not Assigned" id="btnRightStickVertical" /></td></tr>
+			<tr><td>Right Stick Horizontal</td><td><input type="button" value="Not Assigned" id="btnRightStickHorizontal" /></td></tr>
 		</table>
 
 		<p>
@@ -132,6 +128,15 @@ if(!("WebSocket" in window)) {
 
 var gamepad = null;
 
+// Find already connected pads
+$.each(navigator.getGamepads(), function(i, pad) {
+	if(pad && pad.id) {
+		gamepad = pad;
+		return false;
+	}
+});
+
+// Handle connecting and disconnecting pads
 function gamepadHandler(e, connecting) {
 	if (connecting) {
 		gamepad = navigator.getGamepads()[e.gamepad.index];
@@ -151,16 +156,16 @@ function start_polling_buttons(done_cb) {
 
 	// Check the pressed buttons every 300 ms
 	var interval = setInterval(function() {
-		get_pressed_button();
-		if(gamepad) {
+		var pressed_button = get_pressed_button();
+		if(pressed_button != -1) {
+			is_polling_buttons = false;
+		}
 
-		}
 		if(!is_polling_buttons) {
+			done_cb(pressed_button);
 			clearInterval(interval);
-			if(done_cb)
-				done_cb();
 		}
-	}, 300);
+	}, 100);
 
 	// Stop checking after 5 seconds
 	setTimeout(function() {
@@ -170,29 +175,49 @@ function start_polling_buttons(done_cb) {
 
 function get_pressed_button() {
 	if(!gamepad)
-		return;
+		return -1;
 
-	$.each(gamepad.buttons, function (i, button) {
+	for(var i in gamepad.buttons) {
+		var button = gamepad.buttons[i];
 		if(button) {
-			if(typeof(button) == 'object')
-				console.log('button: ' + i + ' : ' + button.pressed);
-			else
-				console.log('button: ' + i + ' : ' + button);
+			if(typeof(button) == 'object') {
+				if(button.pressed) {
+					return 'button_' + i;
+				}
+			} else if(button) {
+				return 'button_' + i;
+			}
 		}
-	});
+	}
 
-	$.each(gamepad.axes, function (i, axis) {
-		if(axis) {
-			console.log('axis: ' + i + ' : ' + axis);
+	for(var i in gamepad.axes) {
+		var axis = gamepad.axes[i];
+		if(Math.abs(axis) > 0.5) {
+			return 'axes_' + i;
 		}
-	});
+	}
+
+	return -1;
 }
 
-var btn = $('#btnUp');
-btn.click(function() {
-	btn.val('Press new button ...');
-	start_polling_buttons(function() {
-		btn.val('Not Assigned');
+var buttons = ['#btnUp', '#btnDown', '#btnLeft', '#btnRight', '#btnStart', 
+'#btnA', '#btnB', '#btnX', '#btnY', '#btnLTrigger', '#btnRTrigger',
+'#btnLeftStickVertical', '#btnLeftStickHorizontal',
+'#btnRightStickVertical', '#btnRightStickHorizontal'];
+
+$.each(buttons, function(i, btn) {
+	btn = $(btn);
+	btn.click(function() {
+		btn.val('Press new button ...');
+		btn.prop('disabled', true);
+		start_polling_buttons(function(button_name) {
+			if(button_name == -1) {
+				btn.val('Not Assigned');
+			} else {
+				btn.val(button_name);
+			}
+			btn.prop('disabled', false);
+		});
 	});
 });
 
