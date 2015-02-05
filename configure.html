@@ -82,6 +82,29 @@
 		</table>
 
 		<h1>Configure Controls</h1>
+
+		<table>
+			<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUp" /></td></tr>
+			<tr><td>Down</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Left</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Right</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Start</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>A</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>B</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>X</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Y</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>L Trigger</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>R Trigger</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned"/></td></tr>
+			<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned"/></td></tr>
+		</table>
+
 		<p>
 			Add one UI for each console game pad. It should apply to each 
 			emulator. EG: One Dreamcast controller UI for Demul and NullDC.
@@ -106,6 +129,72 @@ if(!("WebSocket" in window)) {
 	setup_websocket(on_data);
 	setup_ui();
 }
+
+var gamepad = null;
+
+function gamepadHandler(e, connecting) {
+	if (connecting) {
+		gamepad = navigator.getGamepads()[e.gamepad.index];
+		console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id + ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
+	} else {
+		gamepad = null;
+	}
+}
+
+window.addEventListener("gamepadconnected", function(e) { gamepadHandler(e, true); }, false);
+window.addEventListener("gamepaddisconnected", function(e) { gamepadHandler(e, false); }, false);
+
+var is_polling_buttons = false;
+
+function start_polling_buttons(done_cb) {
+	is_polling_buttons = true;
+
+	// Check the pressed buttons every 300 ms
+	var interval = setInterval(function() {
+		get_pressed_button();
+		if(gamepad) {
+
+		}
+		if(!is_polling_buttons) {
+			clearInterval(interval);
+			if(done_cb)
+				done_cb();
+		}
+	}, 300);
+
+	// Stop checking after 5 seconds
+	setTimeout(function() {
+		is_polling_buttons = false;
+	}, 5000);
+}
+
+function get_pressed_button() {
+	if(!gamepad)
+		return;
+
+	$.each(gamepad.buttons, function (i, button) {
+		if(button) {
+			if(typeof(button) == 'object')
+				console.log('button: ' + i + ' : ' + button.pressed);
+			else
+				console.log('button: ' + i + ' : ' + button);
+		}
+	});
+
+	$.each(gamepad.axes, function (i, axis) {
+		if(axis) {
+			console.log('axis: ' + i + ' : ' + axis);
+		}
+	});
+}
+
+var btn = $('#btnUp');
+btn.click(function() {
+	btn.val('Press new button ...');
+	start_polling_buttons(function() {
+		btn.val('Not Assigned');
+	});
+});
 
 var is_vcd_installed = false;
 var is_nulldc_installed = false;

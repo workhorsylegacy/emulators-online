@@ -11,6 +11,28 @@ def goodJoin(path_a, path_b):
 	path = path.replace("\\", "/")
 	return path
 
+GamePad = {
+	'UP' : 805306368,
+	'DOWN' : 805306369,
+	'LEFT' : 805306370,
+	'RIGHT' : 805306371,
+	'A' : 805306380,
+	'B' : 805306381,
+	'X' : 805306382,
+	'Y' : 805306383,
+	'L_TRIGGER' : 1342177280,
+	'R_TRIGGER' : 1342177536,
+	'START' : 805306372,
+	'LEFT_STICK_UP' : -1879047680,
+	'LEFT_STICK_DOWN' : -1879047424,
+	'LEFT_STICK_LEFT' : -1879048192,
+	'LEFT_STICK_RIGHT' : -1879047936,
+	'RIGHT_STICK_UP' : -1879046656,
+	'RIGHT_STICK_DOWN' : -1879046400,
+	'RIGHT_STICK_LEFT' : -1879047168,
+	'RIGHT_STICK_RIGHT' : -1879046912
+}
+	
 def setup_pad():
 	config = {
 		'JOY0_0' : {
