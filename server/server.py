@@ -62,7 +62,6 @@ import mupen64plus
 import pcsxr
 import pcsx2
 
-PY2 = sys.version_info[0] == 2
 
 
 # Move to the main emu_archive directory no matter what path we are launched from

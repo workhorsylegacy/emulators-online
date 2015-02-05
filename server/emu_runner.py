@@ -31,6 +31,8 @@ import win32gui
 import win32con
 import win32api
 
+PY2 = sys.version_info[0] == 2
+
 class EmuRunner(object):
 	def __init__(self, command, emu_title_bar_text, full_screen_alt_enter=False):
 		self.emu_title_bar_text = emu_title_bar_text
