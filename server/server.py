@@ -55,7 +55,7 @@ import tornado.template
 import tray_icon
 import downloader
 import wrap_7zip
-import dreamcast
+import demul
 import ssf
 import gamecube
 import mupen64plus
@@ -108,6 +108,7 @@ except:
 				f.write(data)
 
 runner = None
+demul = demul.Demul()
 
 
 def make_db(file_name, path_prefix):
@@ -218,8 +219,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'install':
 			self._install(data)
 
-		elif data['action'] == 'button_map':
+		elif data['action'] == 'set_button_map':
 			self._set_button_map(data)
+
+		elif data['action'] == 'get_button_map':
+			self._get_button_map(data)
 
 		# Unknown message from the client
 		else:
@@ -236,13 +240,41 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			ssf.set_button_map(data['value'])
 
 		elif data['console'] == 'Dreamcast':
-			dreamcast.set_button_map(data['value'])
+			demul.set_button_map(data['value'])
 
 		elif data['console'] == 'Playstation':
 			pcsxr.set_button_map(data['value'])
 
 		elif data['console'] == 'Playstation2':
 			pcsx2.set_button_map(data['value'])
+
+	def _get_button_map(self, data):
+		value = None
+
+		if data['console'] == 'GameCube':
+			value = gamecube.get_button_map()
+
+		elif data['console'] == 'Nintendo64':
+			value = mupen64plus.get_button_map()
+
+		elif data['console'] == 'Saturn':
+			value = ssf.get_button_map()
+
+		elif data['console'] == 'Dreamcast':
+			value = demul.get_button_map()
+
+		elif data['console'] == 'Playstation':
+			value = pcsxr.get_button_map()
+
+		elif data['console'] == 'Playstation2':
+			value = pcsx2.get_button_map()
+
+		data = {
+			'action' : 'get_button_map',
+			'value' : value,
+			'console' : data['console']
+		}
+		self.write_data(data)
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
@@ -261,7 +293,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running SSF ...')
 
 		elif data['console'] == 'Dreamcast':
-			dreamcast.run(data['path'], data['binary'])
+			demul.run(data['path'], data['binary'])
 			self.log('playing')
 			print('Running Demul ...')
 
@@ -448,22 +480,22 @@ if __name__ == '__main__':
 		import webbrowser
 		webbrowser.open_new('http://localhost:{0}'.format(port))
 
-	def demul(trayIcon):
+	def run_demul(trayIcon):
 		run_emulator("emulators/Demul/", "demul.exe")
 
-	def ssf(trayIcon):
+	def run_ssf(trayIcon):
 		run_emulator("emulators/SSF_012_beta_R4/", "SSF.exe")
 
-	def dolphin(trayIcon):
+	def run_dolphin(trayIcon):
 		run_emulator("emulators/Dolphin-x64/", "Dolphin.exe")
 
-	def mupen64plus(trayIcon):
+	def run_mupen64plus(trayIcon):
 		run_emulator("emulators/mupen64plus-bundle-win32-2.0/", "mupen64plus.exe")
 
-	def pcsxr(trayIcon):
+	def run_pcsxr(trayIcon):
 		run_emulator("emulators/pcsxr/", "pcsxr.exe")
 
-	def pcsx2(trayIcon):
+	def run_pcsx2(trayIcon):
 		run_emulator("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/", "pcsx2.exe")
 
 	def run_emulator(path, exe):
@@ -480,12 +512,12 @@ if __name__ == '__main__':
 						('View in Browser', icon, view_in_browser),
 						('Emulators', icon,
 							(
-								('Demul', icon, demul),
-								('SSF', icon, ssf),
-								('Dolphin', icon, dolphin),
-								('Mupen 64 Plus', icon, mupen64plus),
-								('PSX-Reloaded', icon, pcsxr),
-								('PCSX2', icon, pcsx2),
+								('Demul', icon, run_demul),
+								('SSF', icon, run_ssf),
+								('Dolphin', icon, run_dolphin),
+								('Mupen 64 Plus', icon, run_mupen64plus),
+								('PSX-Reloaded', icon, run_pcsxr),
+								('PCSX2', icon, run_pcsx2),
 							)
 						)
 					)
