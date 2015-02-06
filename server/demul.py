@@ -62,6 +62,30 @@ class Demul(base_console.BaseConsole):
 	def __init__(self):
 		super(Demul, self).__init__('config/demul.json')
 
+		# Setup the initial map, if there is none
+		if not self.button_map:
+			self.button_map = {
+				'btnUp' : None,
+				'btnDown' : None,
+				'btnLeft' : None,
+				'btnRight' : None,
+				'btnStart' : None,
+				'btnA' : None,
+				'btnB' : None,
+				'btnX' : None,
+				'btnY' : None,
+				'btnLTrigger' : None,
+				'btnRTrigger' : None,
+				'btnLeftStickUp' : None,
+				'btnLeftStickDown' : None,
+				'btnLeftStickLeft' : None,
+				'btnLeftStickRight' : None,
+				'btnRightStickUp' : None,
+				'btnRightStickDown' : None,
+				'btnRightStickLeft' : None,
+				'btnRightStickRight' : None
+			}
+
 	def _setup_pad(self):
 		global BUTTON_NUM_MAP
 

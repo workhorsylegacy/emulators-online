@@ -334,25 +334,31 @@ function on_data(data) {
 		if(data['console'] == 'Dreamcast') {
 			button_map = data['value'];
 
-			$('#btnUp').val(button_map['btnUp']);
-			$('#btnDown').val(button_map['btnDown']);
-			$('#btnLeft').val(button_map['btnLeft']);
-			$('#btnRight').val(button_map['btnRight']);
-			$('#btnStart').val(button_map['btnStart']);
-			$('#btnA').val(button_map['btnA']);
-			$('#btnB').val(button_map['btnB']);
-			$('#btnX').val(button_map['btnX']);
-			$('#btnY').val(button_map['btnY']);
-			$('#btnLTrigger').val(button_map['btnLTrigger']);
-			$('#btnRTrigger').val(button_map['btnRTrigger']);
-			$('#btnLeftStickUp').val(button_map['btnLeftStickUp']);
-			$('#btnLeftStickDown').val(button_map['btnLeftStickDown']);
-			$('#btnLeftStickLeft').val(button_map['btnLeftStickLeft']);
-			$('#btnLeftStickRight').val(button_map['btnLeftStickRight']);
-			$('#btnRightStickUp').val(button_map['btnRightStickUp']);
-			$('#btnRightStickDown').val(button_map['btnRightStickDown']);
-			$('#btnRightStickLeft').val(button_map['btnRightStickLeft']);
-			$('#btnRightStickRight').val(button_map['btnRightStickRight']);
+			var buttoin_names = [
+				'btnUp',
+				'btnDown',
+				'btnLeft',
+				'btnRight',
+				'btnStart',
+				'btnA',
+				'btnB',
+				'btnX',
+				'btnY',
+				'btnLTrigger',
+				'btnRTrigger',
+				'btnLeftStickUp',
+				'btnLeftStickDown',
+				'btnLeftStickLeft',
+				'btnLeftStickRight',
+				'btnRightStickUp',
+				'btnRightStickDown',
+				'btnRightStickLeft',
+				'btnRightStickRight'
+			];
+			$.each(buttoin_names, function(i, button_name) {
+				if(button_map[button_name])
+					$('#' + button_name).val(button_map[button_name]);
+			});
 		}
 	} else {
 		console.log('Data: ' + data);
