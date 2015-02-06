@@ -1,6 +1,7 @@
 
 
 import os, sys
+import json
 
 import ini
 import emu_runner
@@ -11,53 +12,70 @@ def goodJoin(path_a, path_b):
 	path = path.replace("\\", "/")
 	return path
 
-GamePad = {
-	'UP' : 805306368,
-	'DOWN' : 805306369,
-	'LEFT' : 805306370,
-	'RIGHT' : 805306371,
-	'A' : 805306380,
-	'B' : 805306381,
-	'X' : 805306382,
-	'Y' : 805306383,
-	'L_TRIGGER' : 1342177280,
-	'R_TRIGGER' : 1342177536,
-	'START' : 805306372,
-	'LEFT_STICK_UP' : -1879047680,
-	'LEFT_STICK_DOWN' : -1879047424,
-	'LEFT_STICK_LEFT' : -1879048192,
-	'LEFT_STICK_RIGHT' : -1879047936,
-	'RIGHT_STICK_UP' : -1879046656,
-	'RIGHT_STICK_DOWN' : -1879046400,
-	'RIGHT_STICK_LEFT' : -1879047168,
-	'RIGHT_STICK_RIGHT' : -1879046912
+button_map = {}
+if os.path.isfile('config/demul.json'):
+	with open('config/demul.json', 'rb') as f:
+		button_map = json.loads(f.read())
+
+button_num_map = {
+	'button_12' : 805306368, # up
+	'button_13' : 805306369, # down
+	'button_14' : 805306370, # left
+	'button_15' : 805306371, # right
+	'button_9' : 805306372, # start
+	'button_0' : 805306380, # A
+	'button_1' : 805306381, # B
+	'button_2' : 805306382, # X
+	'button_3' : 805306383, # Y
+	'button_7' : 1342177280, # L Trigger
+	'button_6' : 1342177536, # R Trigger
+	'axes_0-' : -1879048192, # L Stick Left
+	'axes_0+' : -1879047936, # L Stick Right
+	'axes_1-' : -1879047680, # L Stick Up
+	'axes_1+' : -1879047424, # L Stick Down
+	'axes_2-' : -1879047168, # R Stick Left
+	'axes_2+' : -1879046912, # R Stick Right
+	'axes_3-' : -1879046656, # R Stick Up
+	'axes_3+' : -1879046400, # R Stick Down
+	None : ''
 }
+
+
+def set_button_map(new_button_map):
+	global button_map
+	button_map = new_button_map
 	
+	with open('config/demul.json', 'wb') as f:
+		f.write(json.dumps(button_map, sort_keys=True, indent=4, separators=(',', ': ')))
+
 def setup_pad():
+	global button_map
+	global button_num_map
+
 	config = {
 		'JOY0_0' : {
-			'UP' : 805306368,
-			'DOWN' : 805306369,
-			'LEFT' : 805306370,
-			'RIGHT' : 805306371,
-			'A' : 805306380,
-			'B' : 805306381,
+			'UP' : 0,
+			'DOWN' : 0,
+			'LEFT' : 0,
+			'RIGHT' : 0,
+			'A' : 0,
+			'B' : 0,
 			'C' : 0,
 			'D' : 0,
-			'X' : 805306382,
-			'Y' : 805306383,
+			'X' : 0,
+			'Y' : 0,
 			'Z' : 0,
-			'LTRIG' : 1342177280,
-			'RTRIG' : 1342177536,
-			'START' : 805306372,
-			'S1UP' : -1879047680,
-			'S1DOWN' : -1879047424,
-			'S1LEFT' : -1879048192,
-			'S1RIGHT' : -1879047936,
-			'S2UP' : -1879046656,
-			'S2DOWN' : -1879046400,
-			'S2LEFT' : -1879047168,
-			'S2RIGHT' : -1879046912
+			'LTRIG' : 0,
+			'RTRIG' : 0,
+			'START' : 0,
+			'S1UP' : 0,
+			'S1DOWN' : 0,
+			'S1LEFT' : 0,
+			'S1RIGHT' : 0,
+			'S2UP' : 0,
+			'S2DOWN' : 0,
+			'S2LEFT' : 0,
+			'S2RIGHT' : 0
 		},
 		'JOY0_1' : {
 			'UP' : 0,
@@ -498,6 +516,33 @@ def setup_pad():
 			'DEADZONE' : 0
 		}
 	}
+
+	# Setup the gamepad
+	config['JOY0_0'] = {
+		'UP' : button_num_map[button_map['btnUp']],
+		'DOWN' : button_num_map[button_map['btnDown']],
+		'LEFT' : button_num_map[button_map['btnLeft']],
+		'RIGHT' : button_num_map[button_map['btnRight']],
+		'A' : button_num_map[button_map['btnA']],
+		'B' : button_num_map[button_map['btnB']],
+		'C' : 0,
+		'D' : 0,
+		'X' : button_num_map[button_map['btnX']],
+		'Y' : button_num_map[button_map['btnY']],
+		'Z' : 0,
+		'LTRIG' : button_num_map[button_map['btnLTrigger']],
+		'RTRIG' : button_num_map[button_map['btnRTrigger']],
+		'START' : button_num_map[button_map['btnStart']],
+		'S1UP' : button_num_map[button_map['btnLeftStickUp']],
+		'S1DOWN' : button_num_map[button_map['btnLeftStickDown']],
+		'S1LEFT' : button_num_map[button_map['btnLeftStickLeft']],
+		'S1RIGHT' : button_num_map[button_map['btnLeftStickRight']],
+		'S2UP' : button_num_map[button_map['btnRightStickUp']],
+		'S2DOWN' : button_num_map[button_map['btnRightStickDown']],
+		'S2LEFT' : button_num_map[button_map['btnRightStickLeft']],
+		'S2RIGHT' : button_num_map[button_map['btnRightStickRight']]
+	}
+
 	ini.write_ini_file('emulators/Demul/padDemul.ini', config)
 
 	

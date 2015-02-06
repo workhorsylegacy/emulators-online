@@ -218,9 +218,31 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'install':
 			self._install(data)
 
+		elif data['action'] == 'button_map':
+			self._set_button_map(data)
+
 		# Unknown message from the client
 		else:
 			self.log("Unknown action from client: {0}".format(data['action']))
+
+	def _set_button_map(self, data):
+		if data['console'] == 'GameCube':
+			gamecube.set_button_map(data['value'])
+
+		elif data['console'] == 'Nintendo64':
+			mupen64plus.set_button_map(data['value'])
+
+		elif data['console'] == 'Saturn':
+			ssf.set_button_map(data['value'])
+
+		elif data['console'] == 'Dreamcast':
+			dreamcast.set_button_map(data['value'])
+
+		elif data['console'] == 'Playstation':
+			pcsxr.set_button_map(data['value'])
+
+		elif data['console'] == 'Playstation2':
+			pcsx2.set_button_map(data['value'])
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':

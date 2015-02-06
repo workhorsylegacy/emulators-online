@@ -11,100 +11,108 @@
 			Not connected to server!
 		</div>
 
-		<h1>Install and Configure Programs</h1>
+		<div id="config_buttons" style="display: none">
+			<h1>Configure Dreamcast Controls</h1>
 
-		<h1 id="installProgress"></h1>
-		
-		<table id="installTable">
-			<tr>
-				<th>Program Name</th>
-				<th>Status</th>
-				<th>Description</th>
-			</tr>
-			<tr>
-				<td>Virtual Clone Drive</td>
-				<td><input id="btn_install_vcd" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-					Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
-				</span></td>
-			</tr>
-			<tr>
-				<td>NullDC</td>
-				<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Sega Dreamcast Emulator.
-				</span></td>
-			</tr>
-			<tr>
-				<td>Demul</td>
-				<td><input id="btn_install_demul" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Sega Dreamcast emulator.
-				</span></td>
-			</tr>
-			<tr>
-				<td>SSF</td>
-				<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
-				</span></td>
-			</tr>
-			<tr>
-				<td>Dolphin</td>
-				<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Nintendo GameCube and Wii emulator.
-				</span></td>
-			</tr>
-			<tr>
-				<td>PCSX-Reloaded</td>
-				<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Sony Playstation emulator.
-				</span></td>
-			</tr>
+			<table>
+				<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUp" /></td></tr>
+				<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDown" /></td></tr>
+				<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeft" /></td></tr>
+				<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRight" /></td></tr>
+				<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStart" /></td></tr>
+				<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnA" /></td></tr>
+				<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnB" /></td></tr>
+				<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnX" /></td></tr>
+				<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnY" /></td></tr>
+				<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTrigger" /></td></tr>
+				<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTrigger" /></td></tr>
+				<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUp" /></td></tr>
+				<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDown" /></td></tr>
+				<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeft" /></td></tr>
+				<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRight" /></td></tr>
+				<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUp" /></td></tr>
+				<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDown" /></td></tr>
+				<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeft" /></td></tr>
+				<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRight" /></td></tr>
+			</table>
 
-			<tr>
-				<td>PCSX2</td>
-				<td><input id="btn_install_pcsx2" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Sony Playstation 2 emulator.
-				</span></td>
-			</tr>
+			<input type="button" value="Done" id="btn_done_button_config" />
+		</div>
 
-			<tr>
-				<td>Mupen 64 Plus</td>
-				<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
-				<td><span id="status_nulldc">
-				A Nintendo 64 emulator. Runs from the command line only.
-				</span></td>
-			</tr>
-		</table>
+		<div id="config_programs">
+			<h1>Install and Configure Programs</h1>
 
-		<h1>Configure Controls</h1>
+			<h1 id="installProgress"></h1>
+			
+			<table id="installTable" class="configTable">
+				<tr>
+					<th>Program Name</th>
+					<th>Description</th>
+					<th>Status</th>
+					<th>Controls</th>
+				</tr>
+				<tr>
+					<td>Virtual Clone Drive</td>
+					<td><span id="status_nulldc">
+						Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
+					</span></td>
+					<td><input id="btn_install_vcd" type="button" value="Loading ..." disabled /></td>
+					</td></td>
+				</tr>
+				<tr>
+					<td>NullDC</td>
+					<td><span id="status_nulldc">
+					A Sega Dreamcast Emulator.
+					</span></td>
+					<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
+				</tr>
+				<tr>
+					<td>Demul</td>
+					<td><span id="status_nulldc">
+					A Sega Dreamcast emulator.
+					</span></td>
+					<td><input id="btn_install_demul" type="button" value="Loading ..." disabled /></td>
+					<td><input id="btn_controls_demul" type="button" value="Buttons" /></td>
+				</tr>
+				<tr>
+					<td>SSF</td>
+					<td><span id="status_nulldc">
+					A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
+					</span></td>
+					<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
+				</tr>
+				<tr>
+					<td>Dolphin</td>
+					<td><span id="status_nulldc">
+					A Nintendo GameCube and Wii emulator.
+					</span></td>
+					<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
+				</tr>
+				<tr>
+					<td>PCSX-Reloaded</td>
+					<td><span id="status_nulldc">
+					A Sony Playstation emulator.
+					</span></td>
+					<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
+				</tr>
 
-		<table>
-			<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUp" /></td></tr>
-			<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDown" /></td></tr>
-			<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeft" /></td></tr>
-			<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRight" /></td></tr>
-			<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStart" /></td></tr>
-			<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnA" /></td></tr>
-			<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnB" /></td></tr>
-			<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnX" /></td></tr>
-			<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnY" /></td></tr>
-			<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTrigger" /></td></tr>
-			<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTrigger" /></td></tr>
-			<tr><td>Left Stick Vertical</td><td><input type="button" value="Not Assigned" id="btnLeftStickVertical" /></td></tr>
-			<tr><td>Left Stick Horizontal</td><td><input type="button" value="Not Assigned" id="btnLeftStickHorizontal" /></td></tr>
-			<tr><td>Right Stick Vertical</td><td><input type="button" value="Not Assigned" id="btnRightStickVertical" /></td></tr>
-			<tr><td>Right Stick Horizontal</td><td><input type="button" value="Not Assigned" id="btnRightStickHorizontal" /></td></tr>
-		</table>
+				<tr>
+					<td>PCSX2</td>
+					<td><span id="status_nulldc">
+					A Sony Playstation 2 emulator.
+					</span></td>
+					<td><input id="btn_install_pcsx2" type="button" value="Loading ..." disabled /></td>
+				</tr>
 
-		<p>
-			Add one UI for each console game pad. It should apply to each 
-			emulator. EG: One Dreamcast controller UI for Demul and NullDC.
-		</p>
+				<tr>
+					<td>Mupen 64 Plus</td>
+					<td><span id="status_nulldc">
+					A Nintendo 64 emulator. Runs from the command line only.
+					</span></td>
+					<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
+				</tr>
+			</table>
+		</div>
 
 		<div id="output"></div>
 
@@ -192,29 +200,49 @@ function get_pressed_button() {
 
 	for(var i in gamepad.axes) {
 		var axis = gamepad.axes[i];
+		var sign = axis > 0 ? '+' : '-';
 		if(Math.abs(axis) > 0.5) {
-			return 'axes_' + i;
+			return 'axes_' + i + sign;
 		}
 	}
 
 	return -1;
 }
 
-var buttons = ['#btnUp', '#btnDown', '#btnLeft', '#btnRight', '#btnStart', 
-'#btnA', '#btnB', '#btnX', '#btnY', '#btnLTrigger', '#btnRTrigger',
-'#btnLeftStickVertical', '#btnLeftStickHorizontal',
-'#btnRightStickVertical', '#btnRightStickHorizontal'];
+var button_map = {
+	'btnUp' : null,
+	'btnDown' : null,
+	'btnLeft' : null,
+	'btnRight' : null,
+	'btnStart' : null,
+	'btnA' : null,
+	'btnB' : null,
+	'btnX' : null,
+	'btnY' : null,
+	'btnLTrigger' : null,
+	'btnRTrigger' : null,
+	'btnLeftStickUp' : null,
+	'btnLeftStickDown' : null,
+	'btnLeftStickLeft' : null,
+	'btnLeftStickRight' : null,
+	'btnRightStickUp' : null,
+	'btnRightStickDown' : null,
+	'btnRightStickLeft' : null,
+	'btnRightStickRight' : null,
+};
 
-$.each(buttons, function(i, btn) {
-	btn = $(btn);
+$.each(button_map, function(key, value) {
+	var btn = $('#' + key);
 	btn.click(function() {
 		btn.val('Press new button ...');
 		btn.prop('disabled', true);
 		start_polling_buttons(function(button_name) {
+			// Save the new button
 			if(button_name == -1) {
 				btn.val('Not Assigned');
 			} else {
 				btn.val(button_name);
+				button_map[key] = button_name;
 			}
 			btn.prop('disabled', false);
 		});
@@ -375,7 +403,7 @@ function setup_ui() {
 		socket.send(message);
 	}, 3000);
 
-	btn = $("#btn_install_vcd");
+	var btn = $("#btn_install_vcd");
 	btn.on('click', function() {
 		// Download the exe
 		var message = {
@@ -406,7 +434,7 @@ function setup_ui() {
 		socket.send(message);
 	});
 
-	var btn = $("#btn_install_nulldc");
+	btn = $("#btn_install_nulldc");
 	btn.on('click', function() {
 		// Download the compressed program
 		var message = {
@@ -618,6 +646,27 @@ function setup_ui() {
 		message = {
 			'action' : 'is_installed',
 			'program' : 'Mupen 64 Plus'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $('#btn_controls_demul');
+	btn.on('click', function() {
+		$('#config_buttons').show();
+		$('#config_programs').hide();
+	});
+
+	btn = $('#btn_done_button_config');
+	btn.on('click', function() {
+		$('#config_buttons').hide();
+		$('#config_programs').show();
+
+		// Save the button map
+		var message = {
+			'action' : 'button_map',
+			'console' : 'Dreamcast',
+			'value' : button_map
 		};
 		message = JSON.stringify(message);
 		socket.send(message);
