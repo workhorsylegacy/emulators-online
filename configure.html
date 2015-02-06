@@ -11,32 +11,63 @@
 			Not connected to server!
 		</div>
 
-		<div id="config_buttons" style="display: none">
+		<div id="config_buttons_demul" style="display: none">
 			<h1>Configure Dreamcast Controls</h1>
 
 			<table>
-				<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUp" /></td></tr>
-				<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDown" /></td></tr>
-				<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeft" /></td></tr>
-				<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRight" /></td></tr>
-				<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStart" /></td></tr>
-				<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnA" /></td></tr>
-				<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnB" /></td></tr>
-				<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnX" /></td></tr>
-				<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnY" /></td></tr>
-				<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTrigger" /></td></tr>
-				<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTrigger" /></td></tr>
-				<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUp" /></td></tr>
-				<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDown" /></td></tr>
-				<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeft" /></td></tr>
-				<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRight" /></td></tr>
-				<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUp" /></td></tr>
-				<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDown" /></td></tr>
-				<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeft" /></td></tr>
-				<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRight" /></td></tr>
+				<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpDemul" /></td></tr>
+				<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownDemul" /></td></tr>
+				<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftDemul" /></td></tr>
+				<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightDemul" /></td></tr>
+				<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartDemul" /></td></tr>
+				<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnADemul" /></td></tr>
+				<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBDemul" /></td></tr>
+				<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXDemul" /></td></tr>
+				<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYDemul" /></td></tr>
+				<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTriggerDemul" /></td></tr>
+				<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTriggerDemul" /></td></tr>
+				<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUpDemul" /></td></tr>
+				<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDownDemul" /></td></tr>
+				<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeftDemul" /></td></tr>
+				<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRightDemul" /></td></tr>
+				<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUpDemul" /></td></tr>
+				<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDownDemul" /></td></tr>
+				<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeftDemul" /></td></tr>
+				<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRightDemul" /></td></tr>
 			</table>
 
-			<input type="button" value="Done" id="btn_done_button_config" />
+			<input type="button" value="Done" id="btn_done_button_config_demul" />
+		</div>
+
+		<div id="config_buttons_dolphin" style="display: none">
+			<h1>Configure GameCube Controls</h1>
+
+			<table>
+				<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpDolphin" /></td></tr>
+				<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownDolphin" /></td></tr>
+				<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftDolphin" /></td></tr>
+				<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightDolphin" /></td></tr>
+				<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartDolphin" /></td></tr>
+				<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnADolphin" /></td></tr>
+				<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBDolphin" /></td></tr>
+				<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXDolphin" /></td></tr>
+				<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYDolphin" /></td></tr>
+				<tr><td>Z</td><td><input type="button" value="Not Assigned" id="btnZDolphin" /></td></tr>
+				<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTriggerDolphin" /></td></tr>
+				<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTriggerDolphin" /></td></tr>
+				<tr><td>L Shoulder</td><td><input type="button" value="Not Assigned" id="btnLShoulderDolphin" /></td></tr>
+				<tr><td>R Shoulder</td><td><input type="button" value="Not Assigned" id="btnRShoulderDolphin" /></td></tr>
+				<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUpDolphin" /></td></tr>
+				<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDownDolphin" /></td></tr>
+				<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeftDolphin" /></td></tr>
+				<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRightDolphin" /></td></tr>
+				<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUpDolphin" /></td></tr>
+				<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDownDolphin" /></td></tr>
+				<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeftDolphin" /></td></tr>
+				<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRightDolphin" /></td></tr>
+			</table>
+
+			<input type="button" value="Done" id="btn_done_button_config_dolphin" />
 		</div>
 
 		<div id="config_programs">
@@ -87,6 +118,7 @@
 					A Nintendo GameCube and Wii emulator.
 					</span></td>
 					<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
+					<td><input id="btn_controls_dolphin" type="button" value="Buttons" /></td>
 				</tr>
 				<tr>
 					<td>PCSX-Reloaded</td>
@@ -209,45 +241,8 @@ function get_pressed_button() {
 	return -1;
 }
 
-var button_map = {
-	'btnUp' : null,
-	'btnDown' : null,
-	'btnLeft' : null,
-	'btnRight' : null,
-	'btnStart' : null,
-	'btnA' : null,
-	'btnB' : null,
-	'btnX' : null,
-	'btnY' : null,
-	'btnLTrigger' : null,
-	'btnRTrigger' : null,
-	'btnLeftStickUp' : null,
-	'btnLeftStickDown' : null,
-	'btnLeftStickLeft' : null,
-	'btnLeftStickRight' : null,
-	'btnRightStickUp' : null,
-	'btnRightStickDown' : null,
-	'btnRightStickLeft' : null,
-	'btnRightStickRight' : null,
-};
-
-$.each(button_map, function(key, value) {
-	var btn = $('#' + key);
-	btn.click(function() {
-		btn.val('Press new button ...');
-		btn.prop('disabled', true);
-		start_polling_buttons(function(button_name) {
-			// Save the new button
-			if(button_name == -1) {
-				btn.val('Not Assigned');
-			} else {
-				btn.val(button_name);
-				button_map[key] = button_name;
-			}
-			btn.prop('disabled', false);
-		});
-	});
-});
+var button_map_demul = {};
+var button_map_dolphin = {};
 
 var is_vcd_installed = false;
 var is_nulldc_installed = false;
@@ -332,32 +327,66 @@ function on_data(data) {
 		console.log('is installed: ' + data['name'] + ' ' + data['value'])
 	} else if(data['action'] == 'get_button_map') {
 		if(data['console'] == 'Dreamcast') {
-			button_map = data['value'];
+			button_map_demul = data['value'];
 
-			var buttoin_names = [
-				'btnUp',
-				'btnDown',
-				'btnLeft',
-				'btnRight',
-				'btnStart',
-				'btnA',
-				'btnB',
-				'btnX',
-				'btnY',
-				'btnLTrigger',
-				'btnRTrigger',
-				'btnLeftStickUp',
-				'btnLeftStickDown',
-				'btnLeftStickLeft',
-				'btnLeftStickRight',
-				'btnRightStickUp',
-				'btnRightStickDown',
-				'btnRightStickLeft',
-				'btnRightStickRight'
-			];
-			$.each(buttoin_names, function(i, button_name) {
-				if(button_map[button_name])
-					$('#' + button_name).val(button_map[button_name]);
+			// Setup each button
+			$.each(button_map_demul, function(key, value) {
+				// Get button
+				var btn = $('#' + key);
+
+				// Set previous value, if there is one
+				if(value) {
+					btn.val(value);
+				} else {
+					btn.val('Press new button ...');
+				}
+
+				// On click poll for a new button
+				btn.click(function() {
+					btn.val('Press new button ...');
+					btn.prop('disabled', true);
+					start_polling_buttons(function(button_name) {
+						// Save the new button
+						if(button_name == -1) {
+							btn.val('Not Assigned');
+						} else {
+							btn.val(button_name);
+							button_map_demul[key] = button_name;
+						}
+						btn.prop('disabled', false);
+					});
+				});
+			});
+		} else if(data['console'] == 'Dolphin') {
+			button_map_dolphin = data['value'];
+
+			// Setup each button
+			$.each(button_map_dolphin, function(key, value) {
+				// Get button
+				var btn = $('#' + key);
+
+				// Set previous value, if there is one
+				if(value) {
+					btn.val(value);
+				} else {
+					btn.val('Press new button ...');
+				}
+
+				// On click poll for a new button
+				btn.click(function() {
+					btn.val('Press new button ...');
+					btn.prop('disabled', true);
+					start_polling_buttons(function(button_name) {
+						// Save the new button
+						if(button_name == -1) {
+							btn.val('Not Assigned');
+						} else {
+							btn.val(button_name);
+							button_map_dolphin[key] = button_name;
+						}
+						btn.prop('disabled', false);
+					});
+				});
 			});
 		}
 	} else {
@@ -683,29 +712,59 @@ function setup_ui() {
 
 	btn = $('#btn_controls_demul');
 	btn.on('click', function() {
-		$('#config_buttons').show();
+		$('#config_buttons_demul').show();
 		$('#config_programs').hide();
 
 		// Load the button map
 		var message = {
 			'action' : 'get_button_map',
 			'console' : 'Dreamcast',
-			'value' : button_map
+			'value' : button_map_demul
 		};
 		message = JSON.stringify(message);
 		socket.send(message);
 	});
 
-	btn = $('#btn_done_button_config');
+	btn = $('#btn_controls_dolphin');
 	btn.on('click', function() {
-		$('#config_buttons').hide();
+		$('#config_buttons_dolphin').show();
+		$('#config_programs').hide();
+
+		// Load the button map
+		var message = {
+			'action' : 'get_button_map',
+			'console' : 'GameCube',
+			'value' : button_map_dolphin
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $('#btn_done_button_config_demul');
+	btn.on('click', function() {
+		$('#config_buttons_demul').hide();
 		$('#config_programs').show();
 
 		// Save the button map
 		var message = {
 			'action' : 'set_button_map',
 			'console' : 'Dreamcast',
-			'value' : button_map
+			'value' : button_map_demul
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $('#btn_done_button_config_dolphin');
+	btn.on('click', function() {
+		$('#config_buttons_dolphin').hide();
+		$('#config_programs').show();
+
+		// Save the button map
+		var message = {
+			'action' : 'set_button_map',
+			'console' : 'GameCube',
+			'value' : button_map_dolphin
 		};
 		message = JSON.stringify(message);
 		socket.send(message);

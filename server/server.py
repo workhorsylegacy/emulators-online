@@ -57,7 +57,7 @@ import downloader
 import wrap_7zip
 import demul
 import ssf
-import gamecube
+import dolphin
 import mupen64plus
 import pcsxr
 import pcsx2
@@ -109,6 +109,7 @@ except:
 
 runner = None
 demul = demul.Demul()
+dolphin = dolphin.Dolphin()
 
 
 def make_db(file_name, path_prefix):
@@ -231,7 +232,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _set_button_map(self, data):
 		if data['console'] == 'GameCube':
-			gamecube.set_button_map(data['value'])
+			dolphin.set_button_map(data['value'])
 
 		elif data['console'] == 'Nintendo64':
 			mupen64plus.set_button_map(data['value'])
@@ -252,7 +253,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		value = None
 
 		if data['console'] == 'GameCube':
-			value = gamecube.get_button_map()
+			value = dolphin.get_button_map()
 
 		elif data['console'] == 'Nintendo64':
 			value = mupen64plus.get_button_map()
@@ -278,7 +279,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
-			gamecube.run(data['path'], data['binary'])
+			dolphin.run(data['path'], data['binary'])
 			self.log('playing')
 			print('Running Dolphin ...')
 
