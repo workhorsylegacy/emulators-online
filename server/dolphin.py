@@ -5,15 +5,7 @@ import ini
 import emu_runner
 import base_console
 
-'''
-# FIXME: Add missing buttons:
-. Z
-. R Sholder
-. L Sholder
-. R Stick click
-. L Stick click
-. Select/back
-'''
+
 BUTTON_CODE_MAP = {
 	'button_12' : '`Pad N`', # up
 	'button_13' : '`Pad S`', # down
@@ -24,8 +16,13 @@ BUTTON_CODE_MAP = {
 	'button_1' : '`Button B`', # B
 	'button_2' : '`Button X`', # X
 	'button_3' : '`Button Y`', # Y
+	'button_8' : 'Back', # Back
+	'button_10' : '`Thumb L`', # L stick click
+	'button_11' : '`Thumb R`', # R stick click
 	'button_7' : '`Trigger L`', # L Trigger
 	'button_6' : '`Trigger R`', # R Trigger
+	'button_4' : '`Shoulder L`', # L Shoulder button
+	'button_5' : '`Shoulder R`', # R Shoulder button
 	'axes_0-' : '`Left X-`', # L Stick Left
 	'axes_0+' : '`Left X+`', # L Stick Right
 	'axes_1-' : '`Left Y+`', # L Stick Up
@@ -59,6 +56,8 @@ class Dolphin(base_console.BaseConsole):
 				'btnRTriggerDolphin' : None,
 				'btnLShoulderDolphin' : None,
 				'btnRShoulderDolphin' : None,
+				'btnLeftStickClickDolphin' : None,
+				'btnRightStickClickDolphin' : None,
 				'btnLeftStickUpDolphin' : None,
 				'btnLeftStickDownDolphin' : None,
 				'btnLeftStickLeftDolphin' : None,
