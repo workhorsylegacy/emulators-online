@@ -430,6 +430,101 @@ class Dolphin(base_console.BaseConsole):
 		}
 		ini.write_ini_file(ini_gc_pad, config)
 
+		# Create gfx_opengl.ini
+		ini_gfx_opengl = os.path.expanduser('~/Documents/Dolphin Emulator/Config/gfx_opengl.ini')
+		config = {
+			'Hardware' : {
+				'VSync' : False,
+				'Adapter' : 0
+			},
+			'Settings' : {
+				'AspectRatio' : 0,
+				'Crop' : False,
+				'wideScreenHack' : False,
+				'UseXFB' : False,
+				'UseRealXFB' : False,
+				'SafeTextureCacheColorSamples' : 128,
+				'ShowFPS' : False,
+				'LogRenderTimeToFile' : False,
+				'OverlayStats' : False,
+				'OverlayProjStats' : False,
+				'DumpTextures' : False,
+				'HiresTextures' : False,
+				'DumpEFBTarget' : False,
+				'FreeLook' : False,
+				'UseFFV1' : False,
+				'AnaglyphStereo' : False,
+				'AnaglyphStereoSeparation' : 200,
+				'AnaglyphFocalAngle' : 0,
+				'EnablePixelLighting' : False,
+				'FastDepthCalc' : True,
+				'ShowEFBCopyRegions' : False,
+				'MSAA' : 0,
+				'EFBScale' : 2,
+				'TexFmtOverlayEnable' : False,
+				'TexFmtOverlayCenter' : False,
+				'Wireframe' : False,
+				'DstAlphaPass' : False,
+				'DisableFog' : False,
+				'EnableShaderDebugging' : False,
+				'BorderlessFullscreen' : False
+			},
+			'Enhancements' : {
+				'ForceFiltering' : False,
+				'MaxAnisotropy' : 0,
+				'PostProcessingShader' : '',
+				'StereoMode' : 0,
+				'StereoDepth' : 20,
+				'StereoConvergence' : 20,
+				'StereoSwapEyes' : False
+			},
+			'Hacks' : {
+				'EFBAccessEnable' : True,
+				'EFBCopyEnable' : True,
+				'EFBToTextureEnable' : True,
+				'EFBScaledCopy' : True,
+				'EFBCopyCacheEnable' : False,
+				'EFBEmulateFormatChanges' : False
+			}
+		}
+		ini.write_ini_file(ini_gfx_opengl, config)
+
+		# Create Logger.ini
+		ini_logger = os.path.expanduser('~/Documents/Dolphin Emulator/Config/Logger.ini')
+		config = {
+			'LogWindow' : {
+				'x' : 400,
+				'y' : 600,
+				'pos' : 2
+			},
+			'Options' : {
+				'Font' : 0,
+				'WrapLines' : False
+			}
+		}
+		ini.write_ini_file(ini_logger, config)
+
+		# Create WiimoteNew.ini
+		ini_wiimote = os.path.expanduser('~/Documents/Dolphin Emulator/Config/WiimoteNew.ini')
+		config = {
+			'Wiimote1' : {
+				'Source' : 1
+			},
+			'Wiimote2' : {
+				'Source' : 0
+			},
+			'Wiimote3' : {
+				'Source' : 0
+			},
+			'Wiimote4' : {
+				'Source' : 0
+			},
+			'BalanceBoard' : {
+				'Source' : 0
+			}
+		}
+		ini.write_ini_file(ini_wiimote, config)
+
 	def run(self, path, binary):
 		self._setup_configs()
 
