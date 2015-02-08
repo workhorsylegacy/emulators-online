@@ -8,7 +8,7 @@
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 	</head>
 	<body>
-		<h1>FIXME: Gamepad only works in Firefox!</h1>
+		<h1 style="color: red;">FIXME: Gamepad only works in Firefox!</h1>
 		<div id="not_connected" style="display: none">
 			Not connected to server!
 		</div>
@@ -146,15 +146,16 @@
 					</td>
 					<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
 				</tr>
-
 				<tr>
 					<td>PCSX2</td>
 					<td>
 					A Sony Playstation 2 emulator.
 					</td>
-					<td><input id="btn_install_pcsx2" type="button" value="Loading ..." disabled /></td>
+					<td>
+						<div style="color: red;">FIXME: Can't automate download from build server.</div>
+						<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
+					</td>
 				</tr>
-
 				<tr>
 					<td>Mupen 64 Plus</td>
 					<td>
