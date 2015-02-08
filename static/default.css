@@ -89,6 +89,7 @@ img.blackAndWhite {
 
 .configTable td {
 	padding: 20px;
+	vertical-align: text-top;
 }
 
 #not_connected {
@@ -96,3 +97,4 @@ img.blackAndWhite {
 	font-size: 250%;
 	margin: 10px;
 }
+  

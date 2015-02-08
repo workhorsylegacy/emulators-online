@@ -45,6 +45,7 @@ if sys.version_info[0] == 3:
 	sys.exit()
 
 import json
+import base64
 import subprocess
 
 import tornado.ioloop
@@ -73,7 +74,6 @@ if current_path.endswith('server'):
 try:
 	blah = __file__
 except:
-	import base64
 	import static_files
 
 	# Make the directory structure
@@ -226,9 +226,30 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'get_button_map':
 			self._get_button_map(data)
 
+		elif data['action'] == 'set_bios':
+			self._set_bios(data)
+
 		# Unknown message from the client
 		else:
 			self.log("Unknown action from client: {0}".format(data['action']))
+
+	def _set_bios(self, data):
+		if data['console'] == 'Dreamcast':
+			if not os.path.isdir('emulators/Demul/roms'):
+				os.mkdir('emulators/Demul/roms')
+
+			if data['type'] == 'awbios.zip':
+				with open('emulators/Demul/roms/awbios.zip', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
+			elif data['type'] == 'dc.zip':
+				with open('emulators/Demul/roms/dc.zip', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
+			elif data['type'] == 'naomi.zip':
+				with open('emulators/Demul/roms/naomi.zip', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
+			elif data['type'] == 'naomi2.zip':
+				with open('emulators/Demul/roms/naomi2.zip', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
 
 	def _set_button_map(self, data):
 		if data['console'] == 'GameCube':

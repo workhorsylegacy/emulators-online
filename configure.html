@@ -4,6 +4,7 @@
 		<title>Configure - Emu Archive</title>
 		<script src="static/jquery-2.1.3.min.js"></script>
 		<script src="static/emu_archive.js"></script>
+		<script src="static/file_uploader.js"></script>
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 	</head>
 	<body>
@@ -11,6 +12,8 @@
 		<div id="not_connected" style="display: none">
 			Not connected to server!
 		</div>
+
+		<div id="genericProgress"></div>
 
 		<div id="config_buttons_demul" style="display: none">
 			<h1>Configure Dreamcast Controls</h1>
@@ -75,8 +78,6 @@
 
 		<div id="config_programs">
 			<h1>Install and Configure Programs</h1>
-
-			<h1 id="installProgress"></h1>
 			
 			<table id="installTable" class="configTable">
 				<tr>
@@ -84,6 +85,7 @@
 					<th>Description</th>
 					<th>Status</th>
 					<th>Controls</th>
+					<th>BIOS</th>
 				</tr>
 				<tr>
 					<td>Virtual Clone Drive</td>
@@ -106,7 +108,13 @@
 					A Sega Dreamcast emulator.
 					</span></td>
 					<td><input id="btn_install_demul" type="button" value="Loading ..." disabled /></td>
-					<td><input id="btn_controls_demul" type="button" value="Buttons" /></td>
+					<td><input id="btn_controls_demul" type="button" value="Buttons" disabled /></td>
+					<td>
+						<nobr><input type="file" id="btn_bios_demul_dc" name="btn_bios_demul_dc" disabled>Dreamcast BIOS (dc.zip)</input></nobr>
+						<nobr><input type="file" id="btn_bios_demul_aw" name="btn_bios_demul_aw" disabled>Atomiswave BIOS (awbios.zip)</input></nobr>
+						<nobr><input type="file" id="btn_bios_demul_naomi" name="btn_bios_demul_naomi" disabled>Naomi BIOS (naomi.zip)</input></nobr>
+						<nobr><input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input></nobr>
+					</td>
 				</tr>
 				<tr>
 					<td>SSF</td>
@@ -121,7 +129,7 @@
 					A Nintendo GameCube and Wii emulator.
 					</span></td>
 					<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
-					<td><input id="btn_controls_dolphin" type="button" value="Buttons" /></td>
+					<td><input id="btn_controls_dolphin" type="button" value="Buttons" disabled /></td>
 				</tr>
 				<tr>
 					<td>PCSX-Reloaded</td>
@@ -261,13 +269,13 @@ function on_data(data) {
 		console.log('Log: ' + data['value']);
 	} else if(data['action'] == 'progress') {
 		if(data['value'] < 100) {
-			$('#installTable').hide();
-			$('#installProgress').text('Downloading ' + data['name'] + ': ' + data['value'] + '%');
-			$('#installProgress').show();
+			$('#config_programs').hide();
+			$('#genericProgress').text('Downloading ' + data['name'] + ': ' + data['value'] + '%');
+			$('#genericProgress').show();
 		} else {
-			$('#installProgress').text('');
-			$('#installProgress').hide();
-			$('#installTable').show();
+			$('#genericProgress').text('');
+			$('#genericProgress').hide();
+			$('#config_programs').show();
 		}
 	} else if(data['action'] == 'is_installed') {
 		if (data['name'] == 'VirtualCloneDrive') {
@@ -286,10 +294,23 @@ function on_data(data) {
 			$('#btn_install_nulldc').prop('disabled', false);
 		} else if (data['name'] == 'Demul') {
 			is_demul_installed = data['value'];
-			if(is_demul_installed)
+			if(is_demul_installed) {
 				$('#btn_install_demul').val('Uninstall');
-			else
+
+				$('#btn_controls_demul').prop('disabled', false);
+				$('#btn_bios_demul_dc').prop('disabled', false);
+				$('#btn_bios_demul_aw').prop('disabled', false);
+				$('#btn_bios_demul_naomi').prop('disabled', false);
+				$('#btn_bios_demul_naomi2').prop('disabled', false);
+			} else {
 				$('#btn_install_demul').val('Install');
+
+				$('#btn_controls_demul').prop('disabled', true);
+				$('#btn_bios_demul_dc').prop('disabled', true);
+				$('#btn_bios_demul_aw').prop('disabled', true);
+				$('#btn_bios_demul_naomi').prop('disabled', true);
+				$('#btn_bios_demul_naomi2').prop('disabled', true);
+			}
 			$('#btn_install_demul').prop('disabled', false);
 		} else if (data['name'] == 'SSF') {
 			is_ssf_installed = data['value'];
@@ -300,10 +321,15 @@ function on_data(data) {
 			$('#btn_install_ssf').prop('disabled', false);
 		} else if (data['name'] == 'Dolphin') {
 			is_dolphin_installed = data['value'];
-			if(is_dolphin_installed)
+			if(is_dolphin_installed) {
 				$('#btn_install_dolphin').val('Uninstall');
-			else
+
+				$('#btn_controls_dolphin').prop('disabled', false);
+			} else {
 				$('#btn_install_dolphin').val('Install');
+
+				$('#btn_controls_dolphin').prop('disabled', true);
+			}
 			$('#btn_install_dolphin').prop('disabled', false);
 		} else if (data['name'] == 'PCSX-Reloaded') {
 			is_pcsxr_installed = data['value'];
@@ -764,6 +790,50 @@ function setup_ui() {
 			'action' : 'set_button_map',
 			'console' : 'GameCube',
 			'value' : button_map_dolphin
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_demul_dc', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Dreamcast',
+			'type' : 'dc.zip',
+			'value' : window.btoa(file_data)
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_demul_aw', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Dreamcast',
+			'type' : 'awbios.zip',
+			'value' : window.btoa(file_data)
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_demul_naomi', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Dreamcast',
+			'type' : 'naomi.zip',
+			'value' : window.btoa(file_data)
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_demul_naomi2', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Dreamcast',
+			'type' : 'naomi2.zip',
+			'value' : window.btoa(file_data)
 		};
 		message = JSON.stringify(message);
 		socket.send(message);
