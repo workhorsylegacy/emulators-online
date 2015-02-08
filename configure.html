@@ -8,7 +8,7 @@
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 	</head>
 	<body>
-		<h1 style="color: red;">FIXME: Gamepad only works in Firefox!</h1>
+		<h1 style="color: red;">FIXME: Gamepad only works in Firefox and Chrome!</h1>
 		<div id="not_connected" style="display: none">
 			Not connected to server!
 		</div>
@@ -192,6 +192,7 @@ var gamepad = null;
 $.each(navigator.getGamepads(), function(i, pad) {
 	if(pad && pad.id) {
 		gamepad = pad;
+		console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id + ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
 		return false;
 	}
 });
@@ -234,8 +235,11 @@ function start_polling_buttons(done_cb) {
 }
 
 function get_pressed_button() {
-	if(!gamepad)
+	var all_pads = navigator.getGamepads();
+	if(all_pads.length < 1)
 		return -1;
+
+	gamepad = all_pads[0];
 
 	for(var i in gamepad.buttons) {
 		var button = gamepad.buttons[i];
@@ -370,7 +374,6 @@ function on_data(data) {
 				$('#btn_install_mupen64plus').val('Install');
 			$('#btn_install_mupen64plus').prop('disabled', false);
 		}
-		console.log('is installed: ' + data['name'] + ' ' + data['value'])
 	} else if(data['action'] == 'get_button_map') {
 		if(data['console'] == 'Dreamcast') {
 			button_map_demul = data['value'];
