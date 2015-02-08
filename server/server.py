@@ -44,6 +44,7 @@ if sys.version_info[0] == 3:
 	print("Python 3 is not yet supported. Use python 2.x instead.")
 	sys.exit()
 
+import shutil
 import json
 import base64
 import subprocess
@@ -221,6 +222,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'install':
 			self._install(data)
 
+		elif data['action'] == 'uninstall':
+			self._uninstall(data)
+
 		elif data['action'] == 'set_button_map':
 			self._set_button_map(data)
 
@@ -368,7 +372,25 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			wrap.uncompress(os.path.join(data['dir'], 'pcsxr-1.9.93-win32.zip'), 'emulators')
 		elif data['file'] == 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z':
 			wrap.uncompress(os.path.join(data['dir'], 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z'), 'emulators')
-			
+
+	def _uninstall(self, data):
+		if data['program'] == 'VirtualCloneDrive':
+			pass
+		elif data['program'] == 'NullDC':
+			shutil.rmtree('emulators/NullDC')
+		elif data['program'] == 'Demul':
+			shutil.rmtree('emulators/Demul')
+		elif data['program'] == 'SSF':
+			shutil.rmtree('emulators/SSF_012_beta_R4')
+		elif data['program'] == 'Dolphin':
+			shutil.rmtree('emulators/Dolphin-x64')
+		elif data['program'] == 'Mupen64Plus':
+			shutil.rmtree('emulators/Mupen64Plus')
+		elif data['program'] == 'PCSX-Reloaded':
+			shutil.rmtree('emulators/pcsxr')
+		elif data['program'] == 'PCSX2':
+			shutil.rmtree('emulators/pcsx2')
+
 	def _is_installed(self, data):
 		if data['program'] == '7-Zip':
 			exist = os.path.exists("C:/Program Files/7-Zip/7z.exe") or \

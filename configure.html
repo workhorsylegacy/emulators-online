@@ -576,25 +576,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_nulldc");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'nullDC_104_r136.7z',
-			'url' : 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z',
-			'dir' : 'downloads',
-			'name' : 'NullDC'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_nulldc_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'NullDC'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'nullDC_104_r136.7z',
+				'url' : 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z',
+				'dir' : 'downloads',
+				'name' : 'NullDC'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'nullDC_104_r136.7z'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'nullDC_104_r136.7z'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
@@ -607,25 +616,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_demul");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'demul0582.rar',
-			'url' : 'http://demul.emulation64.com/files/demul0582.rar',
-			'dir' : 'downloads',
-			'name' : 'Demul'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_demul_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'Demul'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'demul0582.rar',
+				'url' : 'http://demul.emulation64.com/files/demul0582.rar',
+				'dir' : 'downloads',
+				'name' : 'Demul'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'demul0582.rar'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'demul0582.rar'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
@@ -638,25 +656,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_ssf");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'SSF_012_beta_R4.zip',
-			'url' : 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip',
-			'dir' : 'downloads',
-			'name' : 'SSF'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_ssf_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'SSF'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'SSF_012_beta_R4.zip',
+				'url' : 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip',
+				'dir' : 'downloads',
+				'name' : 'SSF'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'SSF_012_beta_R4.zip'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'SSF_012_beta_R4.zip'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
@@ -669,25 +696,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_dolphin");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'dolphin-master-4.0-5363-x64.7z',
-			'url' : 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z',
-			'dir' : 'downloads',
-			'name' : 'Dolphin'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_dolphin_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'Dolphin'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'dolphin-master-4.0-5363-x64.7z',
+				'url' : 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z',
+				'dir' : 'downloads',
+				'name' : 'Dolphin'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'dolphin-master-4.0-5363-x64.7z'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'dolphin-master-4.0-5363-x64.7z'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
@@ -700,25 +736,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_pcsxr");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'pcsxr-1.9.93-win32.zip',
-			'url' : 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20959',
-			'dir' : 'downloads',
-			'name' : 'PCSX Reloaded'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_pcsxr_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'PCSX-Reloaded'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'pcsxr-1.9.93-win32.zip',
+				'url' : 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20959',
+				'dir' : 'downloads',
+				'name' : 'PCSX Reloaded'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'pcsxr-1.9.93-win32.zip'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'pcsxr-1.9.93-win32.zip'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
@@ -731,25 +776,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_pcsx2");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z',
-			'url' : 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86',
-			'dir' : 'downloads',
-			'name' : 'PCSX2'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_pcsx2_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'PCSX2'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z',
+				'url' : 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86',
+				'dir' : 'downloads',
+				'name' : 'PCSX2'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
@@ -762,25 +816,34 @@ function setup_ui() {
 
 	btn = $("#btn_install_mupen64plus");
 	btn.on('click', function() {
-		// Download the compressed program
-		var message = {
-			'action' : 'download',
-			'file' : 'mupen64plus-bundle-win32-2.0.zip',
-			'url' : 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip',
-			'dir' : 'downloads',
-			'name' : 'Mupen 64 Plus'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+		if(is_mupen_installed) {
+			message = {
+				'action' : 'uninstall',
+				'program' : 'Mupen64Plus'
+			};
+			message = JSON.stringify(message);
+			socket.send(message);
+		} else {
+			// Download the compressed program
+			var message = {
+				'action' : 'download',
+				'file' : 'mupen64plus-bundle-win32-2.0.zip',
+				'url' : 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip',
+				'dir' : 'downloads',
+				'name' : 'Mupen 64 Plus'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
 
-		// Uncompress the program
-		var message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'mupen64plus-bundle-win32-2.0.zip'
-		};
-		var message = JSON.stringify(message);
-		socket.send(message);
+			// Uncompress the program
+			var message = {
+				'action' : 'install',
+				'dir' : 'downloads',
+				'file' : 'mupen64plus-bundle-win32-2.0.zip'
+			};
+			var message = JSON.stringify(message);
+			socket.send(message);
+		}
 
 		// Figure out if it is installed
 		message = {
