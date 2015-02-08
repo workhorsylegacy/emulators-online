@@ -370,7 +370,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			wrap.uncompress(os.path.join(data['dir'], 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z'), 'emulators')
 			
 	def _is_installed(self, data):
-		if data['program'] == 'VirtualCloneDrive':
+		if data['program'] == '7-Zip':
+			exist = os.path.exists("C:/Program Files/7-Zip/7z.exe") or \
+					os.path.exists("C:/Program Files (x86)/7-Zip/7z.exe")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : '7-Zip'
+			}
+			self.write_data(data)
+		elif data['program'] == 'VirtualCloneDrive':
 			exist = os.path.exists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
 			data = {
 				'action' : 'is_installed',

@@ -88,6 +88,14 @@
 					<th>BIOS</th>
 				</tr>
 				<tr>
+					<td>7-ZIP</td>
+					<td>
+						Allows uncompressing of zip, rar, and 7z files.
+					</td>
+					<td><input id="btn_install_7zip" type="button" value="Loading ..." disabled /></td>
+					</td></td>
+				</tr>
+				<tr>
 					<td>Virtual Clone Drive</td>
 					<td>
 						Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
@@ -255,6 +263,7 @@ function get_pressed_button() {
 var button_map_demul = {};
 var button_map_dolphin = {};
 
+var is_7zip_installed = false;
 var is_vcd_installed = false;
 var is_nulldc_installed = false;
 var is_demul_installed = false;
@@ -278,7 +287,14 @@ function on_data(data) {
 			$('#config_programs').show();
 		}
 	} else if(data['action'] == 'is_installed') {
-		if (data['name'] == 'VirtualCloneDrive') {
+		if (data['name'] == '7-Zip') {
+			is_7zip_installed = data['value'];
+			if(is_7zip_installed)
+				$('#btn_install_7zip').val('Uninstall');
+			else
+				$('#btn_install_7zip').val('Install');
+			$('#btn_install_7zip').prop('disabled', false);
+		} else if (data['name'] == 'VirtualCloneDrive') {
 			is_vcd_installed = data['value'];
 			if(is_vcd_installed)
 				$('#btn_install_vcd').val('Uninstall');
@@ -422,6 +438,14 @@ function on_data(data) {
 function setup_ui() {
 	// FIXME: This should fire after all the websocket stuff is setup
 	setTimeout(function() {
+		// Figure out if 7-Zip is installed
+		var message = {
+			'action' : 'is_installed',
+			'program' : '7-Zip'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+
 		// Figure out if VCD is installed
 		var message = {
 			'action' : 'is_installed',
@@ -486,6 +510,37 @@ function setup_ui() {
 		message = JSON.stringify(message);
 		socket.send(message);
 	}, 3000);
+
+	var btn = $("#btn_install_7zip");
+	btn.on('click', function() {
+		// Download the exe
+		var message = {
+			'action' : 'download',
+			'file' : '7z920.exe',
+			'url' : 'http://www.7-zip.org/a/7z920.exe',
+			'dir' : 'downloads',
+			'name' : '7-Zip'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Run the exe
+		var message = {
+			'action' : 'install',
+			'dir' : 'downloads',
+			'file' : '7z920.exe'
+		};
+		var message = JSON.stringify(message);
+		socket.send(message);
+
+		// Figure out if 7-Zip is installed
+		var message = {
+			'action' : 'is_installed',
+			'program' : '7-Zip'
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
 
 	var btn = $("#btn_install_vcd");
 	btn.on('click', function() {
