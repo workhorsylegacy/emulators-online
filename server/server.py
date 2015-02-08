@@ -78,8 +78,9 @@ except:
 
 	# Make the directory structure
 	dirs = [
-			'db', 'downloads', 'emulators',
-			'server', 'static', 'games',
+			'config', 'db', 'downloads',
+			'emulators', 'server',
+			'static', 'games',
 			'games/Nintendo/',
 			'games/Nintendo/GameCube/',
 			'games/Nintendo/Nintendo64/',
@@ -97,8 +98,8 @@ except:
 
 	# Make the html, css, and js files
 	files = ['configure.html', 'index.html', 'static/default.css', 
-			'static/emu_archive.js', 'static/jquery-2.1.3.min.js',
-			'static/favicon.ico']
+			'static/emu_archive.js', 'static/file_uploader.js',
+			'static/jquery-2.1.3.min.js', 'static/favicon.ico']
 
 	for file in files:
 		if not os.path.isfile(file):
