@@ -114,6 +114,7 @@ demul = demul.Demul()
 dolphin = dolphin.Dolphin()
 ssf = ssf.SSF()
 mupen64plus = mupen64plus.Mupen64Plus()
+pcsxr = pcsxr.PCSXR()
 
 
 def make_db(file_name, path_prefix):
