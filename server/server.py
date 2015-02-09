@@ -112,6 +112,7 @@ except:
 runner = None
 demul = demul.Demul()
 dolphin = dolphin.Dolphin()
+ssf = ssf.SSF()
 
 
 def make_db(file_name, path_prefix):
@@ -315,7 +316,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running Mupen64plus ...')
 
 		elif data['console'] == 'Saturn':
-			ssf.run(data['path'], data['binary'])
+			ssf.run(data['path'], data['binary'], data['bios'])
 			self.log('playing')
 			print('Running SSF ...')
 
