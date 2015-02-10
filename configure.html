@@ -98,7 +98,10 @@
 						<td>
 							Allows uncompressing of zip, rar, and 7z files.
 						</td>
-						<td><input id="btn_install_7zip" type="button" value="Loading ..." disabled /></td>
+						<td>
+							<div style="color: red;">FIXME: Uninstall does not work.</div>
+							<input id="btn_install_7zip" type="button" value="Loading ..." disabled />
+						</td>
 						<td></td>
 						<td></td>
 					</tr>
@@ -107,7 +110,10 @@
 						<td>
 							Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
 						</td>
-						<td><input id="btn_install_vcd" type="button" value="Loading ..." disabled /></td>
+						<td>
+							<div style="color: red;">FIXME: Uninstall does not work.</div>
+							<input id="btn_install_vcd" type="button" value="Loading ..." disabled />
+						</td>
 						<td></td>
 						<td></td>
 					</tr>
@@ -129,8 +135,11 @@
 						<td><input id="btn_controls_demul" type="button" value="Buttons" disabled /></td>
 						<td>
 							<nobr><input type="file" id="btn_bios_demul_dc" name="btn_bios_demul_dc" disabled>Dreamcast BIOS (dc.zip)</input></nobr>
+							<br />
 							<nobr><input type="file" id="btn_bios_demul_aw" name="btn_bios_demul_aw" disabled>Atomiswave BIOS (awbios.zip)</input></nobr>
+							<br />
 							<nobr><input type="file" id="btn_bios_demul_naomi" name="btn_bios_demul_naomi" disabled>Naomi BIOS (naomi.zip)</input></nobr>
+							<br />
 							<nobr><input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input></nobr>
 						</td>
 					</tr>
@@ -314,18 +323,22 @@ function on_data(data) {
 	} else if(data['action'] == 'is_installed') {
 		if (data['name'] == '7-Zip') {
 			is_7zip_installed = data['value'];
-			if(is_7zip_installed)
+			if(is_7zip_installed) {
 				$('#btn_install_7zip').val('Uninstall');
-			else
+				$('#btn_install_7zip').prop('disabled', true);
+			} else {
 				$('#btn_install_7zip').val('Install');
-			$('#btn_install_7zip').prop('disabled', false);
+				$('#btn_install_7zip').prop('disabled', false);
+			}
 		} else if (data['name'] == 'VirtualCloneDrive') {
 			is_vcd_installed = data['value'];
-			if(is_vcd_installed)
+			if(is_vcd_installed) {
 				$('#btn_install_vcd').val('Uninstall');
-			else
+				$('#btn_install_vcd').prop('disabled', true);
+			} else {
 				$('#btn_install_vcd').val('Install');
-			$('#btn_install_vcd').prop('disabled', false);
+				$('#btn_install_vcd').prop('disabled', false);
+			}
 		} else if (data['name'] == 'NullDC') {
 			is_nulldc_installed = data['value'];
 			if(is_nulldc_installed)
@@ -381,11 +394,12 @@ function on_data(data) {
 			$('#btn_install_pcsxr').prop('disabled', false);
 		} else if (data['name'] == 'PCSX2') {
 			is_pcsx2_installed = data['value'];
-			if(is_pcsx2_installed)
+			if(is_pcsx2_installed) {
 				$('#btn_install_pcsx2').val('Uninstall');
-			else
+			} else {
 				$('#btn_install_pcsx2').val('Install');
-			$('#btn_install_pcsx2').prop('disabled', false);
+			}
+			$('#btn_install_pcsx2').prop('disabled', true);
 		} else if (data['name'] == 'Mupen 64 Plus') {
 			is_mupen_installed = data['value'];
 			if(is_mupen_installed)
