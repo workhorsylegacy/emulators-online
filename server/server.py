@@ -571,6 +571,9 @@ if __name__ == '__main__':
 		proc = subprocess.Popen(exe, stdout=subprocess.PIPE)
 		os.chdir("../..")
 
+	if IS_EXE:
+		view_in_browser(None)
+
 	menu_options = (
 						('Start Server', icon, start),
 						('Stop Server', icon, stop),
