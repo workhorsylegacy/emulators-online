@@ -8,165 +8,171 @@
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 	</head>
 	<body>
-		<h1 style="color: red;">FIXME: Gamepad only works in Firefox and Chrome!</h1>
-		<div id="not_connected" style="display: none">
-			Not connected to server!
+		<div id="header">
+			<a href="index.html">Main</a>
 		</div>
 
-		<div id="genericProgress"></div>
+		<div id="content">
+			<h1 style="color: red;">FIXME: Gamepad only works in Firefox and Chrome!</h1>
+			<div id="not_connected" style="display: none">
+				Not connected to server!
+			</div>
 
-		<div id="config_buttons_demul" style="display: none">
-			<h1>Configure Dreamcast Controls</h1>
+			<div id="genericProgress"></div>
 
-			<table>
-				<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpDemul" /></td></tr>
-				<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownDemul" /></td></tr>
-				<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftDemul" /></td></tr>
-				<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightDemul" /></td></tr>
-				<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartDemul" /></td></tr>
-				<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnADemul" /></td></tr>
-				<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBDemul" /></td></tr>
-				<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXDemul" /></td></tr>
-				<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYDemul" /></td></tr>
-				<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTriggerDemul" /></td></tr>
-				<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTriggerDemul" /></td></tr>
-				<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUpDemul" /></td></tr>
-				<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDownDemul" /></td></tr>
-				<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeftDemul" /></td></tr>
-				<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRightDemul" /></td></tr>
-				<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUpDemul" /></td></tr>
-				<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDownDemul" /></td></tr>
-				<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeftDemul" /></td></tr>
-				<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRightDemul" /></td></tr>
-			</table>
+			<div id="config_buttons_demul" style="display: none">
+				<h1>Configure Dreamcast Controls</h1>
 
-			<input type="button" value="Done" id="btn_done_button_config_demul" />
+				<table>
+					<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpDemul" /></td></tr>
+					<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownDemul" /></td></tr>
+					<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftDemul" /></td></tr>
+					<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightDemul" /></td></tr>
+					<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartDemul" /></td></tr>
+					<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnADemul" /></td></tr>
+					<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBDemul" /></td></tr>
+					<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXDemul" /></td></tr>
+					<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYDemul" /></td></tr>
+					<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTriggerDemul" /></td></tr>
+					<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTriggerDemul" /></td></tr>
+					<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUpDemul" /></td></tr>
+					<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDownDemul" /></td></tr>
+					<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeftDemul" /></td></tr>
+					<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRightDemul" /></td></tr>
+					<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUpDemul" /></td></tr>
+					<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDownDemul" /></td></tr>
+					<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeftDemul" /></td></tr>
+					<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRightDemul" /></td></tr>
+				</table>
+
+				<input type="button" value="Done" id="btn_done_button_config_demul" />
+			</div>
+
+			<div id="config_buttons_dolphin" style="display: none">
+				<h1>Configure GameCube Controls</h1>
+
+				<table>
+					<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpDolphin" /></td></tr>
+					<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownDolphin" /></td></tr>
+					<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftDolphin" /></td></tr>
+					<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightDolphin" /></td></tr>
+					<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartDolphin" /></td></tr>
+					<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnADolphin" /></td></tr>
+					<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBDolphin" /></td></tr>
+					<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXDolphin" /></td></tr>
+					<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYDolphin" /></td></tr>
+					<tr><td>Z</td><td><input type="button" value="Not Assigned" id="btnZDolphin" /></td></tr>
+					<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTriggerDolphin" /></td></tr>
+					<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTriggerDolphin" /></td></tr>
+					<tr><td>L Shoulder</td><td><input type="button" value="Not Assigned" id="btnLShoulderDolphin" /></td></tr>
+					<tr><td>R Shoulder</td><td><input type="button" value="Not Assigned" id="btnRShoulderDolphin" /></td></tr>
+					<tr><td>Left Stick Click</td><td><input type="button" value="Not Assigned" id="btnLeftStickClickDolphin" /></td></tr>
+					<tr><td>Right Stick Click</td><td><input type="button" value="Not Assigned" id="btnRightStickClickDolphin" /></td></tr>
+					<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUpDolphin" /></td></tr>
+					<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDownDolphin" /></td></tr>
+					<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeftDolphin" /></td></tr>
+					<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRightDolphin" /></td></tr>
+					<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUpDolphin" /></td></tr>
+					<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDownDolphin" /></td></tr>
+					<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeftDolphin" /></td></tr>
+					<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRightDolphin" /></td></tr>
+				</table>
+
+				<input type="button" value="Done" id="btn_done_button_config_dolphin" />
+			</div>
+
+			<div id="config_programs">
+				<h1>Install and Configure Programs</h1>
+				
+				<table id="installTable" class="configTable">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
+					</tr>
+					<tr>
+						<td>7-ZIP</td>
+						<td>
+							Allows uncompressing of zip, rar, and 7z files.
+						</td>
+						<td><input id="btn_install_7zip" type="button" value="Loading ..." disabled /></td>
+						</td></td>
+					</tr>
+					<tr>
+						<td>Virtual Clone Drive</td>
+						<td>
+							Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
+						</td>
+						<td><input id="btn_install_vcd" type="button" value="Loading ..." disabled /></td>
+						</td></td>
+					</tr>
+					<tr>
+						<td>NullDC</td>
+						<td>
+						A Sega Dreamcast Emulator.
+						</td>
+						<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
+					</tr>
+					<tr>
+						<td>Demul</td>
+						<td>
+						A Sega Dreamcast emulator.
+						</td>
+						<td><input id="btn_install_demul" type="button" value="Loading ..." disabled /></td>
+						<td><input id="btn_controls_demul" type="button" value="Buttons" disabled /></td>
+						<td>
+							<nobr><input type="file" id="btn_bios_demul_dc" name="btn_bios_demul_dc" disabled>Dreamcast BIOS (dc.zip)</input></nobr>
+							<nobr><input type="file" id="btn_bios_demul_aw" name="btn_bios_demul_aw" disabled>Atomiswave BIOS (awbios.zip)</input></nobr>
+							<nobr><input type="file" id="btn_bios_demul_naomi" name="btn_bios_demul_naomi" disabled>Naomi BIOS (naomi.zip)</input></nobr>
+							<nobr><input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input></nobr>
+						</td>
+					</tr>
+					<tr>
+						<td>SSF</td>
+						<td>
+						A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
+						</td>
+						<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
+					</tr>
+					<tr>
+						<td>Dolphin</td>
+						<td>
+						A Nintendo GameCube and Wii emulator.
+						</td>
+						<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
+						<td><input id="btn_controls_dolphin" type="button" value="Buttons" disabled /></td>
+					</tr>
+					<tr>
+						<td>PCSX-Reloaded</td>
+						<td>
+						A Sony Playstation emulator.
+						</td>
+						<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
+					</tr>
+					<tr>
+						<td>PCSX2</td>
+						<td>
+						A Sony Playstation 2 emulator.
+						</td>
+						<td>
+							<div style="color: red;">FIXME: Can't automate download from build server.</div>
+							<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
+						</td>
+					</tr>
+					<tr>
+						<td>Mupen 64 Plus</td>
+						<td>
+						A Nintendo 64 emulator. Runs from the command line only.
+						</td>
+						<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="output"></div>
 		</div>
-
-		<div id="config_buttons_dolphin" style="display: none">
-			<h1>Configure GameCube Controls</h1>
-
-			<table>
-				<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpDolphin" /></td></tr>
-				<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownDolphin" /></td></tr>
-				<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftDolphin" /></td></tr>
-				<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightDolphin" /></td></tr>
-				<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartDolphin" /></td></tr>
-				<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnADolphin" /></td></tr>
-				<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBDolphin" /></td></tr>
-				<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXDolphin" /></td></tr>
-				<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYDolphin" /></td></tr>
-				<tr><td>Z</td><td><input type="button" value="Not Assigned" id="btnZDolphin" /></td></tr>
-				<tr><td>L Trigger</td><td><input type="button" value="Not Assigned" id="btnLTriggerDolphin" /></td></tr>
-				<tr><td>R Trigger</td><td><input type="button" value="Not Assigned" id="btnRTriggerDolphin" /></td></tr>
-				<tr><td>L Shoulder</td><td><input type="button" value="Not Assigned" id="btnLShoulderDolphin" /></td></tr>
-				<tr><td>R Shoulder</td><td><input type="button" value="Not Assigned" id="btnRShoulderDolphin" /></td></tr>
-				<tr><td>Left Stick Click</td><td><input type="button" value="Not Assigned" id="btnLeftStickClickDolphin" /></td></tr>
-				<tr><td>Right Stick Click</td><td><input type="button" value="Not Assigned" id="btnRightStickClickDolphin" /></td></tr>
-				<tr><td>Left Stick Up</td><td><input type="button" value="Not Assigned" id="btnLeftStickUpDolphin" /></td></tr>
-				<tr><td>Left Stick Down</td><td><input type="button" value="Not Assigned" id="btnLeftStickDownDolphin" /></td></tr>
-				<tr><td>Left Stick Left</td><td><input type="button" value="Not Assigned" id="btnLeftStickLeftDolphin" /></td></tr>
-				<tr><td>Left Stick Right</td><td><input type="button" value="Not Assigned" id="btnLeftStickRightDolphin" /></td></tr>
-				<tr><td>Right Stick Up</td><td><input type="button" value="Not Assigned" id="btnRightStickUpDolphin" /></td></tr>
-				<tr><td>Right Stick Down</td><td><input type="button" value="Not Assigned" id="btnRightStickDownDolphin" /></td></tr>
-				<tr><td>Right Stick Left</td><td><input type="button" value="Not Assigned" id="btnRightStickLeftDolphin" /></td></tr>
-				<tr><td>Right Stick Right</td><td><input type="button" value="Not Assigned" id="btnRightStickRightDolphin" /></td></tr>
-			</table>
-
-			<input type="button" value="Done" id="btn_done_button_config_dolphin" />
-		</div>
-
-		<div id="config_programs">
-			<h1>Install and Configure Programs</h1>
-			
-			<table id="installTable" class="configTable">
-				<tr>
-					<th>Program Name</th>
-					<th>Description</th>
-					<th>Status</th>
-					<th>Controls</th>
-					<th>BIOS</th>
-				</tr>
-				<tr>
-					<td>7-ZIP</td>
-					<td>
-						Allows uncompressing of zip, rar, and 7z files.
-					</td>
-					<td><input id="btn_install_7zip" type="button" value="Loading ..." disabled /></td>
-					</td></td>
-				</tr>
-				<tr>
-					<td>Virtual Clone Drive</td>
-					<td>
-						Allows mounting of disk images (iso, bin, img, cdi, et cetera). Required for the SSF Sega Saturn emulator.
-					</td>
-					<td><input id="btn_install_vcd" type="button" value="Loading ..." disabled /></td>
-					</td></td>
-				</tr>
-				<tr>
-					<td>NullDC</td>
-					<td>
-					A Sega Dreamcast Emulator.
-					</td>
-					<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
-				</tr>
-				<tr>
-					<td>Demul</td>
-					<td>
-					A Sega Dreamcast emulator.
-					</td>
-					<td><input id="btn_install_demul" type="button" value="Loading ..." disabled /></td>
-					<td><input id="btn_controls_demul" type="button" value="Buttons" disabled /></td>
-					<td>
-						<nobr><input type="file" id="btn_bios_demul_dc" name="btn_bios_demul_dc" disabled>Dreamcast BIOS (dc.zip)</input></nobr>
-						<nobr><input type="file" id="btn_bios_demul_aw" name="btn_bios_demul_aw" disabled>Atomiswave BIOS (awbios.zip)</input></nobr>
-						<nobr><input type="file" id="btn_bios_demul_naomi" name="btn_bios_demul_naomi" disabled>Naomi BIOS (naomi.zip)</input></nobr>
-						<nobr><input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input></nobr>
-					</td>
-				</tr>
-				<tr>
-					<td>SSF</td>
-					<td>
-					A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
-					</td>
-					<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
-				</tr>
-				<tr>
-					<td>Dolphin</td>
-					<td>
-					A Nintendo GameCube and Wii emulator.
-					</td>
-					<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
-					<td><input id="btn_controls_dolphin" type="button" value="Buttons" disabled /></td>
-				</tr>
-				<tr>
-					<td>PCSX-Reloaded</td>
-					<td>
-					A Sony Playstation emulator.
-					</td>
-					<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
-				</tr>
-				<tr>
-					<td>PCSX2</td>
-					<td>
-					A Sony Playstation 2 emulator.
-					</td>
-					<td>
-						<div style="color: red;">FIXME: Can't automate download from build server.</div>
-						<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
-					</td>
-				</tr>
-				<tr>
-					<td>Mupen 64 Plus</td>
-					<td>
-					A Nintendo 64 emulator. Runs from the command line only.
-					</td>
-					<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
-				</tr>
-			</table>
-		</div>
-
-		<div id="output"></div>
 
 		<footer>
 			<p>Copyright &copy; 2015 Matthew Brennan Jones</p>

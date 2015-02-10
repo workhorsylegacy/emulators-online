@@ -1,4 +1,27 @@
 
+#body {
+	margin: 0;
+	padding: 0;
+}
+
+#header {
+	padding: 30px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 2000;
+	background: #8adb89;
+}
+
+a {
+	color: #009900;
+}
+
+#content {
+	margin-top: 100px;
+}
+
 .gameIcon {
 	float: left;
 	margin: 0px;

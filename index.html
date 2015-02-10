@@ -7,20 +7,26 @@
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 	</head>
 	<body>
-		<div id="not_connected" style="display: none">
-			Not connected to server!
+		<div id="header">
+			Search: <input id="search_text" type="text" />
+			<br />
+			<a href="configure.html">Configure</a>
 		</div>
 
-		Search: <input id="search_text" type="text" />
+		<div id="content">
+			<div id="not_connected" style="display: none">
+				Not connected to server!
+			</div>
 
-		<div id="game_dialogs"></div>
+			<div id="game_dialogs"></div>
 
-		<div id="game_selector" style="overflow: auto;"></div>
+			<div id="game_selector" style="overflow: auto;"></div>
 
-		<br style="clear: both"/>
+			<br style="clear: both"/>
 
-		<div id="output"></div>
-		
+			<div id="output"></div>
+		</div>
+
 		<footer>
 			<p>Copyright &copy; 2015 Matthew Brennan Jones</p>
 			<p><a href="https://github.com/workhorsy/emu_archive">https://github.com/workhorsy/emu_archive</a></p>
