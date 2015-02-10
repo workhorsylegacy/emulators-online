@@ -108,11 +108,18 @@ img.blackAndWhite {
 
 .configTable {
 	padding: 10px;
+    background-color: #DDDDDD;
+	border-collapse: collapse; 
 }
 
 .configTable td {
 	padding: 20px;
 	vertical-align: text-top;
+	border-bottom: 20px solid white;
+}
+
+.configTable th {
+    background-color: #FFFFFF;
 }
 
 #not_connected {
