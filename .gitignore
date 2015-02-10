@@ -27,6 +27,7 @@ Thumbs.db
 *.sfv
 *.nfo
 *.gcm
+*.pyc
 db/*
 downloads/*
 games/*
