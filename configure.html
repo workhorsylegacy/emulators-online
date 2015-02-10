@@ -150,7 +150,13 @@
 						</td>
 						<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
 						<td></td>
-						<td></td>
+						<td>
+							<nobr><input type="file" id="btn_bios_ssf_usa" name="btn_bios_ssf_usa" disabled>USA BIOS (*.bin)</input></nobr>
+							<br />
+							<nobr><input type="file" id="btn_bios_ssf_eur" name="btn_bios_ssf_eur" disabled>EUR BIOS (*.bin)</input></nobr>
+							<br />
+							<nobr><input type="file" id="btn_bios_ssf_jap" name="btn_bios_ssf_jap" disabled>JAP BIOS (*.bin)</input></nobr>
+						</td>
 					</tr>
 					<tr class="border_bottom">
 						<td>Dolphin</td>
@@ -368,10 +374,19 @@ function on_data(data) {
 			$('#btn_install_demul').prop('disabled', false);
 		} else if (data['name'] == 'SSF') {
 			is_ssf_installed = data['value'];
-			if(is_ssf_installed)
+			if(is_ssf_installed) {
 				$('#btn_install_ssf').val('Uninstall');
-			else
+
+				$('#btn_bios_ssf_usa').prop('disabled', false);
+				$('#btn_bios_ssf_eur').prop('disabled', false);
+				$('#btn_bios_ssf_jap').prop('disabled', false);
+			} else {
 				$('#btn_install_ssf').val('Install');
+
+				$('#btn_bios_ssf_usa').prop('disabled', true);
+				$('#btn_bios_ssf_eur').prop('disabled', true);
+				$('#btn_bios_ssf_jap').prop('disabled', true);
+			}
 			$('#btn_install_ssf').prop('disabled', false);
 		} else if (data['name'] == 'Dolphin') {
 			is_dolphin_installed = data['value'];
@@ -989,6 +1004,39 @@ function setup_ui() {
 			'action' : 'set_bios',
 			'console' : 'Dreamcast',
 			'type' : 'naomi2.zip',
+			'value' : window.btoa(file_data)
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_ssf_usa', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Saturn',
+			'type' : 'USA',
+			'value' : window.btoa(file_data)
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_ssf_eur', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Saturn',
+			'type' : 'EUR',
+			'value' : window.btoa(file_data)
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	FileUploader('btn_bios_ssf_jap', 'genericProgress', function(file_data) {
+		var message = {
+			'action' : 'set_bios',
+			'console' : 'Saturn',
+			'type' : 'JAP',
 			'value' : window.btoa(file_data)
 		};
 		message = JSON.stringify(message);

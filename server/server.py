@@ -267,6 +267,21 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				with open('emulators/Demul/roms/naomi2.zip', 'wb') as f:
 					f.write(base64.b64decode(data['value']))
 
+		elif data['console'] == 'Saturn':
+			if not os.path.isdir('emulators/SSF_012_beta_R4/bios'):
+				os.mkdir('emulators/SSF_012_beta_R4/bios')
+
+			if data['type'] == 'USA':
+				with open('emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (US).bin', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
+			elif data['type'] == 'EUR':
+				with open('emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (EUR).bin', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
+			elif data['type'] == 'JAP':
+				with open('emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (JAP).bin', 'wb') as f:
+					f.write(base64.b64decode(data['value']))
+
+
 	def _set_button_map(self, data):
 		if data['console'] == 'GameCube':
 			dolphin.set_button_map(data['value'])
