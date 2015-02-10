@@ -37,7 +37,7 @@ class Wrap7zip(object):
 		elif os.path.isfile('C:/Program Files (x86)/7-Zip/7z.exe'):
 			self.exe = 'C:/Program Files (x86)/7-Zip/7z.exe'
 		else:
-			print('Failed to locate 7z.exe')
+			print('7-Zip wrapper could not locate 7z.exe')
 			sys.exit()
 
 	def uncompress(self, comprerssed_file, out_dir):

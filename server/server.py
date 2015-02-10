@@ -363,25 +363,36 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			sys.exit(1)
 
 	def _install(self, data):
-		wrap = wrap_7zip.Wrap7zip()
-
 		if data['file'] == 'SetupVirtualCloneDrive.exe':
 			os.chdir(data['dir'])
-			os.popen(data['file'])
+			proc = subprocess.Popen([data['file'], '/S'], stdout=subprocess.PIPE, shell=True) # Silent install
+			proc.communicate()
+			os.chdir('..')
+		elif data['file'] == '7z920.exe':
+			os.chdir(data['dir'])
+			proc = subprocess.Popen([data['file'], '/S'], stdout=subprocess.PIPE, shell=True) # Silent install
+			proc.communicate()
 			os.chdir('..')
 		elif data['file'] == 'nullDC_104_r136.7z':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'nullDC_104_r136.7z'), 'emulators/NullDC')
 		elif data['file'] == 'demul0582.rar':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'demul0582.rar'), 'emulators/Demul')
 		elif data['file'] == 'SSF_012_beta_R4.zip':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'SSF_012_beta_R4.zip'), 'emulators')
 		elif data['file'] == 'dolphin-master-4.0-5363-x64.7z':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'dolphin-master-4.0-5363-x64.7z'), 'emulators')
 		elif data['file'] == 'mupen64plus-bundle-win32-2.0.zip':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'mupen64plus-bundle-win32-2.0.zip'), 'emulators/Mupen64Plus')
 		elif data['file'] == 'pcsxr-1.9.93-win32.zip':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'pcsxr-1.9.93-win32.zip'), 'emulators')
 		elif data['file'] == 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z':
+			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z'), 'emulators')
 
 	def _uninstall(self, data):
