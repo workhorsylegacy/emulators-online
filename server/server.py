@@ -64,17 +64,25 @@ import mupen64plus
 import pcsxr
 import pcsx2
 
-
-
 # Move to the main emu_archive directory no matter what path we are launched from
 current_path = os.path.abspath(os.path.dirname(sys.argv[0]))
 if current_path.endswith('server'):
 	os.chdir(os.path.join(current_path, '..'))
 
-# If __file__ fails, we are in server.exe. So generate the files
-try:
-	blah = __file__
-except:
+# Figure out if running as an exe
+IS_EXE = '__file__' not in globals() and sys.argv[0].endswith('.exe')
+
+# When running as an exe, log to a file
+if IS_EXE:
+	if os.path.isfile('log.txt'):
+		os.remove('log.txt')
+
+	log_file = open('log.txt', 'wb')
+	sys.stderr = log_file
+	sys.stdout = log_file
+
+# When running as an exe, generate the files
+if IS_EXE:
 	import static_files
 
 	# Make the directory structure

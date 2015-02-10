@@ -44,6 +44,6 @@ with open('static_files.py', 'wb') as f:
 
 setup(
 	options = {'py2exe': {'bundle_files': 1}},
-	console=['server.py'],
+	windows=['server.py'],
 	zipfile=None
 )
