@@ -82,6 +82,28 @@
 				<input type="button" value="Done" id="btn_done_button_config_dolphin" />
 			</div>
 
+			<div id="config_buttons_ssf" style="display: none">
+				<h1>Configure Saturn Controls</h1>
+
+				<table>
+					<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpSSF" /></td></tr>
+					<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownSSF" /></td></tr>
+					<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftSSF" /></td></tr>
+					<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightSSF" /></td></tr>
+					<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartSSF" /></td></tr>
+					<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnASSF" /></td></tr>
+					<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBSSF" /></td></tr>
+					<tr><td>C</td><td><input type="button" value="Not Assigned" id="btnCSSF" /></td></tr>
+					<tr><td>X</td><td><input type="button" value="Not Assigned" id="btnXSSF" /></td></tr>
+					<tr><td>Y</td><td><input type="button" value="Not Assigned" id="btnYSSF" /></td></tr>
+					<tr><td>Z</td><td><input type="button" value="Not Assigned" id="btnZSSF" /></td></tr>
+					<tr><td>L Shoulder</td><td><input type="button" value="Not Assigned" id="btnLShoulderSSF" /></td></tr>
+					<tr><td>R Shoulder</td><td><input type="button" value="Not Assigned" id="btnRShoulderSSF" /></td></tr>
+				</table>
+
+				<input type="button" value="Done" id="btn_done_button_config_ssf" />
+			</div>
+
 			<div id="config_programs">
 				<h1>Install and Configure Programs</h1>
 				
@@ -149,7 +171,7 @@
 						A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
 						</td>
 						<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
-						<td></td>
+						<td><input id="btn_controls_ssf" type="button" value="Buttons" disabled /></td>
 						<td>
 							<nobr><input type="file" id="btn_bios_ssf_usa" name="btn_bios_ssf_usa" disabled>USA BIOS (*.bin)</input></nobr>
 							<br />
@@ -221,6 +243,143 @@ if(!("WebSocket" in window)) {
 	setup_ui();
 }
 
+KEYBOARD_JS_CODE_MAP = {
+	0 : 'none',
+	27 : 'ESCAPE',
+	49 : '1',
+	50 : '2',
+	51 : '3',
+	52 : '4',
+	53 : '5',
+	54 : '6',
+	55 : '7',
+	56 : '8',
+	57 : '9',
+	48 : '0',
+	109 : 'MINUS',
+	187 : 'EQUALS',
+	8 : 'BACKSPACE',
+	9 : 'TAB',
+	81 : 'Q',
+	87 : 'W',
+	69 : 'E',
+	82 : 'R',
+	84 : 'T',
+	89 : 'Y',
+	85 : 'U',
+	73 : 'I',
+	79 : 'O',
+	80 : 'P',
+	219 : 'LBRACKET',
+	221 : 'RBRACKET',
+	13 : 'RETURN',
+	17 : 'LCONTROL',
+	65 : 'A',
+	83 : 'S',
+	68 : 'D',
+	70 : 'F',
+	71 : 'G',
+	72 : 'H',
+	74 : 'J',
+	75 : 'K',
+	76 : 'L',
+	186 : 'SEMICOLON',
+	222 : 'APOSTROPHE',
+	192 : 'GRAVE',
+	16 : 'LSHIFT',
+	220: 'BACKSLASH',
+	90 : 'Z',
+	88 : 'X',
+	67 : 'C',
+	86 : 'V',
+	66 : 'B',
+	78 : 'N',
+	77 : 'M',
+	188 : 'COMMA',
+	190 : 'PERIOD',
+	191 : 'SLASH',
+	16 : 'RSHIFT',
+	106 : 'MULTIPLY',
+	18 : 'LMENU',
+	32 : 'SPACE',
+	20 : 'CAPITAL', // Caps Lock
+	112 : 'F1',
+	113 : 'F2',
+	114 : 'F3',
+	115 : 'F4',
+	116 : 'F5',
+	117 : 'F6',
+	118 : 'F7',
+	119 : 'F8',
+	120 : 'F9',
+	121 : 'F10',
+	144 : 'NUMLOCK',
+	145 : 'SCROLL',	
+	103 : 'NUMPAD7',
+	104 : 'NUMPAD8',
+	105 : 'NUMPAD9',
+	109 : 'SUBTRACT',
+	100 : 'NUMPAD4',
+	101 : 'NUMPAD5',
+	102 : 'NUMPAD6',
+	107 : 'ADD',
+	97 : 'NUMPAD1',
+	98 : 'NUMPAD2',
+	99 : 'NUMPAD3',
+	96 : 'NUMPAD0',
+	//'DECIMAL',
+	122 : 'F11',
+	123 : 'F12',
+	/*
+	'F13',
+	'F14',
+	'F15',
+	'F16',
+	'F17',
+	'F18',
+	'KANA',
+	'F19',
+	'CONVERT',
+	'NOCONVERT',
+	'YEN'# ¥
+	'NUMPADEQUALS',
+	'CIRCUMFLEX', # ^
+	'AT', # @
+	'COLON', # :
+	'UNDERLINE', # _
+	'KANJI',
+	'STOP',
+	'AX',
+	'UNLABLED',
+	'NUMPADENTER',
+	'RCONTROL',
+	'SECTION',
+	'NUMPADCOMMA',
+	'DIVIDE',
+	'SYSRQ',
+	*/
+	18 : 'RMENU', // Right Menu/Alt
+	//'FUNCTION',
+	19 : 'PAUSE', 
+	36 : 'HOME',
+	38 : 'UP',
+	33 : 'PRIOR', // Page Up
+	37 : 'LEFT', // Left Arrow
+	39 : 'RIGHT', // Right Arrow
+	35 : 'END',
+	40 : 'DOWN', // Down Arrow
+	34 : 'NEXT', // Page Down
+	45 : 'INSERT',
+	46 : 'DELETE',
+	91 : 'LMETA', // Left Meta/Super
+	//'LWIN',
+	//'RMETA', # Right Meta/Super
+	//'RWIN',
+	//'APPS',
+	//'POWER',
+	//'SLEEP'
+};
+
 var gamepad = null;
 
 // Find already connected pads
@@ -236,7 +395,8 @@ $.each(navigator.getGamepads(), function(i, pad) {
 function gamepadHandler(e, connecting) {
 	if (connecting) {
 		gamepad = navigator.getGamepads()[e.gamepad.index];
-		console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id + ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
+		if(gamepad)
+			console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id + ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
 	} else {
 		gamepad = null;
 	}
@@ -276,6 +436,9 @@ function get_pressed_button() {
 
 	gamepad = all_pads[0];
 
+	if(gamepad == null || gamepad.buttons == null)
+		return -1;
+
 	for(var i in gamepad.buttons) {
 		var button = gamepad.buttons[i];
 		if(button) {
@@ -302,6 +465,7 @@ function get_pressed_button() {
 
 var button_map_demul = {};
 var button_map_dolphin = {};
+var button_map_ssf = {};
 
 var is_7zip_installed = false;
 var is_vcd_installed = false;
@@ -377,12 +541,14 @@ function on_data(data) {
 			if(is_ssf_installed) {
 				$('#btn_install_ssf').val('Uninstall');
 
+				$('#btn_controls_ssf').prop('disabled', false);
 				$('#btn_bios_ssf_usa').prop('disabled', false);
 				$('#btn_bios_ssf_eur').prop('disabled', false);
 				$('#btn_bios_ssf_jap').prop('disabled', false);
 			} else {
 				$('#btn_install_ssf').val('Install');
 
+				$('#btn_controls_ssf').prop('disabled', true);
 				$('#btn_bios_ssf_usa').prop('disabled', true);
 				$('#btn_bios_ssf_eur').prop('disabled', true);
 				$('#btn_bios_ssf_jap').prop('disabled', true);
@@ -477,6 +643,35 @@ function on_data(data) {
 						} else {
 							btn.val(button_name);
 							button_map_dolphin[key] = button_name;
+						}
+						btn.prop('disabled', false);
+					});
+				});
+			});
+		} else if(data['console'] == 'Saturn') {
+			button_map_ssf = data['value'];
+
+			// Setup each button
+			$.each(button_map_ssf, function(key, value) {
+				// Get button
+				var btn = $('#' + key);
+
+				// Set previous value, if there is one
+				if(value) {
+					btn.val(value);
+				}
+
+				// On click poll for a new button
+				btn.click(function() {
+					btn.val('Press new button ...');
+					btn.prop('disabled', true);
+					start_polling_buttons(function(button_name) {
+						// Save the new button
+						if(button_name == -1) {
+							btn.val('Not Assigned');
+						} else {
+							btn.val(button_name);
+							button_map_ssf[key] = button_name;
 						}
 						btn.prop('disabled', false);
 					});
@@ -936,6 +1131,21 @@ function setup_ui() {
 		socket.send(message);
 	});
 
+	btn = $('#btn_controls_ssf');
+	btn.on('click', function() {
+		$('#config_buttons_ssf').show();
+		$('#config_programs').hide();
+
+		// Load the button map
+		var message = {
+			'action' : 'get_button_map',
+			'console' : 'Saturn',
+			'value' : button_map_ssf
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
 	btn = $('#btn_done_button_config_demul');
 	btn.on('click', function() {
 		$('#config_buttons_demul').hide();
@@ -961,6 +1171,21 @@ function setup_ui() {
 			'action' : 'set_button_map',
 			'console' : 'GameCube',
 			'value' : button_map_dolphin
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $('#btn_done_button_config_ssf');
+	btn.on('click', function() {
+		$('#config_buttons_ssf').hide();
+		$('#config_programs').show();
+
+		// Save the button map
+		var message = {
+			'action' : 'set_button_map',
+			'console' : 'Saturn',
+			'value' : button_map_ssf
 		};
 		message = JSON.stringify(message);
 		socket.send(message);

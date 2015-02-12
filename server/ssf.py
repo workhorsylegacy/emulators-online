@@ -32,10 +32,187 @@ import emu_runner
 import base_console
 import file_mounter
 
+BUTTON_CODE_MAP = {
+	'button_12' : '1/34822/', # up
+	'button_13' : '1/34823/', # down
+	'button_14' : '1/34824/', # left
+	'button_15' : '1/34825/', # right
+	'button_0' : '1/0/', # a
+	'button_1' : '1/256/', # b
+	'button_2' : '1/512/', # x
+	'button_3' : '1/768/', # y
+	'button_4' : '1/1024/', # L Shoulder
+	'button_5' : '1/1280/', # R Shoulder
+	'button_7' : '1/33282/', # L Trigger
+	'button_6' : '1/33281/', # R Trigger
+	'button_9' : '1/1792/', # Start
+	'axes_1-' : '1/33025/', # L Stick Up
+	'axes_1+' : '1/33026/', # L Stick Down
+	'axes_0-' : '1/32769/', # L Stick Left
+	'axes_0+' : '1/32770/', # L Stick Right
+	'axes_3-' : '1/33793/', # R Stick Up
+	'axes_3+' : '1/33794/', # R Stick Down
+	'axes_2-' : '1/33537/', # R Stick Left
+	'axes_2+' : '1/33538/', # R Stick Right
+}
+
+KEYBOARD_IBM_CODE_MAP = {
+	'none' : 0,
+	'ESCAPE' : 1,
+	'1' : 2,
+	'2' : 3,
+	'3' : 4,
+	'4' : 5,
+	'5' : 6,
+	'6' : 7,
+	'7' : 8,
+	'8' : 9,
+	'9' : 10,
+	'0' : 11,
+	'MINUS' : 12,
+	'EQUALS' : 13,
+	'BACKSPACE' : 14,
+	'TAB' : 15,
+	'Q' : 16,
+	'W' : 17,
+	'E' : 18,
+	'R' : 19,
+	'T' : 20,
+	'Y' : 21,
+	'U' : 22,
+	'I' : 23,
+	'O' : 24,
+	'P' : 25,
+	'LBRACKET' : 26,
+	'RBRACKET' : 27,
+	'RETURN' : 28,
+	'LCONTROL' : 29,
+	'A' : 30,
+	'S' : 31,
+	'D' : 32,
+	'F' : 33,
+	'G' : 34,
+	'H' : 35,
+	'J' : 36,
+	'K' : 37,
+	'L' : 38,
+	'SEMICOLON': 39,
+	'APOSTROPHE' : 40, # '
+	'GRAVE' : 41, # `
+	'LSHIFT' : 42,
+	'BACKSLASH' : 43,
+	'Z' : 44,
+	'X' : 45,
+	'C' : 46,
+	'V' : 47,
+	'B' : 48,
+	'N' : 49,
+	'M' : 50,
+	'COMMA' : 51,
+	'PERIOD' : 52,
+	'SLASH' : 53,
+	'RSHIFT' : 54,
+	'MULTIPLY' : 55, # ×
+	'LMENU' : 56, # Left Menu/Alt
+	'SPACE' : 57,
+	'CAPITAL' : 58, # Caps Lock
+	'F1' : 59,
+	'F2' : 60,
+	'F3' : 61,
+	'F4' : 62,
+	'F5' : 63,
+	'F6' : 64,
+	'F7' : 65,
+	'F8' : 66,
+	'F9' : 67,
+	'F10' : 68,
+	'NUMLOCK' : 69,
+	'SCROLL' : 70,	
+	'NUMPAD7' : 71,
+	'NUMPAD8' : 72,
+	'NUMPAD9' : 73,
+	'SUBTRACT' : 74,
+	'NUMPAD4' : 75,
+	'NUMPAD5' : 76,
+	'NUMPAD6' : 77,
+	'ADD' : 78,
+	'NUMPAD1' : 79,
+	'NUMPAD2' : 80,
+	'NUMPAD3' : 81,
+	'NUMPAD0' : 82,
+	'DECIMAL' : 83,
+	'F11' : 87,
+	'F12' : 88,
+	'F13' : 100,
+	'F14' : 101,
+	'F15' : 102,
+	'F16' : 103,
+	'F17' : 104,
+	'F18' : 105,
+	'KANA' : 112,
+	'F19' : 113,
+	'CONVERT' : 121,
+	'NOCONVERT' : 123,
+	'YEN' : 125, # ¥
+	'NUMPADEQUALS' : 141,
+	'CIRCUMFLEX' : 144, # ^
+	'AT' : 145, # @
+	'COLON' : 146, # :
+	'UNDERLINE' : 147, # _
+	'KANJI' : 148,
+	'STOP' : 149,
+	'AX' : 150,
+	'UNLABLED' : 151,
+	'NUMPADENTER' : 156,
+	'RCONTROL' : 157,
+	'SECTION' : 157,
+	'NUMPADCOMMA' : 179,
+	'DIVIDE' : 181,
+	'SYSRQ' : 183,
+	'RMENU' : 184, # Right Menu/Alt
+	'FUNCTION' : 196,
+	'PAUSE' : 197, 
+	'HOME' : 199,
+	'UP' : 200,
+	'PRIOR': 201, # Page Up
+	'LEFT' : 203, # Left Arrow
+	'RIGHT' : 205, # Right Arrow
+	'END' : 207,
+	'DOWN' : 208, # Down Arrow
+	'NEXT' : 209, # Page Down
+	'INSERT' : 210,
+	'DELETE' : 211,
+	'LMETA' : 219, # Left Meta/Super
+	'LWIN' : 219,
+	'RMETA' : 220, # Right Meta/Super
+	'RWIN' : 220,
+	'APPS' : 221,
+	'POWER' : 222,
+	'SLEEP' : 223
+}
+
 
 class SSF(base_console.BaseConsole):
 	def __init__(self):
 		super(SSF, self).__init__('config/ssf.json')
+
+		# Setup the initial map, if there is none
+		if not self.button_map:
+			self.button_map = {
+				'btnUpSSF' : None,
+				'btnDownSSF' : None,
+				'btnLeftSSF' : None,
+				'btnRightSSF' : None,
+				'btnStartSSF' : None,
+				'btnASSF' : None,
+				'btnBSSF' : None,
+				'btnCSSF' : None,
+				'btnXSSF' : None,
+				'btnYSSF' : None,
+				'btnZSSF' : None,
+				'btnLShoulderSSF' : None,
+				'btnRShoulderSSF' : None,
+			}
 
 	def _setup_configs(self, bios_path):
 		config = {
@@ -162,7 +339,7 @@ class SSF(base_console.BaseConsole):
 				'PadType1_3' : '"5"',
 				'PadType1_4' : '"5"',
 				'PadType1_5' : '"5"',
-				'Pad0_0_0' : '"2/200/2/208/2/203/2/205/2/44/2/45/2/46/2/31/2/32/2/33/2/30/2/34/2/28/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"',
+				'Pad0_0_0' : '"0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"',
 				'Pad0_0_1' : '"0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"',
 				'Pad0_0_2' : '"0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"',
 				'Pad0_0_3' : '"0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"',
@@ -257,6 +434,37 @@ class SSF(base_console.BaseConsole):
 				'ROMFolder' : '".\"'
 			}
 		}
+
+		# Gamepad
+		config['Input']['Pad0_0_0'] = \
+			'"' + \
+			BUTTON_CODE_MAP[self.button_map['btnUpSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnDownSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnLeftSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnRightSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnASSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnBSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnCSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnXSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnYSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnZSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnLShoulderSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnRShoulderSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btnStartSSF']] + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'0/0' + \
+			'"'
 
 		# Save SSF.ini
 		ini.write_ini_file('emulators/SSF_012_beta_R4/SSF.ini', config)
@@ -507,7 +715,7 @@ class SSF(base_console.BaseConsole):
 		}
 
 		# Save Setting.ini
-		ini.write_ini_file('emulators/SSF_012_beta_R4/SSF.ini', config)
+		ini.write_ini_file('emulators/SSF_012_beta_R4/Setting.ini', config)
 
 	def run(self, path, binary, bios):
 		# Mount the game
