@@ -19,7 +19,7 @@
 				Not connected to server!
 			</div>
 
-			<div id="genericProgress"></div>
+			<div id="genericProgress" style="font-size: 400%"></div>
 
 			<div id="config_buttons_demul" style="display: none">
 				<h1>Configure Dreamcast Controls</h1>
@@ -106,14 +106,26 @@
 
 			<div id="config_programs">
 				<h1>Install and Configure Programs</h1>
-				
-				<table id="installTable" class="configTable">
+
+				<div id="navigation">
+					<ul>
+						<li id="tab7Zip" class="selected"><a href="#" onclick="show_navigation('7Zip')">7-Zip</a></li>
+						<li id="tabVCD" class="not_selected"><a href="#" onclick="show_navigation('VCD')">Virtual Clone Drive</a></li>
+						<li id="tabDemul" class="not_selected"><a href="#" onclick="show_navigation('Demul')">Demul</a></li>
+						<li id="tabNullDC" class="not_selected"><a href="#" onclick="show_navigation('NullDC')">NullDC</a></li>
+						<li id="tabSSF" class="not_selected"><a href="#" onclick="show_navigation('SSF')">SSF</a></li>
+						<li id="tabDolphin" class="not_selected"><a href="#" onclick="show_navigation('Dolphin')">Dolphin</a></li>
+						<li id="tabPCSXR" class="not_selected"><a href="#" onclick="show_navigation('PCSXR')">PCSX-Reloaded</a></li>
+						<li id="tabPCSX2" class="not_selected"><a href="#" onclick="show_navigation('PCSX2')">PCSX2</a></li>
+						<li id="tabMupen64Plus" class="not_selected"><a href="#" onclick="show_navigation('Mupen64Plus')">Mupen 64 Plus</a></li>
+					</ul>
+				</div>
+
+				<table id="table7Zip" class="configTable">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
 						<th>Status</th>
-						<th>Controls</th>
-						<th>BIOS</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>7-ZIP</td>
@@ -124,8 +136,14 @@
 							<div style="color: red;">FIXME: Uninstall does not work.</div>
 							<input id="btn_install_7zip" type="button" value="Loading ..." disabled />
 						</td>
-						<td></td>
-						<td></td>
+					</tr>
+				</table>
+
+				<table id="tableVCD" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>Virtual Clone Drive</td>
@@ -136,8 +154,16 @@
 							<div style="color: red;">FIXME: Uninstall does not work.</div>
 							<input id="btn_install_vcd" type="button" value="Loading ..." disabled />
 						</td>
-						<td></td>
-						<td></td>
+					</tr>
+				</table>
+
+				<table id="tableNullDC" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>NullDC</td>
@@ -145,8 +171,18 @@
 						A Sega Dreamcast Emulator.
 						</td>
 						<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
-						<td></td>
-						<td></td>
+						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
+						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
+					</tr>
+				</table>
+
+				<table id="tableDemul" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>Demul</td>
@@ -165,13 +201,26 @@
 							<nobr><input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input></nobr>
 						</td>
 					</tr>
+				</table>
+
+				<table id="tableSSF" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
+					</tr>
 					<tr class="border_bottom">
 						<td>SSF</td>
 						<td>
 						A Sega Saturn emulator. Requires games to be mounted in a tool such as Virtual Clone Drive.
 						</td>
 						<td><input id="btn_install_ssf" type="button" value="Loading ..." disabled /></td>
-						<td><input id="btn_controls_ssf" type="button" value="Buttons" disabled /></td>
+						<td>
+							<span style="color: red;">FIXME: Does not work. SSF uses the wrong SSF.ini file.</span>
+							<input id="btn_controls_ssf" type="button" value="Buttons" disabled />
+						</td>
 						<td>
 							<nobr><input type="file" id="btn_bios_ssf_usa" name="btn_bios_ssf_usa" disabled>USA BIOS (*.bin)</input></nobr>
 							<br />
@@ -180,6 +229,15 @@
 							<nobr><input type="file" id="btn_bios_ssf_jap" name="btn_bios_ssf_jap" disabled>JAP BIOS (*.bin)</input></nobr>
 						</td>
 					</tr>
+				</table>
+
+				<table id="tableDolphin" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+					</tr>
 					<tr class="border_bottom">
 						<td>Dolphin</td>
 						<td>
@@ -187,7 +245,16 @@
 						</td>
 						<td><input id="btn_install_dolphin" type="button" value="Loading ..." disabled /></td>
 						<td><input id="btn_controls_dolphin" type="button" value="Buttons" disabled /></td>
-						<td></td>
+					</tr>
+				</table>
+
+				<table id="tablePCSXR" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>PCSX-Reloaded</td>
@@ -195,8 +262,18 @@
 						A Sony Playstation emulator.
 						</td>
 						<td><input id="btn_install_pcsxr" type="button" value="Loading ..." disabled /></td>
-						<td></td>
-						<td></td>
+						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
+						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
+					</tr>
+				</table>
+
+				<table id="tablePCSX2" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>PCSX2</td>
@@ -207,8 +284,18 @@
 							<div style="color: red;">FIXME: Can't automate download from build server.</div>
 							<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
 						</td>
-						<td></td>
-						<td></td>
+						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
+						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
+					</tr>
+				</table>
+
+				<table id="tableMupen64Plus" class="configTable" style="display: none">
+					<tr>
+						<th>Program Name</th>
+						<th>Description</th>
+						<th>Status</th>
+						<th>Controls</th>
+						<th>BIOS</th>
 					</tr>
 					<tr class="border_bottom">
 						<td>Mupen 64 Plus</td>
@@ -216,8 +303,8 @@
 						A Nintendo 64 emulator. Runs from the command line only.
 						</td>
 						<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
-						<td></td>
-						<td></td>
+						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
+						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
 					</tr>
 				</table>
 			</div>
@@ -233,6 +320,22 @@
 </html>
 
 <script language="JavaScript">
+
+function show_navigation(tab_name) {
+	// Hide all the tables
+	$('.configTable').hide();
+
+	// Show the selected table
+	$('#table' + tab_name).show();
+
+	// Remove the old selected tab
+	$('.selected').addClass('not_selected');
+	$('.selected').removeClass('selected');
+
+	// Add the new selected tab
+	$('#tab' + tab_name).removeClass('not_selected');
+	$('#tab' + tab_name).addClass('selected');
+}
 
 jQuery(function($) {
 
@@ -327,7 +430,7 @@ KEYBOARD_JS_CODE_MAP = {
 	98 : 'NUMPAD2',
 	99 : 'NUMPAD3',
 	96 : 'NUMPAD0',
-	//'DECIMAL',
+	110 : 'DECIMAL',
 	122 : 'F11',
 	123 : 'F12',
 	/*
@@ -351,11 +454,11 @@ KEYBOARD_JS_CODE_MAP = {
 	'STOP',
 	'AX',
 	'UNLABLED',
-	'NUMPADENTER',
-	'RCONTROL',
+	13 : 'NUMPADENTER',
+	17 : 'RCONTROL',
 	'SECTION',
 	'NUMPADCOMMA',
-	'DIVIDE',
+	111 : 'DIVIDE',
 	'SYSRQ',
 	*/
 	18 : 'RMENU', // Right Menu/Alt

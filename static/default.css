@@ -22,6 +22,38 @@ a {
 	margin-top: 100px;
 }
 
+#navigation ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+#navigation li {
+	float: left;
+}
+
+#navigation a:link, #navigation  a:visited {
+	display: block;
+	width: 120px;
+	height: 40px;
+	font-weight: bold;
+	text-align: center;
+	padding: 5px;
+}
+
+#navigation a:hover, a:active {
+	background-color: #CCCCCC;
+}
+
+#navigation .selected {
+	background-color: #DDDDDD;
+}
+
+#navigation .not_selected {
+	background-color: #FFFFFF;
+}
+
 .gameIcon {
 	float: left;
 	margin: 0px;
@@ -107,19 +139,14 @@ img.blackAndWhite {
 }
 
 .configTable {
-	padding: 10px;
+	align: left;
+	width: 100%;
+	padding: 30px;
     background-color: #DDDDDD;
-	border-collapse: collapse; 
-}
-
-.configTable td {
-	padding: 20px;
-	vertical-align: text-top;
-	border-bottom: 20px solid white;
 }
 
 .configTable th {
-    background-color: #FFFFFF;
+	text-align: left;
 }
 
 #not_connected {
