@@ -601,8 +601,8 @@ if __name__ == '__main__':
 		view_in_browser(None)
 
 	menu_options = (
-						('Start Server', icon, start),
-						('Stop Server', icon, stop),
+						('Start Server (FIXME: Breaks if already started)', icon, start),
+						('Stop Server (FIXME: Does not free the port)', icon, stop),
 						('View in Browser', icon, view_in_browser),
 						('Emulators', icon,
 							(
