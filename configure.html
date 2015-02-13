@@ -82,6 +82,31 @@
 				<input type="button" value="Done" id="btn_done_button_config_dolphin" />
 			</div>
 
+			<div id="config_buttons_mupen" style="display: none">
+				<h1>Configure Nintendo 64 Controls</h1>
+
+				<table>
+					<tr><td>Up</td><td><input type="button" value="Not Assigned" id="btnUpMupen" /></td></tr>
+					<tr><td>Down</td><td><input type="button" value="Not Assigned" id="btnDownMupen" /></td></tr>
+					<tr><td>Left</td><td><input type="button" value="Not Assigned" id="btnLeftMupen" /></td></tr>
+					<tr><td>Right</td><td><input type="button" value="Not Assigned" id="btnRightMupen" /></td></tr>
+					<tr><td>Start</td><td><input type="button" value="Not Assigned" id="btnStartMupen" /></td></tr>
+					<tr><td>A</td><td><input type="button" value="Not Assigned" id="btnAMupen" /></td></tr>
+					<tr><td>B</td><td><input type="button" value="Not Assigned" id="btnBMupen" /></td></tr>
+					<tr><td>Z</td><td><input type="button" value="Not Assigned" id="btnZMupen" /></td></tr>
+					<tr><td>L Shoulder</td><td><input type="button" value="Not Assigned" id="btnLShoulderMupen" /></td></tr>
+					<tr><td>R Shoulder</td><td><input type="button" value="Not Assigned" id="btnRShoulderMupen" /></td></tr>
+					<tr><td>Stick X</td><td><input type="button" value="Not Assigned" id="btnStickXMupen" /></td></tr>
+					<tr><td>Stick Y</td><td><input type="button" value="Not Assigned" id="btnStickYMupen" /></td></tr>
+					<tr><td>C Up</td><td><input type="button" value="Not Assigned" id="btnCUpMupen" /></td></tr>
+					<tr><td>C Down</td><td><input type="button" value="Not Assigned" id="btnCDownMupen" /></td></tr>
+					<tr><td>C Left</td><td><input type="button" value="Not Assigned" id="btnCLeftMupen" /></td></tr>
+					<tr><td>C Right</td><td><input type="button" value="Not Assigned" id="btnCRightMupen" /></td></tr>
+				</table>
+
+				<input type="button" value="Done" id="btn_done_button_config_mupen" />
+			</div>
+
 			<div id="config_buttons_ssf" style="display: none">
 				<h1>Configure Saturn Controls</h1>
 
@@ -302,8 +327,8 @@
 						<td>
 						A Nintendo 64 emulator. Runs from the command line only.
 						</td>
-						<td><input id="btn_install_mupen64plus" type="button" value="Loading ..." disabled /></td>
-						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
+						<td><input id="btn_install_mupen" type="button" value="Loading ..." disabled /></td>
+						<td><input id="btn_controls_mupen" type="button" value="Buttons" disabled /></td>
 						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
 					</tr>
 				</table>
@@ -568,6 +593,7 @@ function get_pressed_button() {
 
 var button_map_demul = {};
 var button_map_dolphin = {};
+var button_map_mupen = {};
 var button_map_ssf = {};
 
 var is_7zip_installed = false;
@@ -686,11 +712,14 @@ function on_data(data) {
 			$('#btn_install_pcsx2').prop('disabled', true);
 		} else if (data['name'] == 'Mupen 64 Plus') {
 			is_mupen_installed = data['value'];
-			if(is_mupen_installed)
-				$('#btn_install_mupen64plus').val('Uninstall');
-			else
-				$('#btn_install_mupen64plus').val('Install');
-			$('#btn_install_mupen64plus').prop('disabled', false);
+			if(is_mupen_installed) {
+				$('#btn_install_mupen').val('Uninstall');
+				$('#btn_controls_mupen').prop('disabled', false);
+			} else {
+				$('#btn_install_mupen').val('Install');
+				$('#btn_controls_mupen').prop('disabled', true);
+			}
+			$('#btn_install_mupen').prop('disabled', false);
 		}
 	} else if(data['action'] == 'get_button_map') {
 		if(data['console'] == 'Dreamcast') {
@@ -746,6 +775,35 @@ function on_data(data) {
 						} else {
 							btn.val(button_name);
 							button_map_dolphin[key] = button_name;
+						}
+						btn.prop('disabled', false);
+					});
+				});
+			});
+		} else if(data['console'] == 'Nintendo64') {
+			button_map_mupen = data['value'];
+
+			// Setup each button
+			$.each(button_map_mupen, function(key, value) {
+				// Get button
+				var btn = $('#' + key);
+
+				// Set previous value, if there is one
+				if(value) {
+					btn.val(value);
+				}
+
+				// On click poll for a new button
+				btn.click(function() {
+					btn.val('Press new button ...');
+					btn.prop('disabled', true);
+					start_polling_buttons(function(button_name) {
+						// Save the new button
+						if(button_name == -1) {
+							btn.val('Not Assigned');
+						} else {
+							btn.val(button_name);
+							button_map_mupen[key] = button_name;
 						}
 						btn.prop('disabled', false);
 					});
@@ -1164,7 +1222,7 @@ function setup_ui() {
 		socket.send(message);
 	});
 
-	btn = $("#btn_install_mupen64plus");
+	btn = $("#btn_install_mupen");
 	btn.on('click', function() {
 		if(is_mupen_installed) {
 			message = {
@@ -1234,6 +1292,21 @@ function setup_ui() {
 		socket.send(message);
 	});
 
+	btn = $('#btn_controls_mupen');
+	btn.on('click', function() {
+		$('#config_buttons_mupen').show();
+		$('#config_programs').hide();
+
+		// Load the button map
+		var message = {
+			'action' : 'get_button_map',
+			'console' : 'Nintendo64',
+			'value' : button_map_mupen
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
 	btn = $('#btn_controls_ssf');
 	btn.on('click', function() {
 		$('#config_buttons_ssf').show();
@@ -1274,6 +1347,21 @@ function setup_ui() {
 			'action' : 'set_button_map',
 			'console' : 'GameCube',
 			'value' : button_map_dolphin
+		};
+		message = JSON.stringify(message);
+		socket.send(message);
+	});
+
+	btn = $('#btn_done_button_config_mupen');
+	btn.on('click', function() {
+		$('#config_buttons_mupen').hide();
+		$('#config_programs').show();
+
+		// Save the button map
+		var message = {
+			'action' : 'set_button_map',
+			'console' : 'Nintendo64',
+			'value' : button_map_mupen
 		};
 		message = JSON.stringify(message);
 		socket.send(message);
