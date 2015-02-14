@@ -31,11 +31,10 @@ TODO:
 . How do we deal with games that use multiple disks in the UI?
 . Give an option to upload a binary too
 . Have Virtual Clone Drive not popup the mounted directory
-. Have it auto download Virtual Clone Drive for emulators that need it
-. Have it auto download and config emulators
-. Controller configs
-. Memory configs
-. Move the mouse cursor to the bottom left corner on start
+. Memory card configs
+. Move the mouse cursor to the bottom right corner on start
+. Figure out how to hide the emulators and mirror their screen
+	onto our own screen.
 """
 
 import os, sys
