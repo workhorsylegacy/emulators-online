@@ -4,7 +4,7 @@
 	padding: 0;
 }
 
-#header {
+#search_header {
 	padding: 30px;
 	position: fixed;
 	top: 0;
@@ -12,6 +12,17 @@
 	width: 100%;
 	z-index: 2000;
 	background: #8adb89;
+}
+
+#error_header {
+	padding: 30px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 2000;
+	background-color: red;
+	font-size: 250%;
 }
 
 a {
@@ -147,11 +158,5 @@ img.blackAndWhite {
 
 .configTable th {
 	text-align: left;
-}
-
-#not_connected {
-	background-color: red;
-	font-size: 250%;
-	margin: 10px;
 }
   

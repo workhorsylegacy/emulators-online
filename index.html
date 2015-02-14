@@ -8,17 +8,17 @@
 		<link rel="shortcut icon" href="static/favicon.ico" />
 	</head>
 	<body>
-		<div id="header">
+		<div id="search_header" class="header">
 			Search: <input id="search_text" type="text" />
 			<br />
 			<a href="configure.html">Configure</a>
 		</div>
 
-		<div id="content">
-			<div id="not_connected" style="display: none">
-				Not connected to server!
-			</div>
+		<div id="error_header" class="header" style="display: none">
+			Not connected to server!
+		</div>
 
+		<div id="content">
 			<div id="game_dialogs"></div>
 
 			<div id="game_selector" style="overflow: auto;"></div>

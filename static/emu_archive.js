@@ -269,24 +269,40 @@ function on_search() {
 
 function setup_websocket(on_data) {
 	var host = "ws://localhost:9090/ws";
-	socket = new WebSocket(host);
+	var socket = null;
+
+	try {
+		socket = new WebSocket(host);
+	} catch(e) {
+		socket = null;
+	}
 
 	// event handlers for websocket
 	if(socket) {
 		socket.onopen = function() {
-			$("#not_connected").hide();
-		}
+			$("#error_header").hide();
+			$("#search_header").show();
+		};
 
 		socket.onmessage = function(msg) {
-			data = JSON.parse(msg.data)
+			var data = JSON.parse(msg.data);
 			on_data(data);
-		}
+		};
 
 		socket.onclose = function() {
-			$("#not_connected").show();
-		}
+			$("#error_header").show();
+			$("#search_header").hide();
+
+			// Re-connect again in 3 seconds
+			setTimeout(function() {
+				setup_websocket(on_data);
+			}, 3000);
+		};
+
+		socket.onerror = function(err) {
+		};
 	} else {
 		console.log("invalid socket");
 	}
-
 }
+
