@@ -585,9 +585,7 @@ class Demul(base_console.BaseConsole):
 
 		ini.write_ini_file('emulators/Demul/padDemul.ini', config)
 
-		
-	def run(self, path, binary):
-		# Setup SPU
+	def _setup_spu(self):
 		config = {
 			'main' : {
 				'spuDisable' : 'false',
@@ -599,12 +597,7 @@ class Demul(base_console.BaseConsole):
 		}
 		ini.write_ini_file('emulators/Demul/spuDemul.ini', config)
 
-
-		# Setup Pad
-		self._setup_pad()
-
-
-		# Setup Net
+	def _setup_net(self):
 		config = {
 			'main' : {
 				'netEnable' : 'false',
@@ -614,8 +607,7 @@ class Demul(base_console.BaseConsole):
 		}
 		ini.write_ini_file('emulators/Demul/netDemul.ini', config)
 
-
-		# Setup GDR Image
+	def _setup_gdr(self):
 		config = {
 			'main' : {
 				'imageFileName' : '',
@@ -624,7 +616,7 @@ class Demul(base_console.BaseConsole):
 		}
 		ini.write_ini_file('emulators/Demul/gdrImage.ini', config)
 
-
+	def _setup_directx(self):
 		# Setup DirectX
 		config = {
 			'main' : {
@@ -653,7 +645,7 @@ class Demul(base_console.BaseConsole):
 		}
 		ini.write_ini_file('emulators/Demul/gpuDX11.ini', config)
 
-
+	def _setup_demul(self):
 		# Setup Demul
 		config = {
 			'files' : {
@@ -742,7 +734,16 @@ class Demul(base_console.BaseConsole):
 			}
 		}
 		ini.write_ini_file('emulators/Demul/Demul.ini', config)
+		return config
 
+	def run(self, path, binary):
+		# Setup ini files
+		self._setup_spu()
+		self._setup_pad()
+		self._setup_net()
+		self._setup_gdr()
+		self._setup_directx()
+		config = self._setup_demul()
 
 		# Get the window title
 		directx_dll = config['plugins']['gpu']
