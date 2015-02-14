@@ -86,6 +86,9 @@ class Demul(base_console.BaseConsole):
 				'btnRightStickRightDemul' : None
 			}
 
+	def is_installed(self):
+		return os.path.isdir('emulators/Demul/')
+
 	def _setup_pad(self):
 		global BUTTON_CODE_MAP
 
@@ -695,7 +698,7 @@ class Demul(base_console.BaseConsole):
 				'spu' : 'spuDemul.dll',
 				'pad' : 'padDemul.dll',
 				'directory' : os.path.abspath('emulators/Demul/plugins/'),
-				'gpu' : 'gpuDX11.dll',
+				'gpu' : 'gpuDX11.dll', # FIXME: We are hard coding DirectX 11
 				'net' : 'netDemul.dll'
 			},
 			'main' : {
@@ -741,19 +744,30 @@ class Demul(base_console.BaseConsole):
 		ini.write_ini_file('emulators/Demul/Demul.ini', config)
 
 
-		# Get the DirectX version for the window title
+		# Get the window title
 		directx_dll = config['plugins']['gpu']
-		directx_version = None
-		if directx_dll == 'gpuDX11.dll':
-			directx_version = 'gpuDX11hw'
+		window_name = None
+		if not path and not binary:
+			window_name = 'Demul'
+		elif directx_dll == 'gpuDX11.dll':
+			window_name = 'gpuDX11hw'
 		elif directx_dll == 'gpuDX10.dll':
-			directx_version = 'gpuDX10hw'
+			window_name = 'gpuDX10hw'
+
+		# Figure out if running a game or not
+		command = None
+		full_screen = False
+		if path and binary:
+			game_path = self.goodJoin("../../", path + '/' + binary)
+			command = '"demul.exe" -run=dc -image="' + game_path + '"'
+			full_screen = True
+		else:
+			command = '"demul.exe" -run=dc'
+			full_screen = False
 
 		# Run the game
 		os.chdir("emulators/Demul/")
-		game_path = self.goodJoin("../../", path + '/' + binary)
-		command = '"demul.exe" -run=dc -image="' + game_path + '"'
-		runner = emu_runner.EmuRunner(command, directx_version, full_screen_alt_enter=True)
+		runner = emu_runner.EmuRunner(command, window_name, full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
 

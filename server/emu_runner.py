@@ -34,12 +34,16 @@ import win32api
 PY2 = sys.version_info[0] == 2
 
 class EmuRunner(object):
-	def __init__(self, command, emu_title_bar_text, full_screen_alt_enter=False):
+	def __init__(self, command, emu_title_bar_text, full_screen, full_screen_alt_enter=False):
 		self.emu_title_bar_text = emu_title_bar_text
 		self.command = command
+		self.full_screen = full_screen
 		self.full_screen_alt_enter = full_screen_alt_enter
 		self.emu_proc = None
 		self.foundWindows = []
+
+	def is_installed(self):
+		return False
 
 	def run(self):
 		def enumWindowFunc(hwnd, windowList):
@@ -104,7 +108,7 @@ class EmuRunner(object):
 				break;
 
 		# Fullscreening the emu window with alt + enter if needed
-		if self.full_screen_alt_enter:
+		if self.full_screen and self.full_screen_alt_enter:
 			time.sleep(wait_time)
 			win32api.keybd_event(win32con.VK_MENU, 0, 0, 0)
 			win32api.keybd_event(win32con.VK_RETURN, 0, 0, 0)

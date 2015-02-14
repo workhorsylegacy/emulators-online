@@ -30,12 +30,24 @@ class PCSXR(base_console.BaseConsole):
 	def __init__(self):
 		super(PCSXR, self).__init__('config/pcsxr.json')
 
+	def is_installed(self):
+		return os.path.isdir('emulators/pcsxr/')
+
 	def run(self, path, binary):
+		# Figure out if running a game or not
+		command = None
+		full_screen = False
+		if path and binary:
+			game_path = self.goodJoin('../../', path + '/' + binary)
+			command = '"pcsxr.exe" -nogui -cdfile "' + game_path + '"'
+			full_screen = True
+		else:
+			command = '"pcsxr.exe"'
+			full_screen = False
+
 		# Run the game
 		os.chdir("emulators/pcsxr/")
-		game_path = self.goodJoin('../../', path + '/' + binary)
-		command = '"pcsxr.exe" -nogui -cdfile "' + game_path + '"'
-		runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen_alt_enter=True)
+		runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
 

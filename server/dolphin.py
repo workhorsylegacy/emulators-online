@@ -68,6 +68,9 @@ class Dolphin(base_console.BaseConsole):
 				'btnRightStickRightDolphin' : None
 			}
 
+	def is_installed(self):
+		return os.path.exists('emulators/Dolphin-x64/')
+
 	def _setup_configs(self):
 		global BUTTON_CODE_MAP
 
@@ -530,9 +533,19 @@ class Dolphin(base_console.BaseConsole):
 
 		# Run the game
 		os.chdir("emulators/Dolphin-x64/")
-		game_path = self.goodJoin("../../", path + '/' + binary)
-		command = '"Dolphin.exe" --batch --exec="' + game_path + '"'
-		runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen_alt_enter=True)
+
+		# Figure out if it is running a game or not
+		command = None
+		full_screen = False
+		if path and binary:
+			game_path = self.goodJoin("../../", path + '/' + binary)
+			command = '"Dolphin.exe" --batch --exec="' + game_path + '"'
+			full_screen = True
+		else:
+			command = '"Dolphin.exe" --batch'
+			full_screen = False
+
+		runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
 

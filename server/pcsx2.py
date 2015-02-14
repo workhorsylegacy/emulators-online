@@ -16,7 +16,7 @@ def run(path, binary):
 	os.chdir("emulators/pcsx2-v1.3.1-8-gf88bea5-windows-x86/")
 	game_path = goodJoin("../../", path + '/' + binary)
 	command = '"pcsx2.exe" --nogui "' + game_path + '"'
-	runner = emu_runner.EmuRunner(command, 'GSdx', full_screen_alt_enter=True)
+	runner = emu_runner.EmuRunner(command, 'GSdx', full_screen, full_screen_alt_enter=True)
 	runner.run()
 	os.chdir("../..")
 

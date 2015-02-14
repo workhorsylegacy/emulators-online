@@ -214,7 +214,14 @@ class SSF(base_console.BaseConsole):
 				'btnRShoulderSSF' : None,
 			}
 
+	def is_installed(self):
+		return os.path.isdir('emulators/SSF_012_beta_R4/')
+
 	def _setup_configs(self, bios_path):
+		# Figure out the BIOS
+		if not bios_path:
+			bios_path = ''
+
 		config = {
 			'Peripheral' : {
 				'SaturnBIOS' : '"' + bios_path + '"', # use the regions bios
@@ -717,24 +724,35 @@ class SSF(base_console.BaseConsole):
 		# Save Setting.ini
 		ini.write_ini_file('emulators/SSF_012_beta_R4/Setting.ini', config)
 
-	def run(self, path, binary, bios):
-		# Mount the game
-		mounter = file_mounter.FileMounter("D")
-		mounter.unmount()
-		mounter.mount(path + '/' + binary)
-
+	def run(self, path, binary, bios_path):
 		# Get the bios path
-		bios_path = bios
 		if bios_path:
 			bios_path = os.path.abspath('emulators/SSF_012_beta_R4/bios/' + bios_path)
 
 		self._setup_configs(bios_path)
 
+		# Figure out if running a game or not
+		command = None
+		full_screen = False
+		if path and binary and bios_path:
+			game_path = self.goodJoin("../../", path + '/' + binary)
+			command = '"SSF.exe" "' + game_path + '"'
+			full_screen = True
+		else:
+			command = '"SSF.exe"'
+			full_screen = False
+
+		# Unmount any games
+		mounter = file_mounter.FileMounter("D") # FIXME: The virtual drive is hard coded to D
+		mounter.unmount()
+
+		# Mount the game if needed
+		if path and binary:
+			mounter.mount(path + '/' + binary)
+
 		# Run the game
 		os.chdir("emulators/SSF_012_beta_R4/")
-		game_path = self.goodJoin("../../", path + '/' + binary)
-		command = '"SSF.exe" "' + game_path + '"'
-		runner = emu_runner.EmuRunner(command, 'SSF', full_screen_alt_enter=True)
+		runner = emu_runner.EmuRunner(command, 'SSF', full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
 

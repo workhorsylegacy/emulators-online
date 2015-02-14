@@ -353,7 +353,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['console'] == 'Playstation':
 			pcsxr.run(data['path'], data['binary'])
 			self.log('playing')
-			print('Running PCSX-R ...')
+			print('Running PCSX-Reloaded ...')
 
 		elif data['console'] == 'Playstation2':
 			pcsx2.run(data['path'], data['binary'])
@@ -572,30 +572,38 @@ if __name__ == '__main__':
 		webbrowser.open_new('http://localhost:{0}'.format(port))
 
 	def run_demul(trayIcon):
-		run_emulator("emulators/Demul/", "demul.exe")
+		if demul.is_installed():
+			demul.run(None, None)
+			print('Running Demul ...')
+		else:
+			print('Demul is not installed')
 
 	def run_ssf(trayIcon):
-		run_emulator("emulators/SSF_012_beta_R4/", "SSF.exe")
+		if ssf.is_installed():
+			ssf.run(None, None, None)
+			print('Running SSF ...')
+		else:
+			print('SSF is not installed')
 
 	def run_dolphin(trayIcon):
-		run_emulator("emulators/Dolphin-x64/", "Dolphin.exe")
+		if dolphin.is_installed():
+			dolphin.run(None, None)
+			print('Running Dolphin ...')
+		else:
+			print('Dolphin is not installed')
 
 	def run_mupen64plus(trayIcon):
-		run_emulator("emulators/mupen64plus-bundle-win32-2.0/", "mupen64plus.exe")
+		print("Can't run Mupen64Plus without a game")
 
 	def run_pcsxr(trayIcon):
-		run_emulator("emulators/pcsxr/", "pcsxr.exe")
+		if pcsxr.is_installed():
+			pcsxr.run(None, None)
+			print('Running PCSX-Reloaded ...')
+		else:
+			print('PCSX-Reloaded is not installed')
 
 	def run_pcsx2(trayIcon):
-		run_emulator("emulators/pcsx2-v1.2.1-884-g2da3e15-windows-x86/", "pcsx2.exe")
-
-	def run_emulator(path, exe):
-		if not os.path.exists(os.path.join(path, exe)):
-			return
-
-		os.chdir(path)
-		proc = subprocess.Popen(exe, stdout=subprocess.PIPE)
-		os.chdir("../..")
+		print("FIXME")
 
 	if IS_EXE:
 		view_in_browser(None)

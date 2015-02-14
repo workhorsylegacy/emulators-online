@@ -80,6 +80,9 @@ class Mupen64Plus(base_console.BaseConsole):
 				'btnCRightMupen' : None
 			}
 
+	def is_installed(self):
+		return os.path.isdir('emulators/Mupen64Plus/')
+
 	def _setup_config(self):
 		config = {
 			'Input-SDL-Control1' : {
@@ -122,7 +125,7 @@ class Mupen64Plus(base_console.BaseConsole):
 		os.chdir("emulators/Mupen64Plus/")
 		game_path = self.goodJoin("../../", path + '/' + binary)
 		command = '"Mupen64plus.exe" --fullscreen "' + game_path + '"'
-		runner = emu_runner.EmuRunner(command, 'Mupen64Plus', full_screen_alt_enter=False)
+		runner = emu_runner.EmuRunner(command, 'Mupen64Plus', full_screen, full_screen_alt_enter=False)
 		runner.run()
 		os.chdir("../..")
 
