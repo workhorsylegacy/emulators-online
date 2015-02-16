@@ -107,6 +107,7 @@ if IS_EXE:
 	# Make the html, css, and js files
 	files = ['configure.html', 'index.html', 'static/default.css', 
 			'static/emu_archive.js', 'static/file_uploader.js',
+			'static/input.js',
 			'static/jquery-2.1.3.min.js', 'static/favicon.ico']
 
 	for file in files:

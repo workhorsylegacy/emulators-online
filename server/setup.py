@@ -27,6 +27,9 @@ with open('../static/file_uploader.js', 'rb') as f:
 with open('../static/favicon.ico', 'rb') as f:
 	data['static/favicon.ico'] = base64.b64encode(f.read())
 
+with open('../static/input.js', 'rb') as f:
+	data['static/input.js'] = base64.b64encode(f.read())
+
 with open('../static/jquery-2.1.3.min.js', 'rb') as f:
 	data['static/jquery-2.1.3.min.js'] = base64.b64encode(f.read())
 
