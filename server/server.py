@@ -191,6 +191,12 @@ class ConfigureHandler(tornado.web.RequestHandler):
 		self.write(loader.load("configure.html").generate())
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
+	# Make it so the same-origin policy is turned off
+	# This makes it so it can accept requests from any url
+	# http://tornado.readthedocs.org/en/latest/websocket.html
+	def check_origin(self, origin):
+		return True
+
 	def write_data(self, data):
 		data = json.dumps(data)
 		self.write_message(data)
@@ -519,9 +525,9 @@ class EmuDownloader(downloader.Downloader):
 if __name__ == '__main__':
 	icon = 'static/favicon.ico'
 	hover_text = "Emu Archive"
-	application = None
 	server = None
-	port = 9090
+	port = 8080
+	ws_port = 9090
 	server_thread = None
 
 	def start(trayIcon):
@@ -535,25 +541,30 @@ if __name__ == '__main__':
 		make_db('playstation.json', 'games/Sony/Playstation')
 		make_db('playstation2.json', 'games/Sony/Playstation2')
 
-		def start_server(port):
+		def start_server(port, ws_port):
 			global server
-			global application
 
 			application = tornado.web.Application([
-				(r'/ws', WebSocketHandler),
 				(r'/', MainHandler),
 				(r'/index.html', MainHandler),
 				(r'/configure.html', ConfigureHandler),
 				(r"/(.*)", tornado.web.StaticFileHandler, {"path" : r"./"}),
 			])
 
+			ws_application = tornado.web.Application([
+				(r'/ws', WebSocketHandler),
+			])
+
 			application.listen(port)
-			print('Server running on http://localhost:{0} ...'.format(port))
+			ws_application.listen(ws_port)
+
+			print('HTTP server running on http://localhost:{0} ...'.format(port))
+			print('WebSocket server running on ws://localhost:{0}/ws ...'.format(ws_port))
 			server = tornado.ioloop.IOLoop.instance()
 			server.start()
 
 		# Start the server in its own thread
-		server_thread = threading.Thread(target=start_server, args = (port, ))
+		server_thread = threading.Thread(target=start_server, args = (port, ws_port))
 		server_thread.start()
 
 	# FIXME: This does not free the port
