@@ -268,8 +268,9 @@ function on_search() {
 }
 
 function setup_websocket(on_data) {
+	console.log('setup_websocket .................................');
 	var host = "ws://localhost:9090/ws";
-	var socket = null;
+	socket = null;
 
 	try {
 		socket = new WebSocket(host);
