@@ -141,13 +141,12 @@
 					<ul>
 						<li id="tab7Zip" class="selected"><a href="#" onclick="show_navigation('7Zip')">7-Zip</a></li>
 						<li id="tabVCD" class="not_selected"><a href="#" onclick="show_navigation('VCD')">Virtual Clone Drive</a></li>
-						<li id="tabDemul" class="not_selected"><a href="#" onclick="show_navigation('Demul')">Demul</a></li>
-						<li id="tabNullDC" class="not_selected"><a href="#" onclick="show_navigation('NullDC')">NullDC</a></li>
-						<li id="tabSSF" class="not_selected"><a href="#" onclick="show_navigation('SSF')">SSF</a></li>
-						<li id="tabDolphin" class="not_selected"><a href="#" onclick="show_navigation('Dolphin')">Dolphin</a></li>
-						<li id="tabPCSXR" class="not_selected"><a href="#" onclick="show_navigation('PCSXR')">PCSX-Reloaded</a></li>
-						<li id="tabPCSX2" class="not_selected"><a href="#" onclick="show_navigation('PCSX2')">PCSX2</a></li>
-						<li id="tabMupen64Plus" class="not_selected"><a href="#" onclick="show_navigation('Mupen64Plus')">Mupen 64 Plus</a></li>
+						<li id="tabDreamcast" class="not_selected"><a href="#" onclick="show_navigation('Dreamcast')">Dreamcast</a></li>
+						<li id="tabSaturn" class="not_selected"><a href="#" onclick="show_navigation('Saturn')">Saturn</a></li>
+						<li id="tabGameCube" class="not_selected"><a href="#" onclick="show_navigation('GameCube')">GameCube</a></li>
+						<li id="tabNintendo64" class="not_selected"><a href="#" onclick="show_navigation('Nintendo64')">Nintendo 64</a></li>
+						<li id="tabPlaystation2" class="not_selected"><a href="#" onclick="show_navigation('Playstation2')">Playstation 2</a></li>
+						<li id="tabPlaystation" class="not_selected"><a href="#" onclick="show_navigation('Playstation')">Playstation</a></li>
 					</ul>
 				</div>
 
@@ -187,26 +186,7 @@
 					</tr>
 				</table>
 
-				<table id="tableNullDC" class="configTable" style="display: none">
-					<tr>
-						<th>Program Name</th>
-						<th>Description</th>
-						<th>Status</th>
-						<th>Controls</th>
-						<th>BIOS</th>
-					</tr>
-					<tr class="border_bottom">
-						<td>NullDC</td>
-						<td>
-						A Sega Dreamcast Emulator.
-						</td>
-						<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
-						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
-						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
-					</tr>
-				</table>
-
-				<table id="tableDemul" class="configTable" style="display: none">
+				<table id="tableDreamcast" class="configTable" style="display: none">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
@@ -231,9 +211,18 @@
 							<nobr><input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input></nobr>
 						</td>
 					</tr>
+					<tr class="border_bottom">
+						<td>NullDC</td>
+						<td>
+						A Sega Dreamcast Emulator.
+						</td>
+						<td><input id="btn_install_nulldc" type="button" value="Loading ..." disabled /></td>
+						<td><span style="color: red;">FIXME: Add button configuration.</span></td>
+						<td><span style="color: red;">FIXME: Add BIOS configuration.</span></td>
+					</tr>
 				</table>
 
-				<table id="tableSSF" class="configTable" style="display: none">
+				<table id="tableSaturn" class="configTable" style="display: none">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
@@ -261,7 +250,7 @@
 					</tr>
 				</table>
 
-				<table id="tableDolphin" class="configTable" style="display: none">
+				<table id="tableGameCube" class="configTable" style="display: none">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
@@ -278,7 +267,7 @@
 					</tr>
 				</table>
 
-				<table id="tablePCSXR" class="configTable" style="display: none">
+				<table id="tablePlaystation" class="configTable" style="display: none">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
@@ -297,7 +286,7 @@
 					</tr>
 				</table>
 
-				<table id="tablePCSX2" class="configTable" style="display: none">
+				<table id="tablePlaystation2" class="configTable" style="display: none">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
@@ -319,7 +308,7 @@
 					</tr>
 				</table>
 
-				<table id="tableMupen64Plus" class="configTable" style="display: none">
+				<table id="tableNintendo64" class="configTable" style="display: none">
 					<tr>
 						<th>Program Name</th>
 						<th>Description</th>
