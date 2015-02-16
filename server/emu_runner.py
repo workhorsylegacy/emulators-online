@@ -2,7 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 # Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# This software uses a MIT style license
+# emu_archive is a HTML based front end for video game console emulators
+# It uses a MIT style license
 # It is hosted at: https://github.com/workhorsy/emu_archive
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -23,6 +24,7 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 import sys
 import time
