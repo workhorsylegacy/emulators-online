@@ -251,9 +251,34 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'set_bios':
 			self._set_bios(data)
 
+		elif data['action'] == 'get_db':
+			self._get_db(data)
+
 		# Unknown message from the client
 		else:
 			self.log("Unknown action from client: {0}".format(data['action']))
+
+	def _get_db(self, data):
+		db = {}
+
+		with open('db/saturn.json', 'rb') as f:
+			db['Saturn'] = json.loads(f.read())
+		with open('db/playstation.json', 'rb') as f:
+			db['Playstation'] = json.loads(f.read())
+		with open('db/playstation2.json', 'rb') as f:
+			db['Playstation2'] = json.loads(f.read())
+		with open('db/gamecube.json', 'rb') as f:
+			db['GameCube'] = json.loads(f.read())
+		with open('db/nintendo64.json', 'rb') as f:
+			db['Nintendo64'] = json.loads(f.read())
+		with open('db/dreamcast.json', 'rb') as f:
+			db['Dreamcast'] = json.loads(f.read())
+
+		data = {
+			'action' : 'get_db',
+			'value' : db
+		}
+		self.write_data(data)
 
 	def _set_bios(self, data):
 		if data['console'] == 'Dreamcast':

@@ -41,6 +41,12 @@ jQuery(function($) {
 function on_data(data) {
 	if(data['action'] == 'log') {
 		console.log('Log: ' + data['value']);
+	} else if(data['action'] == 'get_db') {
+		db = data['value'];
+		$('#search_text').on('input propertychange paste', on_search);
+
+		// Show the default search
+		on_search();
 	} else {
 		console.log('Data: ' + data);
 	}
@@ -51,32 +57,13 @@ if(!("WebSocket" in window)) {
 } else {
 	setup_websocket(on_data);
 
-	// Load the game databases
-	$.when(
-		$.getJSON("db/saturn.json", function (data) {
-			db['Saturn'] = data;
-		}),
-		$.getJSON("db/playstation.json", function (data) {
-			db['Playstation'] = data;
-		}),
-		$.getJSON("db/playstation2.json", function (data) {
-			db['Playstation2'] = data;
-		}),
-		$.getJSON("db/gamecube.json", function (data) {
-			db['GameCube'] = data;
-		}),
-		$.getJSON("db/nintendo64.json", function (data) {
-			db['Nintendo64'] = data;
-		}),
-		$.getJSON("db/dreamcast.json", function (data) {
-			db['Dreamcast'] = data;
-		})
-	).then(function() {
-		$('#search_text').on('input propertychange paste', on_search);
-
-		// Show the default search
-		on_search();
-	});
+	// FIXME: Make this load when the web socket loads
+	setTimeout(function() {
+		message = {
+			'action' : 'get_db'
+		};
+		socket_send_data(message);
+	}, 2000);
 }
 
 });
