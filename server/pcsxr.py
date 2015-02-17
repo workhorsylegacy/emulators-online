@@ -41,6 +41,8 @@ class PCSXR(base_console.BaseConsole):
 		return os.path.isdir('emulators/pcsxr/')
 
 	def run(self, path, binary):
+		os.chdir("emulators/pcsxr/")
+
 		# Figure out if running a game or not
 		command = None
 		full_screen = False
@@ -53,7 +55,6 @@ class PCSXR(base_console.BaseConsole):
 			full_screen = False
 
 		# Run the game
-		os.chdir("emulators/pcsxr/")
 		runner = emu_runner.EmuRunner(command, 'PCSXR', full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")

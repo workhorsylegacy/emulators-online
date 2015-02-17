@@ -122,10 +122,11 @@ class Mupen64Plus(base_console.BaseConsole):
 	def run(self, path, binary):
 		self._setup_config()
 
+		os.chdir("emulators/Mupen64Plus/")
+
 		full_screen = True
 
 		# Run the game
-		os.chdir("emulators/Mupen64Plus/")
 		game_path = self.goodJoin("../../", path + '/' + binary)
 		command = '"Mupen64plus.exe" --fullscreen "' + game_path + '"'
 		runner = emu_runner.EmuRunner(command, 'Mupen64Plus', full_screen, full_screen_alt_enter=False)

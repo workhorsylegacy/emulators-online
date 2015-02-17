@@ -725,11 +725,21 @@ class SSF(base_console.BaseConsole):
 		ini.write_ini_file('emulators/SSF_012_beta_R4/Setting.ini', config)
 
 	def run(self, path, binary, bios_path):
+		# Unmount any games
+		mounter = file_mounter.FileMounter("D") # FIXME: The virtual drive is hard coded to D
+		mounter.unmount()
+
+		# Mount the game if needed
+		if path and binary:
+			mounter.mount(path + '/' + binary)
+
 		# Get the bios path
 		if bios_path:
 			bios_path = os.path.abspath('emulators/SSF_012_beta_R4/bios/' + bios_path)
 
 		self._setup_configs(bios_path)
+
+		os.chdir("emulators/SSF_012_beta_R4/")
 
 		# Figure out if running a game or not
 		command = None
@@ -742,16 +752,7 @@ class SSF(base_console.BaseConsole):
 			command = '"SSF.exe"'
 			full_screen = False
 
-		# Unmount any games
-		mounter = file_mounter.FileMounter("D") # FIXME: The virtual drive is hard coded to D
-		mounter.unmount()
-
-		# Mount the game if needed
-		if path and binary:
-			mounter.mount(path + '/' + binary)
-
 		# Run the game
-		os.chdir("emulators/SSF_012_beta_R4/")
 		runner = emu_runner.EmuRunner(command, 'SSF', full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")

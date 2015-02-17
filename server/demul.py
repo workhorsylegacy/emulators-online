@@ -755,6 +755,8 @@ class Demul(base_console.BaseConsole):
 		elif directx_dll == 'gpuDX10.dll':
 			window_name = 'gpuDX10hw'
 
+		os.chdir("emulators/Demul/")
+
 		# Figure out if running a game or not
 		command = None
 		full_screen = False
@@ -767,7 +769,6 @@ class Demul(base_console.BaseConsole):
 			full_screen = False
 
 		# Run the game
-		os.chdir("emulators/Demul/")
 		runner = emu_runner.EmuRunner(command, window_name, full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")

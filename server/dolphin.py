@@ -558,7 +558,6 @@ class Dolphin(base_console.BaseConsole):
 	def run(self, path, binary):
 		self._setup_configs()
 
-		# Run the game
 		os.chdir("emulators/Dolphin-x64/")
 
 		# Figure out if it is running a game or not
@@ -572,6 +571,7 @@ class Dolphin(base_console.BaseConsole):
 			command = '"Dolphin.exe" --batch'
 			full_screen = False
 
+		# Run the game
 		runner = emu_runner.EmuRunner(command, 'Dolphin 4.0', full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
