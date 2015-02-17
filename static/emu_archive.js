@@ -35,13 +35,13 @@ function make_game_icon(console_name, name, data, i) {
 	if(data["binary"])
 		text += "<img src=\"" + data["path"] + "title_small.png\" />";
 	else
-		text += "<img src=\"" + data["path"] + "title_small.png\" class=\"blackAndWhite\" />";
+		text += "<img src=\"" + data["path"] + "title_small.png\" class=\"black_and_white\" />";
 
 	text += "<br />" + 
 		name + "</a>";
 
 	var d = document.createElement('div');
-	d.className = "gameIcon";
+	d.className = "game_icon";
 	d.innerHTML = text;
 	document.getElementById('game_selector').appendChild(d);
 
@@ -50,7 +50,7 @@ function make_game_icon(console_name, name, data, i) {
 		// Create the dialog
 		var text = "" +
 		"<div>" +
-		"	<a href=\"#closeGameDialog\" class=\"closeGameDialog\">X</a>" + 
+		"	<a href=\"#close_game_dialog\" class=\"close_game_dialog\">X</a>" + 
 		"	<h2>" + name + "</h2>" + 
 		"	<img src=\"" + data["path"] + "title_big.png\" />" +
 		"	<input id=\"btn_" + i + "\" type=\"button\" value=\"play\" \>" +
@@ -65,7 +65,7 @@ function make_game_icon(console_name, name, data, i) {
 
 		var d = document.createElement('div');
 		d.id = "dialog_" + name;
-		d.className = "gameDialog";
+		d.className = "game_dialog";
 		d.innerHTML = text;
 		document.getElementById('game_dialogs').innerHTML = "";
 		document.getElementById('game_dialogs').appendChild(d);

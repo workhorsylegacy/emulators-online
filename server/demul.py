@@ -65,25 +65,25 @@ class Demul(base_console.BaseConsole):
 		# Setup the initial map, if there is none
 		if not self.button_map:
 			self.button_map = {
-				'btnUpDemul' : None,
-				'btnDownDemul' : None,
-				'btnLeftDemul' : None,
-				'btnRightDemul' : None,
-				'btnStartDemul' : None,
-				'btnADemul' : None,
-				'btnBDemul' : None,
-				'btnXDemul' : None,
-				'btnYDemul' : None,
-				'btnLTriggerDemul' : None,
-				'btnRTriggerDemul' : None,
-				'btnLeftStickUpDemul' : None,
-				'btnLeftStickDownDemul' : None,
-				'btnLeftStickLeftDemul' : None,
-				'btnLeftStickRightDemul' : None,
-				'btnRightStickUpDemul' : None,
-				'btnRightStickDownDemul' : None,
-				'btnRightStickLeftDemul' : None,
-				'btnRightStickRightDemul' : None
+				'btn_up_demul' : None,
+				'btn_down_demul' : None,
+				'btn_left_demul' : None,
+				'btn_right_demul' : None,
+				'btn_start_demul' : None,
+				'btn_a_demul' : None,
+				'btn_b_demul' : None,
+				'btn_x_demul' : None,
+				'btn_y_demul' : None,
+				'btn_l_trigger_demul' : None,
+				'btn_r_trigger_demul' : None,
+				'btn_left_stick_up_demul' : None,
+				'btn_left_stick_down_demul' : None,
+				'btn_left_stick_left_demul' : None,
+				'btn_left_stick_right_demul' : None,
+				'btn_right_stick_up_demul' : None,
+				'btn_right_stick_down_demul' : None,
+				'btn_right_stick_left_demul' : None,
+				'btn_right_stick_right_demul' : None
 			}
 
 	def is_installed(self):
@@ -559,28 +559,28 @@ class Demul(base_console.BaseConsole):
 
 		# Setup the gamepad
 		config['JOY0_0'] = {
-			'UP' : BUTTON_CODE_MAP[self.button_map['btnUpDemul']],
-			'DOWN' : BUTTON_CODE_MAP[self.button_map['btnDownDemul']],
-			'LEFT' : BUTTON_CODE_MAP[self.button_map['btnLeftDemul']],
-			'RIGHT' : BUTTON_CODE_MAP[self.button_map['btnRightDemul']],
-			'A' : BUTTON_CODE_MAP[self.button_map['btnADemul']],
-			'B' : BUTTON_CODE_MAP[self.button_map['btnBDemul']],
+			'UP' : BUTTON_CODE_MAP[self.button_map['btn_up_demul']],
+			'DOWN' : BUTTON_CODE_MAP[self.button_map['btn_down_demul']],
+			'LEFT' : BUTTON_CODE_MAP[self.button_map['btn_left_demul']],
+			'RIGHT' : BUTTON_CODE_MAP[self.button_map['btn_right_demul']],
+			'A' : BUTTON_CODE_MAP[self.button_map['btn_a_demul']],
+			'B' : BUTTON_CODE_MAP[self.button_map['btn_b_demul']],
 			'C' : 0,
 			'D' : 0,
-			'X' : BUTTON_CODE_MAP[self.button_map['btnXDemul']],
-			'Y' : BUTTON_CODE_MAP[self.button_map['btnYDemul']],
+			'X' : BUTTON_CODE_MAP[self.button_map['btn_x_demul']],
+			'Y' : BUTTON_CODE_MAP[self.button_map['btn_y_demul']],
 			'Z' : 0,
-			'LTRIG' : BUTTON_CODE_MAP[self.button_map['btnLTriggerDemul']],
-			'RTRIG' : BUTTON_CODE_MAP[self.button_map['btnRTriggerDemul']],
-			'START' : BUTTON_CODE_MAP[self.button_map['btnStartDemul']],
-			'S1UP' : BUTTON_CODE_MAP[self.button_map['btnLeftStickUpDemul']],
-			'S1DOWN' : BUTTON_CODE_MAP[self.button_map['btnLeftStickDownDemul']],
-			'S1LEFT' : BUTTON_CODE_MAP[self.button_map['btnLeftStickLeftDemul']],
-			'S1RIGHT' : BUTTON_CODE_MAP[self.button_map['btnLeftStickRightDemul']],
-			'S2UP' : BUTTON_CODE_MAP[self.button_map['btnRightStickUpDemul']],
-			'S2DOWN' : BUTTON_CODE_MAP[self.button_map['btnRightStickDownDemul']],
-			'S2LEFT' : BUTTON_CODE_MAP[self.button_map['btnRightStickLeftDemul']],
-			'S2RIGHT' : BUTTON_CODE_MAP[self.button_map['btnRightStickRightDemul']]
+			'LTRIG' : BUTTON_CODE_MAP[self.button_map['btn_l_trigger_demul']],
+			'RTRIG' : BUTTON_CODE_MAP[self.button_map['btn_r_trigger_demul']],
+			'START' : BUTTON_CODE_MAP[self.button_map['btn_start_demul']],
+			'S1UP' : BUTTON_CODE_MAP[self.button_map['btn_left_stick_up_demul']],
+			'S1DOWN' : BUTTON_CODE_MAP[self.button_map['btn_left_stick_down_demul']],
+			'S1LEFT' : BUTTON_CODE_MAP[self.button_map['btn_left_stick_left_demul']],
+			'S1RIGHT' : BUTTON_CODE_MAP[self.button_map['btn_left_stick_right_demul']],
+			'S2UP' : BUTTON_CODE_MAP[self.button_map['btn_right_stick_up_demul']],
+			'S2DOWN' : BUTTON_CODE_MAP[self.button_map['btn_right_stick_down_demul']],
+			'S2LEFT' : BUTTON_CODE_MAP[self.button_map['btn_right_stick_left_demul']],
+			'S2RIGHT' : BUTTON_CODE_MAP[self.button_map['btn_right_stick_right_demul']]
 		}
 
 		ini.write_ini_file('emulators/Demul/padDemul.ini', config)

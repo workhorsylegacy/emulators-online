@@ -199,19 +199,19 @@ class SSF(base_console.BaseConsole):
 		# Setup the initial map, if there is none
 		if not self.button_map:
 			self.button_map = {
-				'btnUpSSF' : None,
-				'btnDownSSF' : None,
-				'btnLeftSSF' : None,
-				'btnRightSSF' : None,
-				'btnStartSSF' : None,
-				'btnASSF' : None,
-				'btnBSSF' : None,
-				'btnCSSF' : None,
-				'btnXSSF' : None,
-				'btnYSSF' : None,
-				'btnZSSF' : None,
-				'btnLShoulderSSF' : None,
-				'btnRShoulderSSF' : None,
+				'btn_up_ssf' : None,
+				'btn_down_ssf' : None,
+				'btn_left_ssf' : None,
+				'btn_right_ssf' : None,
+				'btn_start_ssf' : None,
+				'btn_a_ssf' : None,
+				'btn_b_ssf' : None,
+				'btn_c_ssf' : None,
+				'btn_x_ssf' : None,
+				'btn_y_ssf' : None,
+				'btn_z_ssf' : None,
+				'btn_l_shoulder_ssf' : None,
+				'btn_r_shoulder_ssf' : None,
 			}
 
 	def is_installed(self):
@@ -445,19 +445,19 @@ class SSF(base_console.BaseConsole):
 		# Gamepad
 		config['Input']['Pad0_0_0'] = \
 			'"' + \
-			BUTTON_CODE_MAP[self.button_map['btnUpSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnDownSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnLeftSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnRightSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnASSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnBSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnCSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnXSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnYSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnZSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnLShoulderSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnRShoulderSSF']] + \
-			BUTTON_CODE_MAP[self.button_map['btnStartSSF']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_up_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_down_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_left_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_right_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_a_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_b_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_c_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_x_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_y_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_z_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_l_shoulder_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_r_shoulder_ssf']] + \
+			BUTTON_CODE_MAP[self.button_map['btn_start_ssf']] + \
 			'0/0' + \
 			'0/0' + \
 			'0/0' + \

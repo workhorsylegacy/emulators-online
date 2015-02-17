@@ -65,7 +65,7 @@ a {
 	background-color: #FFFFFF;
 }
 
-.gameIcon {
+.game_icon {
 	float: left;
 	margin: 0px;
 	padding: 5px;
@@ -79,12 +79,12 @@ a {
 	border-radius: 15px;
 }
 
-img.blackAndWhite {
+img.black_and_white {
 	filter: grayscale(100%);
 	-webkit-filter: grayscale(100%);
 }
 
-.gameIcon img {
+.game_icon img {
 	padding: 0x;
 	margin: 0px;
 	margin-top: 5px;
@@ -92,11 +92,11 @@ img.blackAndWhite {
 	border-radius: 15px;
 }
 
-.gameIcon:hover {
+.game_icon:hover {
 	background-color: #CCCCCC;
 }
 
-.gameDialog {
+.game_dialog {
 	position: fixed;
 	font-family: Helvetica, Arial, "Times New Roman", Times, serif;
 	top: 0;
@@ -110,16 +110,16 @@ img.blackAndWhite {
 	pointer-events: none;
 }
 
-.gameDialog:target {
+.game_dialog:target {
 	opacity:1;
 	pointer-events: auto;
 }
 
-.gameDialog img {
+.game_dialog img {
 	width: 300px;
 }
 
-.gameDialog > div {
+.game_dialog > div {
 	position: relative;
 	width: 80%;
 	height: 80%;
@@ -130,7 +130,7 @@ img.blackAndWhite {
 	background: #CCCCCC;
 }
 
-.closeGameDialog {
+.close_game_dialog {
 	background: #606061;
 	color: #FFFFFF;
 	line-height: 25px;
@@ -145,18 +145,18 @@ img.blackAndWhite {
 	box-shadow: 1px 1px 3px #000;
 }
 
-.closeGameDialog:hover {
+.close_game_dialog:hover {
 	background: #FF0000;
 }
 
-.configTable {
+.config_table {
 	align: left;
 	width: 100%;
 	padding: 30px;
     background-color: #DDDDDD;
 }
 
-.configTable th {
+.config_table th {
 	text-align: left;
 }
   

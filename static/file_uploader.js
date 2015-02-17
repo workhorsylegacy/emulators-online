@@ -27,11 +27,7 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 	file_reader = null;
 	progress_percent = document.getElementById(progress_percent_id);
 
-	function abortRead() {
-		file_reader.abort();
-	}
-
-	function onError(evt) {
+	function on_error(evt) {
 		switch(evt.target.error.code) {
 			case evt.target.error.NOT_FOUND_ERR:
 				alert('File Not Found!');
@@ -46,11 +42,11 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 		};
 	}
 
-	function onAbort(evt) {
+	function on_abort(evt) {
 		alert('File read cancelled');
 	}
 
-	function onProgress(evt) {
+	function on_progress(evt) {
 		// evt is an ProgressEvent
 		if (evt.lengthComputable) {
 			var percentLoaded = Math.round((evt.loaded / evt.total) * 100);
@@ -61,28 +57,28 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 		}
 	}
 
-	function onDone(evt) {
+	function on_done(evt) {
 		// Set the progress bar to 100%
 		progress_percent.textContent = '100%';
 
 		doneCB(evt.target.result);
 	}
 
-	function handleFileSelect(evt) {
+	function handle_file_select(evt) {
 		// Reset the progress bar
 		progress_percent.textContent = '0%';
 
 		// Set all the callbacks
 		file_reader = new FileReader();
-		file_reader.onprogress = onProgress;
-		file_reader.onload = onDone;
-		file_reader.onerror = onError;
-		file_reader.onabort = onAbort;
+		file_reader.onprogress = on_progress;
+		file_reader.onload = on_done;
+		file_reader.onerror = on_error;
+		file_reader.onabort = on_abort;
 
 		// Read the file content
 		file_reader.readAsBinaryString(evt.target.files[0]);
 	}
 
-	document.getElementById(file_id).addEventListener('change', handleFileSelect, false);
+	document.getElementById(file_id).addEventListener('change', handle_file_select, false);
 };
 

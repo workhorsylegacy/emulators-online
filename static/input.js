@@ -173,7 +173,7 @@ $.each(navigator.getGamepads(), function(i, pad) {
 });
 
 // Handle connecting and disconnecting pads
-function gamepadHandler(e, connecting) {
+function gamepad_handler(e, connecting) {
 	if (connecting) {
 		gamepad = navigator.getGamepads()[e.gamepad.index];
 		if(gamepad)
@@ -183,8 +183,8 @@ function gamepadHandler(e, connecting) {
 	}
 }
 
-window.addEventListener("gamepadconnected", function(e) { gamepadHandler(e, true); }, false);
-window.addEventListener("gamepaddisconnected", function(e) { gamepadHandler(e, false); }, false);
+window.addEventListener("gamepadconnected", function(e) { gamepad_handler(e, true); }, false);
+window.addEventListener("gamepaddisconnected", function(e) { gamepad_handler(e, false); }, false);
 
 var is_polling_buttons = false;
 
