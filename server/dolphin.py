@@ -452,7 +452,7 @@ class Dolphin(base_console.BaseConsole):
 				'Triggers/R' : BUTTON_CODE_MAP[self.button_map['btn_r_shoulder_dolphin']],
 				'Triggers/L-Analog' : BUTTON_CODE_MAP[self.button_map['btn_l_trigger_dolphin']],
 				'Triggers/R-Analog' : BUTTON_CODE_MAP[self.button_map['btn_r_trigger_dolphin']],
-				'D-Pad/Up' : BUTTON_CODE_MAP[self.button_map['btn_Up_dolphin']],
+				'D-Pad/Up' : BUTTON_CODE_MAP[self.button_map['btn_up_dolphin']],
 				'D-Pad/Down' : BUTTON_CODE_MAP[self.button_map['btn_down_dolphin']],
 				'D-Pad/Left' : BUTTON_CODE_MAP[self.button_map['btn_left_dolphin']],
 				'D-Pad/Right' : BUTTON_CODE_MAP[self.button_map['btn_right_dolphin']],
