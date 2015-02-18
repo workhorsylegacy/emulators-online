@@ -72,6 +72,7 @@ if current_path.endswith('server'):
 IS_EXE = '__file__' not in globals() and sys.argv[0].endswith('.exe')
 
 # When running as an exe, log to a file
+'''
 if IS_EXE:
 	if os.path.isfile('log.txt'):
 		os.remove('log.txt')
@@ -79,7 +80,7 @@ if IS_EXE:
 	log_file = open('log.txt', 'wb')
 	sys.stderr = log_file
 	sys.stdout = log_file
-
+'''
 # When running as an exe, generate the files
 if IS_EXE:
 	import static_files
@@ -577,15 +578,16 @@ if __name__ == '__main__':
 				(r"/(.*)", tornado.web.StaticFileHandler, {"path" : r"./"}),
 			])
 
+			application.listen(port)
+			print('HTTP server running on http://localhost:{0} ...'.format(port))
+
 			ws_application = tornado.web.Application([
 				(r'/ws', WebSocketHandler),
 			])
 
-			application.listen(port)
 			ws_application.listen(ws_port)
-
-			print('HTTP server running on http://localhost:{0} ...'.format(port))
 			print('WebSocket server running on ws://localhost:{0}/ws ...'.format(ws_port))
+
 			server = tornado.ioloop.IOLoop.instance()
 			server.start()
 
