@@ -620,376 +620,216 @@ function on_data(data) {
 	}
 }
 
-function setup_ui() {
-	// Figure out if 7-Zip is installed
+function action_is_installed(program_name) {
 	var message = {
 		'action' : 'is_installed',
-		'program' : '7-Zip'
+		'program' : program_name
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if VCD is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'VirtualCloneDrive'
+function action_install(file_name) {
+	var message = {
+		'action' : 'install',
+		'dir' : 'downloads',
+		'file' : file_name
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if NullDC is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'NullDC'
+function action_uninstall(program_name) {
+	var message = {
+		'action' : 'uninstall',
+		'program' : program_name
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if Demul is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'Demul'
+function action_download(file, url, name) {
+	var message = {
+		'action' : 'download',
+		'file' : file,
+		'url' : url,
+		'dir' : 'downloads',
+		'name' : name
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if SSF is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'SSF'
+function action_get_button_map(console_name, button_map) {
+	var message = {
+		'action' : 'get_button_map',
+		'console' : console_name,
+		'value' : button_map
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if Dolphin is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'Dolphin'
+function action_set_button_map(console_name, button_map) {
+	var message = {
+		'action' : 'set_button_map',
+		'console' : console_name,
+		'value' : button_map
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if PCSX-Reloaded is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'PCSX-Reloaded'
+function action_set_bios(console_name, type_name, file_data) {
+	var message = {
+		'action' : 'set_bios',
+		'console' : console_name,
+		'type' : type_name,
+		'value' : window.btoa(file_data)
 	};
 	socket_send_data(message);
+}
 
-	// Figure out if PCSX2 is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'PCSX2'
-	};
-	socket_send_data(message);
-
-	// Figure out if Mupen 64 Plus is installed
-	message = {
-		'action' : 'is_installed',
-		'program' : 'Mupen 64 Plus'
-	};
-	socket_send_data(message);
+function setup_ui() {
+	// Figure out if programs are installed
+	action_is_installed('7-Zip');
+	action_is_installed('VirtualCloneDrive');
+	action_is_installed('NullDC');
+	action_is_installed('Demul');
+	action_is_installed('SSF');
+	action_is_installed('Dolphin');
+	action_is_installed('PCSX-Reloaded');
+	action_is_installed('PCSX2');
+	action_is_installed('Mupen 64 Plus');
 
 	var btn = $("#btn_install_7zip");
 	btn.on('click', function() {
 		// Download the exe
-		var message = {
-			'action' : 'download',
-			'file' : '7z920.exe',
-			'url' : 'http://www.7-zip.org/a/7z920.exe',
-			'dir' : 'downloads',
-			'name' : '7-Zip'
-		};
-		socket_send_data(message);
+		action_download('7z920.exe', 'http://www.7-zip.org/a/7z920.exe', '7-Zip');
 
 		// Run the exe
-		message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : '7z920.exe'
-		};
-		socket_send_data(message);
+		action_install('7z920.exe');
 
 		// Figure out if 7-Zip is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : '7-Zip'
-		};
-		socket_send_data(message);
+		action_is_installed('7-Zip');
 	});
 
 	var btn = $("#btn_install_vcd");
 	btn.on('click', function() {
 		// Download the exe
-		var message = {
-			'action' : 'download',
-			'file' : 'SetupVirtualCloneDrive.exe',
-			'url' : 'http://static.slysoft.com/SetupVirtualCloneDrive.exe',
-			'dir' : 'downloads',
-			'name' : 'Virtual Clone Drive'
-		};
-		socket_send_data(message);
+		action_download('SetupVirtualCloneDrive.exe', 'http://static.slysoft.com/SetupVirtualCloneDrive.exe', 'Virtual Clone Drive');
 
 		// Run the exe
-		message = {
-			'action' : 'install',
-			'dir' : 'downloads',
-			'file' : 'SetupVirtualCloneDrive.exe'
-		};
-		socket_send_data(message);
+		action_install('SetupVirtualCloneDrive.exe');
 
 		// Figure out if VCD is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'VirtualCloneDrive'
-		};
-		socket_send_data(message);
+		action_is_installed('VirtualCloneDrive');
 	});
 
 	btn = $("#btn_install_nulldc");
 	btn.on('click', function() {
 		if(is_nulldc_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'NullDC'
-			};
-			socket_send_data(message);
+			action_uninstall('NullDC');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'nullDC_104_r136.7z',
-				'url' : 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z',
-				'dir' : 'downloads',
-				'name' : 'NullDC'
-			};
-			socket_send_data(message);
+			action_download('nullDC_104_r136.7z', 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z', 'NullDC');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'nullDC_104_r136.7z'
-			};
-			socket_send_data(message);
+			action_install('nullDC_104_r136.7z');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'NullDC'
-		};
-		socket_send_data(message);
+		action_is_installed('NullDC');
 	});
 
 	btn = $("#btn_install_demul");
 	btn.on('click', function() {
 		if(is_demul_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'Demul'
-			};
-			socket_send_data(message);
+			action_uninstall('Demul');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'demul0582.rar',
-				'url' : 'http://demul.emulation64.com/files/demul0582.rar',
-				'dir' : 'downloads',
-				'name' : 'Demul'
-			};
-			socket_send_data(message);
+			action_download('demul0582.rar', 'http://demul.emulation64.com/files/demul0582.rar', 'Demul');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'demul0582.rar'
-			};
-			socket_send_data(message);
+			action_install('demul0582.rar');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'Demul'
-		};
-		socket_send_data(message);
+		action_is_installed('Demul');
 	});
 
 	btn = $("#btn_install_ssf");
 	btn.on('click', function() {
 		if(is_ssf_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'SSF'
-			};
-			socket_send_data(message);
+			action_uninstall('SSF');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'SSF_012_beta_R4.zip',
-				'url' : 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip',
-				'dir' : 'downloads',
-				'name' : 'SSF'
-			};
-			socket_send_data(message);
+			action_download('SSF_012_beta_R4.zip', 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip', 'SSF');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'SSF_012_beta_R4.zip'
-			};
-			socket_send_data(message);
+			action_install('SSF_012_beta_R4.zip');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'SSF'
-		};
-		socket_send_data(message);
+		action_is_installed('SSF');
 	});
 
 	btn = $("#btn_install_dolphin");
 	btn.on('click', function() {
 		if(is_dolphin_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'Dolphin'
-			};
-			socket_send_data(message);
+			action_uninstall('Dolphin');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'dolphin-master-4.0-5363-x64.7z',
-				'url' : 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z',
-				'dir' : 'downloads',
-				'name' : 'Dolphin'
-			};
-			socket_send_data(message);
+			action_download('dolphin-master-4.0-5363-x64.7z', 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z', 'Dolphin');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'dolphin-master-4.0-5363-x64.7z'
-			};
-			socket_send_data(message);
+			action_install('dolphin-master-4.0-5363-x64.7z');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'Dolphin'
-		};
-		socket_send_data(message);
+		action_is_installed('Dolphin');
 	});
 
 	btn = $("#btn_install_pcsxr");
 	btn.on('click', function() {
 		if(is_pcsxr_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'PCSX-Reloaded'
-			};
-			socket_send_data(message);
+			action_uninstall('PCSX-Reloaded');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'pcsxr-1.9.93-win32.zip',
-				'url' : 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20959',
-				'dir' : 'downloads',
-				'name' : 'PCSX Reloaded'
-			};
-			socket_send_data(message);
+			action_download('pcsxr-1.9.93-win32.zip', 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20959', 'PCSX Reloaded');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'pcsxr-1.9.93-win32.zip'
-			};
-			socket_send_data(message);
+			action_install('pcsxr-1.9.93-win32.zip');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'PCSX-Reloaded'
-		};
-		socket_send_data(message);
+		action_is_installed('PCSX-Reloaded');
 	});
 
 	btn = $("#btn_install_pcsx2");
 	btn.on('click', function() {
 		if(is_pcsx2_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'PCSX2'
-			};
-			socket_send_data(message);
+			action_uninstall('PCSX2');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z',
-				'url' : 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86',
-				'dir' : 'downloads',
-				'name' : 'PCSX2'
-			};
-			socket_send_data(message);
+			action_download('pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z', 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86', 'PCSX2');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z'
-			};
-			socket_send_data(message);
+			action_install('pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'PCSX2'
-		};
-		socket_send_data(message);
+		action_is_installed('PCSX2');
 	});
 
 	btn = $("#btn_install_mupen");
 	btn.on('click', function() {
 		if(is_mupen_installed) {
-			var message = {
-				'action' : 'uninstall',
-				'program' : 'Mupen64Plus'
-			};
-			socket_send_data(message);
+			action_uninstall('Mupen64Plus');
 		} else {
 			// Download the compressed program
-			var message = {
-				'action' : 'download',
-				'file' : 'mupen64plus-bundle-win32-2.0.zip',
-				'url' : 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip',
-				'dir' : 'downloads',
-				'name' : 'Mupen 64 Plus'
-			};
-			socket_send_data(message);
+			action_download('mupen64plus-bundle-win32-2.0.zip', 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip', 'Mupen 64 Plus');
 
 			// Uncompress the program
-			message = {
-				'action' : 'install',
-				'dir' : 'downloads',
-				'file' : 'mupen64plus-bundle-win32-2.0.zip'
-			};
-			socket_send_data(message);
+			action_install('mupen64plus-bundle-win32-2.0.zip');
 		}
 
 		// Figure out if it is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : 'Mupen 64 Plus'
-		};
-		socket_send_data(message);
+		action_is_installed('Mupen 64 Plus');
 	});
 
 	btn = $('#btn_controls_demul');
@@ -998,12 +838,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		var message = {
-			'action' : 'get_button_map',
-			'console' : 'Dreamcast',
-			'value' : button_map_demul
-		};
-		socket_send_data(message);
+		action_get_button_map('Dreamcast', button_map_demul);
 	});
 
 	btn = $('#btn_controls_dolphin');
@@ -1012,12 +847,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		var message = {
-			'action' : 'get_button_map',
-			'console' : 'GameCube',
-			'value' : button_map_dolphin
-		};
-		socket_send_data(message);
+		action_get_button_map('GameCube', button_map_dolphin);
 	});
 
 	btn = $('#btn_controls_mupen');
@@ -1026,12 +856,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		var message = {
-			'action' : 'get_button_map',
-			'console' : 'Nintendo64',
-			'value' : button_map_mupen
-		};
-		socket_send_data(message);
+		action_get_button_map('Nintendo64', button_map_mupen);
 	});
 
 	btn = $('#btn_controls_ssf');
@@ -1040,12 +865,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		var message = {
-			'action' : 'get_button_map',
-			'console' : 'Saturn',
-			'value' : button_map_ssf
-		};
-		socket_send_data(message);
+		action_get_button_map('Saturn', button_map_ssf);
 	});
 
 	btn = $('#btn_done_button_config_demul');
@@ -1054,12 +874,7 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		var message = {
-			'action' : 'set_button_map',
-			'console' : 'Dreamcast',
-			'value' : button_map_demul
-		};
-		socket_send_data(message);
+		action_set_button_map('Dreamcast', button_map_demul);
 	});
 
 	btn = $('#btn_done_button_config_dolphin');
@@ -1068,12 +883,7 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		var message = {
-			'action' : 'set_button_map',
-			'console' : 'GameCube',
-			'value' : button_map_dolphin
-		};
-		socket_send_data(message);
+		action_set_button_map('GameCube', button_map_dolphin);
 	});
 
 	btn = $('#btn_done_button_config_mupen');
@@ -1082,12 +892,7 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		var message = {
-			'action' : 'set_button_map',
-			'console' : 'Nintendo64',
-			'value' : button_map_mupen
-		};
-		socket_send_data(message);
+		action_set_button_map('Nintendo64', button_map_mupen);
 	});
 
 	btn = $('#btn_done_button_config_ssf');
@@ -1096,82 +901,35 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		var message = {
-			'action' : 'set_button_map',
-			'console' : 'Saturn',
-			'value' : button_map_ssf
-		};
-		socket_send_data(message);
+		action_set_button_map('Saturn', button_map_ssf);
 	});
 
 	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Dreamcast',
-			'type' : 'dc.zip',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Dreamcast', 'dc.zip', file_data);
 	});
 
 	FileUploader('btn_bios_demul_aw', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Dreamcast',
-			'type' : 'awbios.zip',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Dreamcast', 'awbios.zip', file_data);
 	});
 
 	FileUploader('btn_bios_demul_naomi', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Dreamcast',
-			'type' : 'naomi.zip',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Dreamcast', 'naomi.zip', file_data);
 	});
 
 	FileUploader('btn_bios_demul_naomi2', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Dreamcast',
-			'type' : 'naomi2.zip',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Dreamcast', 'naomi2.zip', file_data);
 	});
 
 	FileUploader('btn_bios_ssf_usa', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Saturn',
-			'type' : 'USA',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Saturn', 'USA', file_data);
 	});
 
 	FileUploader('btn_bios_ssf_eur', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Saturn',
-			'type' : 'EUR',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Saturn', 'EUR', file_data);
 	});
 
 	FileUploader('btn_bios_ssf_jap', 'generic_progress', function(file_data) {
-		var message = {
-			'action' : 'set_bios',
-			'console' : 'Saturn',
-			'type' : 'JAP',
-			'value' : window.btoa(file_data)
-		};
-		socket_send_data(message);
+		action_set_bios('Saturn', 'JAP', file_data);
 	});
 }
 
