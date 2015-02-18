@@ -30,7 +30,7 @@ function socket_send_data(message) {
 	socket.send(message);
 }
 
-function setup_websocket(on_data) {
+function setup_websocket(on_data, on_open_cb) {
 	var host = "ws://localhost:9090/ws";
 	socket = null;
 
@@ -45,6 +45,11 @@ function setup_websocket(on_data) {
 		socket.onopen = function() {
 			$("#error_header").hide();
 			$("#search_header").show();
+
+			if(on_open_cb) {
+				on_open_cb();
+				on_open_cb = null;
+			}
 		};
 
 		socket.onmessage = function(msg) {

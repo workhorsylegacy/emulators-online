@@ -55,15 +55,12 @@ function on_data(data) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support web sockets");
 } else {
-	setup_websocket(on_data);
-
-	// FIXME: Make this load when the web socket loads
-	setTimeout(function() {
+	setup_websocket(on_data, function() {
 		message = {
 			'action' : 'get_db'
 		};
 		socket_send_data(message);
-	}, 2000);
+	});
 }
 
 });

@@ -362,8 +362,9 @@ jQuery(function($) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support web sockets");
 } else {
-	setup_websocket(on_data);
-	setup_ui();
+	setup_websocket(on_data, function() {
+		setup_ui();
+	});
 }
 
 var button_map_demul = {};
@@ -620,71 +621,68 @@ function on_data(data) {
 }
 
 function setup_ui() {
-	// FIXME: This should fire after all the websocket stuff is setup
-	setTimeout(function() {
-		// Figure out if 7-Zip is installed
-		var message = {
-			'action' : 'is_installed',
-			'program' : '7-Zip'
-		};
-		socket_send_data(message);
+	// Figure out if 7-Zip is installed
+	var message = {
+		'action' : 'is_installed',
+		'program' : '7-Zip'
+	};
+	socket_send_data(message);
 
-		// Figure out if VCD is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'VirtualCloneDrive'
-		};
-		socket_send_data(message);
+	// Figure out if VCD is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'VirtualCloneDrive'
+	};
+	socket_send_data(message);
 
-		// Figure out if NullDC is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'NullDC'
-		};
-		socket_send_data(message);
+	// Figure out if NullDC is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'NullDC'
+	};
+	socket_send_data(message);
 
-		// Figure out if Demul is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'Demul'
-		};
-		socket_send_data(message);
+	// Figure out if Demul is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'Demul'
+	};
+	socket_send_data(message);
 
-		// Figure out if SSF is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'SSF'
-		};
-		socket_send_data(message);
+	// Figure out if SSF is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'SSF'
+	};
+	socket_send_data(message);
 
-		// Figure out if Dolphin is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'Dolphin'
-		};
-		socket_send_data(message);
+	// Figure out if Dolphin is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'Dolphin'
+	};
+	socket_send_data(message);
 
-		// Figure out if PCSX-Reloaded is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'PCSX-Reloaded'
-		};
-		socket_send_data(message);
+	// Figure out if PCSX-Reloaded is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'PCSX-Reloaded'
+	};
+	socket_send_data(message);
 
-		// Figure out if PCSX2 is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'PCSX2'
-		};
-		socket_send_data(message);
+	// Figure out if PCSX2 is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'PCSX2'
+	};
+	socket_send_data(message);
 
-		// Figure out if Mupen 64 Plus is installed
-		message = {
-			'action' : 'is_installed',
-			'program' : 'Mupen 64 Plus'
-		};
-		socket_send_data(message);
-	}, 3000);
+	// Figure out if Mupen 64 Plus is installed
+	message = {
+		'action' : 'is_installed',
+		'program' : 'Mupen 64 Plus'
+	};
+	socket_send_data(message);
 
 	var btn = $("#btn_install_7zip");
 	btn.on('click', function() {
