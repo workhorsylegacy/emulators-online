@@ -395,6 +395,16 @@ function on_data(data) {
 			$('#generic_progress').hide();
 			$('#config_programs').show();
 		}
+	} else if(data['action'] == 'uncompress') {
+		if(data['is_start']) {
+			$('#config_programs').hide();
+			$('#generic_progress').text('Uncompressing ' + data['name']);
+			$('#generic_progress').show();
+		} else {
+			$('#generic_progress').text('');
+			$('#generic_progress').hide();
+			$('#config_programs').show();
+		}
 	} else if(data['action'] == 'is_installed') {
 		if (data['name'] == '7-Zip') {
 			is_7zip_installed = data['value'];

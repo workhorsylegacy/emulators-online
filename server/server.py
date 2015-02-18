@@ -410,6 +410,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			sys.exit(1)
 
 	def _install(self, data):
+		# Start uncompressing
+		message = {
+			'action' : 'uncompress',
+			'is_start' : True,
+			'name' : data['file']
+		}
+		self.write_data(message)
+
 		if data['file'] == 'SetupVirtualCloneDrive.exe':
 			os.chdir(data['dir'])
 			proc = subprocess.Popen([data['file'], '/S'], stdout=subprocess.PIPE, shell=True) # Silent install
@@ -441,6 +449,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['file'] == 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z':
 			wrap = wrap_7zip.Wrap7zip()
 			wrap.uncompress(os.path.join(data['dir'], 'pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z'), 'emulators')
+
+		# End uncompressing
+		message = {
+			'action' : 'uncompress',
+			'is_start' : False,
+			'name' : data['file']
+		}
+		self.write_data(message)
 
 	def _uninstall(self, data):
 		if data['program'] == 'VirtualCloneDrive':
