@@ -53,6 +53,7 @@ import tornado.web
 import tornado.websocket
 import tornado.template
 
+from fuzzywuzzy import fuzz
 import tray_icon
 import downloader
 import wrap_7zip
@@ -126,27 +127,31 @@ mupen64plus = mupen64plus.Mupen64Plus()
 pcsxr = pcsxr.PCSXR()
 
 
-def make_db(file_name, path_prefix):
+def make_db(file_name, path_prefix, binaries_path):
 	db = {}
+
+	primary_binary_entensions = [
+		'.gdi',
+		'.cdi',
+		'.iso',
+		'.mdf',
+		'.z64',
+		'.n64',
+		'.img',
+		'.gcm'
+	]
+
+	secondary_binary_entensions = [
+		'.raw',
+		'.bin'
+	]
 
 	for game_name in os.listdir(path_prefix):
 		game_path = '{0}/{1}/'.format(path_prefix, game_name)
 
 		if not os.path.isdir(game_path):
 			continue
-
-		binary_entensions = [
-			'.bin',
-			'.mdf',
-			'.iso',
-			'.z64',
-			'.cdi',
-			'.gdi',
-			'.n64',
-			'.img',
-			'.gcm'
-		]
-
+		'''
 		# Get the game binary
 		binary = None
 		for entry in os.listdir(game_path):
@@ -154,7 +159,7 @@ def make_db(file_name, path_prefix):
 			if os.path.splitext(binary_lower)[1] in binary_entensions:
 				binary = entry
 				break
-
+		'''
 		# Get the meta data
 		meta_data = {}
 		meta_file = '{0}{1}'.format(game_path, 'info.json')
@@ -170,13 +175,61 @@ def make_db(file_name, path_prefix):
 
 		db[game_name] = {
 			'path' : '{0}/{1}/'.format(path_prefix, game_name),
-			'binary' : binary,
+			'binaries' : [],
 			'bios' : '',
 			'images' : images,
 			'developer' : meta_data.get('developer', ''),
 			'genre' : meta_data.get('genre', ''),
 		}
 
+	# Get the binaries
+	for root, dir, files in os.walk(binaries_path):
+		# Sort the files to have primary extensions first
+		primary_files = []
+		secondary_files = []
+		for entry in files:
+			full_entry = os.path.join(root, entry)
+
+			# Skip if not a file
+			if not os.path.isfile(full_entry):
+				continue
+
+			# Skip if a bios file
+			if 'bios' in full_entry.lower():
+				continue
+
+			# Sort into primary and secondary files
+			if os.path.splitext(entry)[1].lower() in primary_binary_entensions:
+				primary_files.append(entry)
+			elif os.path.splitext(entry)[1].lower() in secondary_binary_entensions:
+				secondary_files.append(entry)
+
+		# Only search the secondary files if there are no primary files
+		ignore_secondary = False
+		if primary_files and secondary_files:
+			ignore_secondary = True
+
+		# Get the primary and secondary files if needed
+		files = []
+		files += primary_files
+		if not ignore_secondary:
+			files += secondary_files
+
+		for entry in files:
+			full_entry = os.path.join(root, entry)
+
+			binary_name = os.path.splitext(entry)[0]
+			best_ratio = 0
+			best_name = None
+			for game_name, data in db.items():
+				ratio = fuzz.partial_ratio(game_name, binary_name)
+				if ratio > best_ratio:
+					best_ratio = ratio
+					best_name = game_name
+			db[best_name]['binaries'].append(full_entry)
+			#print(best_ratio, best_name, binary_name)
+
+	# Write the db to file
 	with open('db/{0}'.format(file_name), 'wb') as f:
 		f.write(json.dumps(db, sort_keys=True, indent=4, separators=(',', ': ')))
 
@@ -577,12 +630,12 @@ if __name__ == '__main__':
 		import threading
 
 		# Generate the database of games
-		make_db('gamecube.json', 'games/Nintendo/GameCube')
-		make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
-		make_db('saturn.json', 'games/Sega/Saturn')
-		make_db('dreamcast.json', 'games/Sega/Dreamcast')
-		make_db('playstation.json', 'games/Sony/Playstation')
-		make_db('playstation2.json', 'games/Sony/Playstation2')
+		#make_db('gamecube.json', 'games/Nintendo/GameCube')
+		#make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
+		#make_db('saturn.json', 'games/Sega/Saturn')
+		make_db('dreamcast.json', 'games/Sega/Dreamcast', 'C:/Users/matt/Desktop/dc')
+		#make_db('playstation.json', 'games/Sony/Playstation')
+		#make_db('playstation2.json', 'games/Sony/Playstation2')
 
 		def start_server(port, ws_port):
 			global server
