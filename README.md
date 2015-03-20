@@ -17,7 +17,6 @@ http://www.python.org
 ~~~bash
 python -m pip install -U tornado
 python -m pip install -U pypiwin32
-python -m pip install -U fuzzywuzzy
 ~~~
 
 # py2exe

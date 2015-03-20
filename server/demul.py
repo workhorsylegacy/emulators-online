@@ -760,9 +760,9 @@ class Demul(base_console.BaseConsole):
 		# Figure out if running a game or not
 		command = None
 		full_screen = False
-		if path and binary:
-			game_path = self.goodJoin("../../", path + '/' + binary)
-			command = '"demul.exe" -run=dc -image="' + game_path + '"'
+		if binary:
+			command = '"demul.exe" -run=dc -image="' + binary + '"'
+			print('command', command)
 			full_screen = True
 		else:
 			command = '"demul.exe" -run=dc'

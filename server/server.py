@@ -53,7 +53,6 @@ import tornado.web
 import tornado.websocket
 import tornado.template
 
-from fuzzywuzzy import fuzz
 import tray_icon
 import downloader
 import wrap_7zip
@@ -63,6 +62,11 @@ import dolphin
 import mupen64plus
 import pcsxr
 import pcsx2
+
+# FIXME: Make the library look for the json files relative to its own path
+os.chdir('server')
+import identify_dreamcast_games
+os.chdir('..')
 
 # Move to the main emu_archive directory no matter what path we are launched from
 current_path = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -126,111 +130,53 @@ ssf = ssf.SSF()
 mupen64plus = mupen64plus.Mupen64Plus()
 pcsxr = pcsxr.PCSXR()
 
-
-def make_db(file_name, path_prefix, binaries_path):
+def make_db(output_file_name, path_prefix, binaries_path):
 	db = {}
 
-	primary_binary_entensions = [
-		'.gdi',
-		'.cdi',
-		'.iso',
-		'.mdf',
-		'.z64',
-		'.n64',
-		'.img',
-		'.gcm'
-	]
+	# FIXME: Make all private functions underscored so we can import *
+	for root, dirs, files in os.walk(binaries_path):
+		for file in files:
+			# Get the full path
+			entry = root + '/' + file
+			entry = os.path.abspath(entry).replace('\\', '/')
 
-	secondary_binary_entensions = [
-		'.raw',
-		'.bin'
-	]
-
-	for game_name in os.listdir(path_prefix):
-		game_path = '{0}/{1}/'.format(path_prefix, game_name)
-
-		if not os.path.isdir(game_path):
-			continue
-		'''
-		# Get the game binary
-		binary = None
-		for entry in os.listdir(game_path):
-			binary_lower = entry.lower()
-			if os.path.splitext(binary_lower)[1] in binary_entensions:
-				binary = entry
-				break
-		'''
-		# Get the meta data
-		meta_data = {}
-		meta_file = '{0}{1}'.format(game_path, 'info.json')
-		if os.path.isfile(meta_file):
-			with open(meta_file, 'rb') as f:
-				meta_data = json.load(f)
-
-		# Get the images
-		images = []
-		for entry in os.listdir(game_path):
-			if entry.lower().endswith('.png'):
-				images.append(entry)
-
-		db[game_name] = {
-			'path' : '{0}/{1}/'.format(path_prefix, game_name),
-			'binaries' : [],
-			'bios' : '',
-			'images' : images,
-			'developer' : meta_data.get('developer', ''),
-			'genre' : meta_data.get('genre', ''),
-		}
-
-	# Get the binaries
-	for root, dir, files in os.walk(binaries_path):
-		# Sort the files to have primary extensions first
-		primary_files = []
-		secondary_files = []
-		for entry in files:
-			full_entry = os.path.join(root, entry)
-
-			# Skip if not a file
-			if not os.path.isfile(full_entry):
+			# Skip if not an .CDI, .GDI, or .ISO
+			if not identify_dreamcast_games.is_dreamcast_file(entry):
 				continue
 
-			# Skip if a bios file
-			if 'bios' in full_entry.lower():
+			# Get the game info
+			info = None
+			try:
+				info = identify_dreamcast_games.get_dreamcast_game_info(entry)
+				info['file'] = entry
+				info['title'] = info['title'].replace(': ', ' - ').replace('/', '+')
+				print(info['title'], entry)
+				#print(info['header_index'], info['title'], info['serial_number'])
+			except:
 				continue
 
-			# Sort into primary and secondary files
-			if os.path.splitext(entry)[1].lower() in primary_binary_entensions:
-				primary_files.append(entry)
-			elif os.path.splitext(entry)[1].lower() in secondary_binary_entensions:
-				secondary_files.append(entry)
+			# Save the info in the db
+			if info:
+				title = info['title']
+				db[title] = {
+					'path' : '{0}/{1}/'.format(path_prefix, title),
+					'binary' : info['file'],
+					'bios' : '',
+					'images' : [],
+					'developer' : info.get('developer', ''),
+					'genre' : info.get('genre', ''),
+				}
 
-		# Only search the secondary files if there are no primary files
-		ignore_secondary = False
-		if primary_files and secondary_files:
-			ignore_secondary = True
-
-		# Get the primary and secondary files if needed
-		files = []
-		files += primary_files
-		if not ignore_secondary:
-			files += secondary_files
-
-		for entry in files:
-			full_entry = os.path.join(root, entry)
-
-			binary_name = os.path.splitext(entry)[0]
-			best_ratio = 0
-			best_name = None
-			for game_name, data in db.items():
-				ratio = fuzz.partial_ratio(game_name, binary_name)
-				if ratio > best_ratio:
-					best_ratio = ratio
-					best_name = game_name
-			db[best_name]['binaries'].append(full_entry)
-			#print(best_ratio, best_name, binary_name)
+				# Get the images
+				image_dir = path_prefix + '/' + title + '/'
+				if os.path.isdir(image_dir):
+					image_file = image_dir + 'title_big.png'
+					#print('image_file', image_file)
+					if os.path.isfile(image_file):
+						db[title]['images'].append(image_file)
 
 	# Write the db to file
-	with open('db/{0}'.format(file_name), 'wb') as f:
+	with open('db/{0}'.format(output_file_name), 'wb') as f:
 		f.write(json.dumps(db, sort_keys=True, indent=4, separators=(',', ': ')))
 
 
@@ -315,6 +261,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def _get_db(self, data):
 		db = {}
 
+		'''
 		with open('db/saturn.json', 'rb') as f:
 			db['Saturn'] = json.loads(f.read())
 		with open('db/playstation.json', 'rb') as f:
@@ -325,6 +272,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			db['GameCube'] = json.loads(f.read())
 		with open('db/nintendo64.json', 'rb') as f:
 			db['Nintendo64'] = json.loads(f.read())
+		'''
 		with open('db/dreamcast.json', 'rb') as f:
 			db['Dreamcast'] = json.loads(f.read())
 
@@ -633,7 +581,7 @@ if __name__ == '__main__':
 		#make_db('gamecube.json', 'games/Nintendo/GameCube')
 		#make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
 		#make_db('saturn.json', 'games/Sega/Saturn')
-		make_db('dreamcast.json', 'games/Sega/Dreamcast', 'C:/Users/matt/Desktop/dc')
+		make_db('dreamcast.json', 'games/Sega/Dreamcast', 'E:/Sega/Dreamcast')
 		#make_db('playstation.json', 'games/Sony/Playstation')
 		#make_db('playstation2.json', 'games/Sony/Playstation2')
 
