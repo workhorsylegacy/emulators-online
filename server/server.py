@@ -27,9 +27,6 @@
 
 """
 TODO:
-. Add searching by publisher, year, and console
-. How do we deal with games that use multiple disks in the UI?
-. Give an option to upload a binary too
 . Have Virtual Clone Drive not popup the mounted directory
 . Memory card configs
 . Move the mouse cursor to the bottom right corner on start
@@ -47,6 +44,7 @@ import shutil
 import json
 import base64
 import subprocess
+import zlib
 
 import tornado.ioloop
 import tornado.web
@@ -379,7 +377,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			print('Running SSF ...')
 
 		elif data['console'] == 'Dreamcast':
-			demul.run(data['path'], data['binary'])
+			def save_memory_card_cb(memory_card):
+				memory_card = zlib.compress(memory_card, 9)
+				# FIXME: Send the memory card to the server
+				print(memory_card)
+
+			demul.run(data['path'], data['binary'], on_stop = save_memory_card_cb)
 			self.log('playing')
 			print('Running Demul ...')
 

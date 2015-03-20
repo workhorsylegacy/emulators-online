@@ -736,7 +736,7 @@ class Demul(base_console.BaseConsole):
 		ini.write_ini_file('emulators/Demul/Demul.ini', config)
 		return config
 
-	def run(self, path, binary):
+	def run(self, path, binary, on_stop=None):
 		# Setup ini files
 		self._setup_spu()
 		self._setup_pad()
@@ -772,4 +772,10 @@ class Demul(base_console.BaseConsole):
 		runner = emu_runner.EmuRunner(command, window_name, full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
+
+		# Upload the memory card to the server
+		if on_stop:
+			with open("emulators/Demul/memsaves/vms00.bin", 'rb') as f:
+				memory_card = f.read()
+			on_stop(memory_card)
 
