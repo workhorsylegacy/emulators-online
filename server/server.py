@@ -581,7 +581,7 @@ if __name__ == '__main__':
 		#make_db('gamecube.json', 'games/Nintendo/GameCube')
 		#make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
 		#make_db('saturn.json', 'games/Sega/Saturn')
-		make_db('dreamcast.json', 'games/Sega/Dreamcast', 'E:/Sega/Dreamcast')
+		make_db('dreamcast.json', 'games/Sega/Dreamcast', 'C:/Users/matt/Desktop/dc')
 		#make_db('playstation.json', 'games/Sony/Playstation')
 		#make_db('playstation2.json', 'games/Sony/Playstation2')
 
