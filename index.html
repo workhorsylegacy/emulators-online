@@ -46,7 +46,7 @@ function on_data(data) {
 		$('#search_text').on('input propertychange paste', on_search);
 
 		// Show the default search
-		on_search(db);
+		on_search();
 	} else {
 		console.log('Data: ' + data);
 	}

@@ -22,7 +22,7 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
+var db = {};
 
 
 // FIXME: The way we construct these divs dynamically is terrible. Replace with templates.
@@ -32,9 +32,9 @@ function make_game_icon(console_name, name, data, i) {
 			"<a href=\"#dialog_" + name + "\" id=\"preview_" + i + "\">";
 
 	if(data["binary"])
-		text += "<img src=\"" + data["path"] + "/title_small.png\" />";
+		text += "<img src=\"" + data["path"] + "title_small.png\" />";
 	else
-		text += "<img src=\"" + data["path"] + "/title_small.png\" class=\"black_and_white\" />";
+		text += "<img src=\"" + data["path"] + "title_small.png\" class=\"black_and_white\" />";
 
 	text += "<br />" + 
 		name + "</a>";
@@ -100,7 +100,7 @@ function get_searchable_words(search_string) {
 	return search_words;
 }
 
-function on_search(db) {
+function on_search(evt) {
 	var search_text = $('#search_text');
 
 	// Clear the old icons
@@ -112,17 +112,25 @@ function on_search(db) {
 	// Skip empty searches
 	if(search_raw.length == 0) {
 		var i = 0;
-		$.each(console_data, function(console_name, console_data) {
+		var console_names = Object.keys(db);
+		console_names.sort();
+		$.each(console_names, function(i, console_name) {
 			// Add console name as header
+			var console_data = db[console_name];
 			var d = document.createElement('h1');
 			d.innerHTML = console_name;
 			d.style.clear = "both";
 			document.getElementById('game_selector').appendChild(d);
 
-			$.each(console_data, function(name, data) {
-				make_game_icon(console_name, name, data, i);
-				++i;
-			});
+			//if(console_data != null) {
+				var names = $.map(console_data, function(key, value) {return value;});
+				names.sort();
+				$.each(names, function(j, name) {
+					var data = console_data[name];
+					make_game_icon(console_name, name, data, i);
+					++i;
+				});
+			//}
 		});
 		return;
 	}
@@ -131,8 +139,14 @@ function on_search(db) {
 	// Match game developer
 	var match_developer_db = [];
 	var lower_search = search_raw.toLowerCase();
-	$.each(db, function(console_name, console_data) {
-		$.each(console_data, function(name, data) {
+	var console_names = Object.keys(db);
+	console_names.sort();
+	$.each(console_names, function(i, console_name) {
+		var console_data = db[console_name];
+		var names = $.map(console_data, function(key, value) {return value;});
+		names.sort();
+		$.each(names, function(j, name) {
+			var data = console_data[name];
 			if('developer' in data && data['developer'].toLowerCase() == lower_search) {
 				//console.log(name + " : " + data['developer']);
 				match_developer_db.push(name);
@@ -144,8 +158,14 @@ function on_search(db) {
 	// Match game genre
 	var match_genre_db = [];
 	var lower_search = search_raw.toLowerCase();
-	$.each(db, function(console_name, console_data) {
-		$.each(console_data, function(name, data) {
+	var console_names = Object.keys(db);
+	console_names.sort();
+	$.each(console_names, function(i, console_name) {
+		var console_data = db[console_name];
+		var names = $.map(console_data, function(key, value) {return value;});
+		names.sort();
+		$.each(names, function(j, name) {
+			var data = console_data[name];
 			if('genre' in data && data['genre'].toLowerCase() == lower_search) {
 				//console.log(name + " : " + data['genre']);
 				match_genre_db.push(name);
@@ -157,8 +177,16 @@ function on_search(db) {
 	// Match whole game name
 	var match_whole_db = [];
 	var lower_search = search_raw.toLowerCase();
-	$.each(db, function(console_name, console_data) {
-		$.each(console_data, function(name, data) {
+	var console_names = Object.keys(db);
+	console_names.sort();
+	$.each(console_names, function(i, console_name) {
+		//console.log(console_name);
+		var console_data = db[console_name];
+
+		var names = $.map(console_data, function(key, value) {return value;});
+		names.sort();
+		$.each(names, function(j, name) {
+			var data = console_data[name];
 			if(name.toLowerCase() == lower_search) {
 				match_whole_db.push(name);
 			}
@@ -170,14 +198,21 @@ function on_search(db) {
 	var match_words_db = {};
 	var search_words = get_searchable_words(search_raw);
 
-	$.each(db, function(console_name, console_data) {
-		$.each(console_data, function(name, data) {
+	var console_names = Object.keys(db);
+	console_names.sort();
+	$.each(console_names, function(i, console_name) {
+		var console_data = db[console_names];
+
+		var names = $.map(console_data, function(key, value) {return value;});
+		names.sort();
+		$.each(names, function(j, name) {
+			var data = console_data[name];
 			var game_words = get_searchable_words(name);
 
 			// Count how many words match the search
 			var match_count = 0;
-			$.each(search_words, function(i, search_word) {
-				$.each(game_words, function(j, game_word) {
+			$.each(search_words, function(k, search_word) {
+				$.each(game_words, function(l, game_word) {
 					if(game_word == search_word) {
 						++match_count;
 					}
@@ -200,14 +235,20 @@ function on_search(db) {
 	var match_parts_db = {};
 	var search_words = get_searchable_words(search_raw);
 
-	$.each(db, function(console_name, console_data) {
-		$.each(console_data, function(name, data) {
+	var console_names = Object.keys(db);
+	console_names.sort();
+	$.each(console_names, function(i, console_name) {
+		var console_data = db[console_name];
+		var names = $.map(console_data, function(key, value) {return value;});
+		names.sort();
+		$.each(names, function(j, name) {
+			var data = console_data[name];
 			var game_words = get_searchable_words(name);
 
 			// Count how many words match the search
 			var match_count = 0;
-			$.each(search_words, function(i, search_word) {
-				$.each(game_words, function(j, game_word) {
+			$.each(search_words, function(k, search_word) {
+				$.each(game_words, function(l, game_word) {
 					if(search_word.indexOf(game_word) > -1 || game_word.indexOf(search_word) > -1) {
 						++match_count;
 					}
@@ -228,18 +269,24 @@ function on_search(db) {
 
 	// Create new icons from the search
 	var i = 0;
-	$.each(db, function(console_name, console_data) {
+	var console_names = Object.keys(db);
+	console_names.sort();
+	$.each(console_names, function(i, console_name) {
+		var console_data = db[console_name];
+		var names = $.map(console_data, function(key, value) {return value;});
+		names.sort();
+
 		// Add console name as header
 		var d = document.createElement('h1');
 		d.innerHTML = console_name;
 		d.style.clear = "both";
 		document.getElementById('game_selector').appendChild(d);
 
-		$.each(console_data, function(name, data) {
+		$.each(names, function(j, name) {
 			var is_match = false;
 ///*
 			// Developer matches
-			$.each(match_developer_db, function(n, gname) {
+			$.each(match_developer_db, function(k, gname) {
 				if(name == gname) {
 					is_match = true;
 					return false;
@@ -248,7 +295,7 @@ function on_search(db) {
 //*/
 ///*
 			// Genre matches
-			$.each(match_genre_db, function(n, gname) {
+			$.each(match_genre_db, function(k, gname) {
 				if(name == gname) {
 					is_match = true;
 					return false;
@@ -257,7 +304,7 @@ function on_search(db) {
 //*/
 ///*
 			// Whole matches
-			$.each(match_whole_db, function(n, gname) {
+			$.each(match_whole_db, function(k, gname) {
 				if(name == gname) {
 					is_match = true;
 					return false;
@@ -282,8 +329,10 @@ function on_search(db) {
 				}
 			});
 //*/
-			if(is_match)
+			if(is_match) {
+				var data = console_data[name];
 				make_game_icon(console_name, name, data, i);
+			}
 
 			++i;
 		});
