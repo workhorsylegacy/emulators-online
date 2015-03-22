@@ -63,7 +63,7 @@ import pcsx2
 
 # FIXME: Make the library look for the json files relative to its own path
 os.chdir('server')
-import identify_dreamcast_games
+from identify_dreamcast_games import *
 os.chdir('..')
 
 # Move to the main emu_archive directory no matter what path we are launched from
@@ -127,11 +127,11 @@ dolphin = dolphin.Dolphin()
 ssf = ssf.SSF()
 mupen64plus = mupen64plus.Mupen64Plus()
 pcsxr = pcsxr.PCSXR()
+db = {}
 
 def make_db(output_file_name, path_prefix, binaries_path):
-	db = {}
+	global db
 
-	# FIXME: Make all private functions underscored so we can import *
 	for root, dirs, files in os.walk(binaries_path):
 		for file in files:
 			# Get the full path
@@ -139,13 +139,13 @@ def make_db(output_file_name, path_prefix, binaries_path):
 			entry = os.path.abspath(entry).replace('\\', '/')
 
 			# Skip if not an .CDI, .GDI, or .ISO
-			if not identify_dreamcast_games.is_dreamcast_file(entry):
+			if not is_dreamcast_file(entry):
 				continue
 
 			# Get the game info
 			info = None
 			try:
-				info = identify_dreamcast_games.get_dreamcast_game_info(entry)
+				info = get_dreamcast_game_info(entry)
 				info['file'] = entry
 				info['title'] = info['title'].replace(': ', ' - ').replace('/', '+')
 				print(info['title'], entry)
@@ -172,10 +172,6 @@ def make_db(output_file_name, path_prefix, binaries_path):
 					#print('image_file', image_file)
 					if os.path.isfile(image_file):
 						db[title]['images'].append(image_file)
-
-	# Write the db to file
-	with open('db/{0}'.format(output_file_name), 'wb') as f:
-		f.write(json.dumps(db, sort_keys=True, indent=4, separators=(',', ': ')))
 
 
 # FIXME: We should only need one handler for sending html files
@@ -252,27 +248,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		elif data['action'] == 'get_db':
 			self._get_db(data)
 
+		elif data['action'] == 'set_game_directory':
+			self._set_game_directory(data)
+
 		# Unknown message from the client
 		else:
 			self.log("Unknown action from client: {0}".format(data['action']))
 
 	def _get_db(self, data):
-		db = {}
-
-		'''
-		with open('db/saturn.json', 'rb') as f:
-			db['Saturn'] = json.loads(f.read())
-		with open('db/playstation.json', 'rb') as f:
-			db['Playstation'] = json.loads(f.read())
-		with open('db/playstation2.json', 'rb') as f:
-			db['Playstation2'] = json.loads(f.read())
-		with open('db/gamecube.json', 'rb') as f:
-			db['GameCube'] = json.loads(f.read())
-		with open('db/nintendo64.json', 'rb') as f:
-			db['Nintendo64'] = json.loads(f.read())
-		'''
-		with open('db/dreamcast.json', 'rb') as f:
-			db['Dreamcast'] = json.loads(f.read())
+		global db
 
 		data = {
 			'action' : 'get_db',
@@ -359,6 +343,59 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			'console' : data['console']
 		}
 		self.write_data(data)
+
+	def _set_game_directory(self, data):
+		global db
+
+		directory_name = data['directory_name']
+		console = data['console']
+
+		# Walk through all the directories
+		for root, dirs, files in os.walk(directory_name):
+			for file in files:
+				# Get the full path
+				entry = root + '/' + file
+				path_prefix = 'games/Sega/Dreamcast'
+
+				if not os.path.isfile(entry):
+					continue
+				
+				if not console == 'Dreamcast':
+					continue
+				
+				if not is_dreamcast_file(entry):
+					continue
+
+				info = None
+				try:
+					info = get_dreamcast_game_info(entry)
+					info['file'] = entry
+					info['title'] = info['title'].replace(': ', ' - ').replace('/', '+')
+					#print(info['serial_number'], info['title'])
+				except:
+					continue
+
+				# Save the info in the db
+				if info:
+					title = info['title']
+					db[title] = {
+						'path' : '{0}/{1}/'.format(path_prefix, title),
+						'binary' : info['file'],
+						'bios' : '',
+						'images' : [],
+						'developer' : info.get('developer', ''),
+						'genre' : info.get('genre', ''),
+					}
+
+					# Get the images
+					print(path_prefix, title)
+					image_dir = path_prefix + '/' + title + '/'
+					if os.path.isdir(image_dir):
+						image_file = image_dir + 'title_big.png'
+						#print('image_file', image_file)
+						if os.path.isfile(image_file):
+							db[title]['images'].append(image_file)
+					print(db[title]['images'])
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
@@ -584,7 +621,7 @@ if __name__ == '__main__':
 		#make_db('gamecube.json', 'games/Nintendo/GameCube')
 		#make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
 		#make_db('saturn.json', 'games/Sega/Saturn')
-		make_db('dreamcast.json', 'games/Sega/Dreamcast', 'C:/Users/matt/Desktop/dc')
+		#make_db('dreamcast.json', 'games/Sega/Dreamcast', 'C:/Users/matt/Desktop/dc')
 		#make_db('playstation.json', 'games/Sony/Playstation')
 		#make_db('playstation2.json', 'games/Sony/Playstation2')
 

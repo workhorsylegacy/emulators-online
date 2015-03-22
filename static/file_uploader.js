@@ -82,3 +82,31 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 	document.getElementById(file_id).addEventListener('change', handle_file_select, false);
 };
 
+function inspect(obj) {
+	console.log("/////////////////////////////////////////////////////");
+	for(var key in obj) {
+		 if (obj.hasOwnProperty(key)) {
+			if("selectionDirection"==key || "selectionEnd"==key || "selectionStart"==key)
+				continue;
+			console.log(key + ": " + obj[key]);
+		}
+	}
+	console.log("/////////////////////////////////////////////////////");
+}
+
+var DirectoryNameGetter = function(file_id, doneCB) {
+	function handle_file_select(evt) {
+		/*
+		inspect(evt);
+		console.log("path: " + evt.srcElement.value);
+		for(var path in evt.path) {
+			console.log("path: " + path);
+		}
+		*/
+		var dir_name = "failed to get directory name.";
+		doneCB(dir_name);
+	}
+
+	document.getElementById(file_id).addEventListener('change', handle_file_select, false);
+};
+

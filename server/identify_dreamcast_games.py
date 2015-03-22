@@ -86,13 +86,18 @@ def _read_blob_at(file, start_address, size):
 	blob = file.read(size)
 	return blob
 
-# FIXME: Look up these games and make sure it works
 def _fix_games_with_same_serial_number(f, title, serial_number):
+	if serial_number == 'T-8111D-50':
+		if title == "ECW HARDCORE REVOLUTION": # EU ECW Hardcore Revolution
+			return ("ECW Hardcore Revolution", "T-8111D-50")
+		elif title == "DEAD OR ALIVE 2": # EU Dead or Alive 2
+			return ("Dead or Alive 2", "T-8111D-50")
+	elif serial_number == 'T-8101N':
+		if title == "QUARTERBACK CLUB 2000": #US NFL Quarterback Club 2000
+			return ("NFL Quarterback Club 2000", "T-8101N")
+		elif title == "JEREMY MCGRATH SUPERCROSS 2000": #US Jeremy McGrath Supercross 2000
+			return ("Jeremy McGrath Supercross 2000", "T-8101N")
 	'''
-	if serial_number == 'T8116D  05':
-		EU ECW Hardcore Revolution
-		EU Dead or Alive 2
-
 	elif serial_number == 'T9706D  61':
 		EU 18 Wheeler: American Pro Trucker
 		EU 4-Wheel Thunder
@@ -108,23 +113,16 @@ def _fix_games_with_same_serial_number(f, title, serial_number):
 	elif serial_number == 'MK-51168':
 		US NFL 2K2
 		US Confidential Mission
-
-	elif serial_number == 'T8101N':
-		US Jeremy McGrath Supercross 2000
-		US NFL Quarterback Club 2000
-
 	elif serial_number == 'T30001M':
 		JP D2 Shock
 		JP Kaze no Regret Limited Edition
-
 	elif serial_number == 'MK51038  50':
 		EU Sega WorldWide Soccer 2000 Euro Edition
 		EU Zombie Revenge
 	'''
-
 	return (title, serial_number)
 
-def _fix_games_that_are_mislabelled(f, title, serial_number):
+def _fix_games_that_are_mislabeled(f, title, serial_number):
 	if serial_number == b"T1402N": # Mr. Driller
 		if _read_blob_at(f, 0x159208, 12) == b"DYNAMITE COP":
 			return (u"Dynamite Cop!", "MK-51013")
@@ -132,7 +130,7 @@ def _fix_games_that_are_mislabelled(f, title, serial_number):
 		if _read_blob_at(f, 0x1617E654, 9) == b"Half-Life":
 			return (u"Half-Life", "T0000M")
 		elif _read_blob_at(f, 0x1EA78B5, 10) == b"Shadow Man":
-			return (u"Shadow Man", "T0000M")
+			return (u"Shadow Man", "T8106N")
 	elif serial_number == b"T43903M": # Culdcept II
 		if _read_blob_at(f, 0x264E1E5D, 10) == b"CHAOSFIELD":
 			return (u"Chaos Field", "T47801M")
@@ -152,7 +150,7 @@ def _fix_games_that_are_mislabelled(f, title, serial_number):
 			return (u"Redux: Dark Matters", "T0000")
 	elif serial_number == b"MK-51025": # NHL 2K1
 		if _read_blob_at(f, 0x410CA8, 14) == b"READY 2 RUMBLE":
-			return (u"Ready 2 Rumble Boxing", "T0000")
+			return (u"Ready 2 Rumble Boxing", "T9704N")
 	elif serial_number == b"T36804N": # Walt Disney World Quest: Magical Racing Tour
 		if _read_blob_at(f, 0x245884, 6) == b"MakenX":
 			return (u"Maken X", "MK-51050")
@@ -225,8 +223,9 @@ def is_dreamcast_file(game_file):
 	if not os.path.isfile(game_file):
 		return False
 
+	# FIXME: Make it work with .mdf/.mds, .nrg, and .ccd/.img
 	# Skip if not a usable file
-	if not os.path.splitext(game_file)[1].lower() in ['.cdi', '.gdi', '.iso', '.mdf']:
+	if not os.path.splitext(game_file)[1].lower() in ['.cdi', '.gdi', '.iso']:
 		return False
 
 	return True
@@ -284,8 +283,8 @@ def get_dreamcast_game_info(game_file):
 	# Check for games with the same serial number
 	title, serial_number = _fix_games_with_same_serial_number(f, title, serial_number)
 
-	# Check for mislabelled releases
-	title, serial_number = _fix_games_that_are_mislabelled(f, title, serial_number)
+	# Check for mislabeled releases
+	title, serial_number = _fix_games_that_are_mislabeled(f, title, serial_number)
 
 	f.close()
 
