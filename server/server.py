@@ -129,50 +129,17 @@ mupen64plus = mupen64plus.Mupen64Plus()
 pcsxr = pcsxr.PCSXR()
 db = {}
 
-def make_db(output_file_name, path_prefix, binaries_path):
-	global db
+def clean_path(file_path):
+	#file_path = os.path.abspath(file_path)
+	file_path = file_path.replace('\\', '/')
+	#file_path  = file_path.replace(': ', ' - ').replace('/', '+')
+	return file_path
 
-	for root, dirs, files in os.walk(binaries_path):
-		for file in files:
-			# Get the full path
-			entry = root + '/' + file
-			entry = os.path.abspath(entry).replace('\\', '/')
-
-			# Skip if not an .CDI, .GDI, or .ISO
-			if not is_dreamcast_file(entry):
-				continue
-
-			# Get the game info
-			info = None
-			try:
-				info = get_dreamcast_game_info(entry)
-				info['file'] = entry
-				info['title'] = info['title'].replace(': ', ' - ').replace('/', '+')
-				print(info['title'], entry)
-				#print(info['header_index'], info['title'], info['serial_number'])
-			except:
-				continue
-
-			# Save the info in the db
-			if info:
-				title = info['title']
-				db[title] = {
-					'path' : '{0}/{1}/'.format(path_prefix, title),
-					'binary' : info['file'],
-					'bios' : '',
-					'images' : [],
-					'developer' : info.get('developer', ''),
-					'genre' : info.get('genre', ''),
-				}
-
-				# Get the images
-				image_dir = path_prefix + '/' + title + '/'
-				if os.path.isdir(image_dir):
-					image_file = image_dir + 'title_big.png'
-					#print('image_file', image_file)
-					if os.path.isfile(image_file):
-						db[title]['images'].append(image_file)
-
+def abs_path(file_path):
+	file_path = os.path.abspath(file_path)
+	file_path = file_path.replace('\\', '/')
+	#file_path  = file_path.replace(': ', ' - ').replace('/', '+')
+	return file_path
 
 # FIXME: We should only need one handler for sending html files
 class MainHandler(tornado.web.RequestHandler):
@@ -350,12 +317,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		directory_name = data['directory_name']
 		console = data['console']
 
+		dreamcast_db = {}
+
 		# Walk through all the directories
+		path_prefix = 'games/Sega/Dreamcast'
 		for root, dirs, files in os.walk(directory_name):
 			for file in files:
 				# Get the full path
 				entry = root + '/' + file
-				path_prefix = 'games/Sega/Dreamcast'
 
 				if not os.path.isfile(entry):
 					continue
@@ -367,20 +336,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					continue
 
 				info = None
-				try:
-					info = get_dreamcast_game_info(entry)
-					info['file'] = entry
-					info['title'] = info['title'].replace(': ', ' - ').replace('/', '+')
-					#print(info['serial_number'], info['title'])
-				except:
-					continue
+				info = get_dreamcast_game_info(entry)
+				print('getting game info: {0}'.format(info['title']))
+				info['file'] = entry
 
 				# Save the info in the db
 				if info:
 					title = info['title']
-					db[title] = {
-						'path' : '{0}/{1}/'.format(path_prefix, title),
-						'binary' : info['file'],
+					clean_title = title.replace(': ', ' - ').replace('/', '+')
+					dreamcast_db[title] = {
+						'path' : clean_path('{0}/{1}/'.format(path_prefix, clean_title)),
+						'binary' : abs_path(info['file']),
 						'bios' : '',
 						'images' : [],
 						'developer' : info.get('developer', ''),
@@ -388,14 +354,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					}
 
 					# Get the images
-					print(path_prefix, title)
 					image_dir = path_prefix + '/' + title + '/'
-					if os.path.isdir(image_dir):
-						image_file = image_dir + 'title_big.png'
-						#print('image_file', image_file)
-						if os.path.isfile(image_file):
-							db[title]['images'].append(image_file)
-					print(db[title]['images'])
+					for img in ['title_big.png', 'title_small.png']:
+						if os.path.isdir(image_dir):
+							image_file = image_dir + img
+							if os.path.isfile(image_file):
+								dreamcast_db[title]['images'].append(image_file)
+
+		db['Dreamcast'] = dreamcast_db
+
 
 	def _play_game(self, data):
 		if data['console'] == 'GameCube':
@@ -417,7 +384,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			def save_memory_card_cb(memory_card):
 				memory_card = zlib.compress(memory_card, 9)
 				# FIXME: Send the memory card to the server
-				print(memory_card)
+				print("FIXME: Memory card needs saving length {0}".format(len(memory_card)))
 
 			demul.run(data['path'], data['binary'], on_stop = save_memory_card_cb)
 			self.log('playing')
@@ -616,14 +583,6 @@ if __name__ == '__main__':
 
 	def start(trayIcon):
 		import threading
-
-		# Generate the database of games
-		#make_db('gamecube.json', 'games/Nintendo/GameCube')
-		#make_db('nintendo64.json', 'games/Nintendo/Nintendo64')
-		#make_db('saturn.json', 'games/Sega/Saturn')
-		#make_db('dreamcast.json', 'games/Sega/Dreamcast', 'C:/Users/matt/Desktop/dc')
-		#make_db('playstation.json', 'games/Sony/Playstation')
-		#make_db('playstation2.json', 'games/Sony/Playstation2')
 
 		def start_server(port, ws_port):
 			global server

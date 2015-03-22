@@ -24,7 +24,6 @@
 
 
 
-var db = {};
 
 // FIXME: The way we construct these divs dynamically is terrible. Replace with templates.
 function make_game_icon(console_name, name, data, i) {
@@ -33,9 +32,9 @@ function make_game_icon(console_name, name, data, i) {
 			"<a href=\"#dialog_" + name + "\" id=\"preview_" + i + "\">";
 
 	if(data["binary"])
-		text += "<img src=\"" + data["path"] + "title_small.png\" />";
+		text += "<img src=\"" + data["path"] + "/title_small.png\" />";
 	else
-		text += "<img src=\"" + data["path"] + "title_small.png\" class=\"black_and_white\" />";
+		text += "<img src=\"" + data["path"] + "/title_small.png\" class=\"black_and_white\" />";
 
 	text += "<br />" + 
 		name + "</a>";
@@ -57,8 +56,9 @@ function make_game_icon(console_name, name, data, i) {
 		"	<br />";
 
 		$.each(data["images"], function(n, image) {
+			console.log(image);
 			if(n != 0)
-				text += "	<img src=\"" + data["path"] + image + "\" />";
+				text += "	<img src=\"" + image + "\" />";
 		});
 
 		text += "</div>";
@@ -100,7 +100,7 @@ function get_searchable_words(search_string) {
 	return search_words;
 }
 
-function on_search() {
+function on_search(db) {
 	var search_text = $('#search_text');
 
 	// Clear the old icons
@@ -112,7 +112,7 @@ function on_search() {
 	// Skip empty searches
 	if(search_raw.length == 0) {
 		var i = 0;
-		$.each(db, function(console_name, console_data) {
+		$.each(console_data, function(console_name, console_data) {
 			// Add console name as header
 			var d = document.createElement('h1');
 			d.innerHTML = console_name;
