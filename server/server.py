@@ -61,6 +61,7 @@ import mupen64plus
 import pcsxr
 import pcsx2
 
+
 # FIXME: Make the library look for the json files relative to its own path
 os.chdir('server')
 from identify_dreamcast_games import *
@@ -127,7 +128,17 @@ dolphin = dolphin.Dolphin()
 ssf = ssf.SSF()
 mupen64plus = mupen64plus.Mupen64Plus()
 pcsxr = pcsxr.PCSXR()
+
+# Load the game database
 db = {}
+if os.path.isfile("db/game_db.json"):
+	with open("db/game_db.json", 'rb') as f:
+		db = json.loads(f.read())
+
+file_modify_dates = {}
+if os.path.isfile("db/file_modify_dates.json"):
+	with open("db/file_modify_dates.json", 'rb') as f:
+		file_modify_dates = json.loads(f.read())
 
 def clean_path(file_path):
 	#file_path = os.path.abspath(file_path)
@@ -313,11 +324,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _set_game_directory(self, data):
 		global db
+		global file_modify_dates
 
 		directory_name = data['directory_name']
 		console = data['console']
 
 		dreamcast_db = {}
+		if 'Dreamcast' in db:
+			dreamcast_db = db['Dreamcast']
 
 		# Walk through all the directories
 		path_prefix = 'games/Sega/Dreamcast'
@@ -325,6 +339,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			for file in files:
 				# Get the full path
 				entry = root + '/' + file
+
+				# Skip if the game file has not been modified
+				old_modify_date = 0
+				if entry in file_modify_dates:
+					old_modify_date = file_modify_dates[entry]
+				modify_date = os.path.getmtime(entry)
+				if modify_date == old_modify_date:
+					continue
+				else:
+					file_modify_dates[entry] = modify_date
 
 				if not os.path.isfile(entry):
 					continue
@@ -336,7 +360,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					continue
 
 				info = None
-				info = get_dreamcast_game_info(entry)
+				try:
+					info = get_dreamcast_game_info(entry)
+				except:
+					print("Failed to find info for game '{0}'".format(entry))
+					continue
 				print('getting game info: {0}'.format(info['title']))
 				info['file'] = entry
 
@@ -362,6 +390,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 								dreamcast_db[title]['images'].append(image_file)
 
 		db['Dreamcast'] = dreamcast_db
+		with open("db/game_db.json", 'wb') as f:
+			f.write(json.dumps(db, indent=4, separators=(',', ': ')))
+
+		with open("db/file_modify_dates.json", 'wb') as f:
+			f.write(json.dumps(file_modify_dates, indent=4, separators=(',', ': ')))
+		print("Done getting games from directory.")
 
 
 	def _play_game(self, data):
