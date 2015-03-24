@@ -25,14 +25,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-"""
-TODO:
-. Have Virtual Clone Drive not popup the mounted directory
-. Memory card configs
-. Move the mouse cursor to the bottom right corner on start
-. Figure out how to hide the emulators and mirror their screen
-	onto our own screen.
-"""
 
 import os, sys
 
