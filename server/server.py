@@ -62,10 +62,9 @@ import pcsxr
 import pcsx2
 
 
-# FIXME: Make the library look for the json files relative to its own path
-os.chdir('server')
+
 from identify_dreamcast_games import *
-os.chdir('..')
+
 
 # Move to the main emu_archive directory no matter what path we are launched from
 current_path = os.path.abspath(os.path.dirname(sys.argv[0]))
