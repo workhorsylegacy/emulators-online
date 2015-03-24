@@ -135,10 +135,23 @@ if os.path.isfile("db/game_db.json"):
 	with open("db/game_db.json", 'rb') as f:
 		db = json.loads(f.read())
 
+	# Remove any non existent files
+	for console, console_data in db.items():
+		for name in console_data.keys():
+			data = console_data[name]
+			if not os.path.isfile(data['binary']):
+				console_data.pop(name)
+
+# Load the file modify dates
 file_modify_dates = {}
 if os.path.isfile("db/file_modify_dates.json"):
 	with open("db/file_modify_dates.json", 'rb') as f:
 		file_modify_dates = json.loads(f.read())
+
+	# Remove any non existent files from the modify db
+	for entry in file_modify_dates.keys():
+		if not os.path.isfile(entry):
+			file_modify_dates.pop(entry)
 
 def clean_path(file_path):
 	#file_path = os.path.abspath(file_path)
@@ -339,6 +352,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			for file in files:
 				# Get the full path
 				entry = root + '/' + file
+				entry = os.path.abspath(entry).replace('\\', '/')
 
 				# Skip if the game file has not been modified
 				old_modify_date = 0
