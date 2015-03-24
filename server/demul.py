@@ -26,6 +26,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os, sys
+import subprocess
 
 import ini
 import emu_runner
@@ -55,7 +56,23 @@ BUTTON_CODE_MAP = {
 	None : ''
 }
 
+# Figure out the DirectX version
+gpu_dll_version = None
+directx_version = None
+retcode = subprocess.call(["dxdiag.exe", "/t", "directx_info.txt"], shell=True)
+if retcode == 0:
+	with open("directx_info.txt", 'rb') as f:
+		data = f.read()
+	directx_version = data.split("DirectX Version: ")[1].split("\r\n")[0]
 
+	if '11' in directx_version:
+		gpu_dll_version = 'gpuDX11.dll'
+	elif '10' in directx_version:
+		gpu_dll_version = 'gpuDX10.dll'
+	else:
+		raise Exception("Failed to determine DirectX version.")
+else:
+	raise Exception("Failed to determine DirectX version.")
 
 
 class Demul(base_console.BaseConsole):
@@ -643,7 +660,11 @@ class Demul(base_console.BaseConsole):
 				'shaderPass2' : ''
 			}
 		}
-		ini.write_ini_file('emulators/Demul/gpuDX11.ini', config)
+
+		if '11' in directx_version:
+			ini.write_ini_file('emulators/Demul/gpuDX11.ini', config)
+		elif '10' in directx_version:
+			ini.write_ini_file('emulators/Demul/gpuDX10.ini', config)
 
 	def _setup_demul(self):
 		# Setup Demul
@@ -690,7 +711,7 @@ class Demul(base_console.BaseConsole):
 				'spu' : 'spuDemul.dll',
 				'pad' : 'padDemul.dll',
 				'directory' : os.path.abspath('emulators/Demul/plugins/'),
-				'gpu' : 'gpuDX11.dll', # FIXME: We are hard coding DirectX 11
+				'gpu' : gpu_dll_version,
 				'net' : 'netDemul.dll'
 			},
 			'main' : {
