@@ -30,7 +30,7 @@
 			<div id="output"></div>
 		</div>
 
-		<div id="notification_footer">
+		<div id="notification_footer" style="display: none;">
 		</div>
 
 		<footer>
@@ -54,10 +54,14 @@ function on_data(data) {
 		var notification_footer = $('#notification_footer');
 		notification_footer.empty();
 		var long_running_tasks = data['value'];
-		$.each(long_running_tasks, function(task_name, percent) {
-			notification_footer.append("<p>" + task_name + " " + percent + "%</p>");
-			console.log(task_name);
-		});
+		if(!$.isEmptyObject(long_running_tasks)) {
+			$.each(long_running_tasks, function(task_name, percentage) {
+				notification_footer.append("<p>" + task_name + " " + percentage.toFixed(2) + "%</p>");
+			});
+			notification_footer.css("display", "block");
+		} else {
+			notification_footer.css("display", "none");
+		}
 	} else {
 		console.log('Data: ' + data);
 	}

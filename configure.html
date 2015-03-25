@@ -325,7 +325,7 @@
 			<div id="output"></div>
 		</div>
 
-		<div id="notification_footer">
+		<div id="notification_footer" style="display: none;">
 		</div>
 
 		<footer>
@@ -627,10 +627,14 @@ function on_data(data) {
 		var notification_footer = $('#notification_footer');
 		notification_footer.empty();
 		var long_running_tasks = data['value'];
-		$.each(long_running_tasks, function(task_name, percent) {
-			notification_footer.append("<p>" + task_name + " " + percent + "%</p>");
-			console.log(task_name);
-		});
+		if(!$.isEmptyObject(long_running_tasks)) {
+			$.each(long_running_tasks, function(task_name, percentage) {
+				notification_footer.append("<p>" + task_name + " " + percentage.toFixed(2) + "%</p>");
+			});
+			notification_footer.css("display", "block");
+		} else {
+			notification_footer.css("display", "none");
+		}
 	} else {
 		console.log('Data: ' + data);
 	}
@@ -932,7 +936,7 @@ function setup_ui() {
 	// FIXME: the directory is hard coded. We need a way to get the dir name
 	// from a html input file directory widget.
 	DirectoryNameGetter('btn_dc_folder', function(directory_name) {
-		directory_name = "E:/Sega/Dreamcast";
+		directory_name =  "E:/Sega/Dreamcast"; // "C:/Users/matt/Desktop/dc";
 		action_set_game_directory('Dreamcast', directory_name);
 	});
 

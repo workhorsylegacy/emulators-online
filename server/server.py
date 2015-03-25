@@ -250,9 +250,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		if task_name in long_running_tasks:
 			long_running_tasks.pop(task_name)
 
+		# Make a copy of long_running_tasks without the threads
+		copy = {}
+		for name, data in long_running_tasks.items():
+			copy[name] = data['percentage']
+
 		data = {
 			'action' : 'long_running_tasks',
-			'value' : long_running_tasks.keys()
+			'value' : copy
 		}
 		self.write_data(data)
 
@@ -381,7 +386,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.write_data(data)
 
 	def _set_game_directory(self, data):
-		global long_running_tasks
 
 		# Just return if already a long running "Searching for Dreamcast games" task
 		if self.is_long_running_task("Searching for Dreamcast games"):
@@ -390,7 +394,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		def task(socket, data):
 			global db
 			global file_modify_dates
-			global long_running_tasks
 
 			# Add the thread to the list of long running tasks
 			self.add_long_running_task("Searching for Dreamcast games", threading.current_thread())
@@ -401,17 +404,24 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			if 'Dreamcast' not in db:
 				db['Dreamcast'] = {}
 
-			# Walk through all the directories
-			percentage = 0
+			# Get the total number of files
+			total_files = 0.0
 			path_prefix = 'games/Sega/Dreamcast'
+			for root, dirs, files in os.walk(directory_name):
+				for file in files:
+					total_files += 1
+
+			# Walk through all the directories
+			done_files = 0.0
 			for root, dirs, files in os.walk(directory_name):
 				for file in files:
 					# Get the full path
 					entry = root + '/' + file
 					entry = os.path.abspath(entry).replace('\\', '/')
 
+					percentage = (done_files / total_files) * 100.0
 					self.set_long_running_task_percentage("Searching for Dreamcast games", percentage)
-					percentage += 1
+					done_files += 1
 
 					# Skip if the game file has not been modified
 					old_modify_date = 0
