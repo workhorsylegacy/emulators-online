@@ -14,6 +14,19 @@
 	background: #8adb89;
 }
 
+#notification_footer {
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	min-width: 300px;
+	z-index: 2001;
+	background: #67b4ef;
+	border-radius: 15px 0 0 0;
+	opacity: 0.9;
+}
+
 #error_header {
 	padding: 30px;
 	position: fixed;

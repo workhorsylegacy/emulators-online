@@ -37,6 +37,7 @@ import json
 import base64
 import subprocess
 import zlib
+import threading
 
 import tornado.ioloop
 import tornado.web
@@ -52,9 +53,6 @@ import dolphin
 import mupen64plus
 import pcsxr
 import pcsx2
-
-
-
 from identify_dreamcast_games import *
 
 
@@ -113,6 +111,7 @@ if IS_EXE:
 				data = base64.b64decode(data)
 				f.write(data)
 
+long_running_tasks = {}
 runner = None
 demul = demul.Demul()
 dolphin = dolphin.Dolphin()
@@ -176,7 +175,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def write_data(self, data):
 		data = json.dumps(data)
-		self.write_message(data)
+		try:
+			self.write_message(data)
+		except tornado.websocket.WebSocketClosedError as err:
+			pass
 
 	def log(self, message, echo=False):
 		data = {
@@ -236,6 +238,58 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		# Unknown message from the client
 		else:
 			self.log("Unknown action from client: {0}".format(data['action']))
+
+	def is_long_running_task(self, task_name):
+		global long_running_tasks
+
+		return task_name in long_running_tasks
+
+	def remove_long_running_task(self, task_name):
+		global long_running_tasks
+
+		if task_name in long_running_tasks:
+			long_running_tasks.pop(task_name)
+
+		data = {
+			'action' : 'long_running_tasks',
+			'value' : long_running_tasks.keys()
+		}
+		self.write_data(data)
+
+	def add_long_running_task(self, task_name, thread):
+		global long_running_tasks
+
+		long_running_tasks[task_name] = {
+			'thread' : thread,
+			'percentage' : 0,
+		}
+
+		# Make a copy of long_running_tasks without the threads
+		copy = {}
+		for name, data in long_running_tasks.items():
+			copy[name] = data['percentage']
+
+		data = {
+			'action' : 'long_running_tasks',
+			'value' : copy
+		}
+		self.write_data(data)
+
+	def set_long_running_task_percentage(self, task_name, percentage):
+		global long_running_tasks
+
+		long_running_tasks[task_name]['percentage'] = percentage
+
+		# Make a copy of long_running_tasks without the threads
+		copy = {}
+		for name, data in long_running_tasks.items():
+			copy[name] = data['percentage']
+
+		data = {
+			'action' : 'long_running_tasks',
+			'value' : copy
+		}
+		self.write_data(data)
 
 	def _get_db(self, data):
 		global db
@@ -327,80 +381,100 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.write_data(data)
 
 	def _set_game_directory(self, data):
-		global db
-		global file_modify_dates
+		global long_running_tasks
 
-		directory_name = data['directory_name']
-		console = data['console']
+		# Just return if already a long running "Searching for Dreamcast games" task
+		if self.is_long_running_task("Searching for Dreamcast games"):
+			return
 
-		dreamcast_db = {}
-		if 'Dreamcast' in db:
-			dreamcast_db = db['Dreamcast']
+		def task(socket, data):
+			global db
+			global file_modify_dates
+			global long_running_tasks
 
-		# Walk through all the directories
-		path_prefix = 'games/Sega/Dreamcast'
-		for root, dirs, files in os.walk(directory_name):
-			for file in files:
-				# Get the full path
-				entry = root + '/' + file
-				entry = os.path.abspath(entry).replace('\\', '/')
+			# Add the thread to the list of long running tasks
+			self.add_long_running_task("Searching for Dreamcast games", threading.current_thread())
 
-				# Skip if the game file has not been modified
-				old_modify_date = 0
-				if entry in file_modify_dates:
-					old_modify_date = file_modify_dates[entry]
-				modify_date = os.path.getmtime(entry)
-				if modify_date == old_modify_date:
-					continue
-				else:
-					file_modify_dates[entry] = modify_date
+			directory_name = data['directory_name']
+			console = data['console']
 
-				if not os.path.isfile(entry):
-					continue
-				
-				if not console == 'Dreamcast':
-					continue
-				
-				if not is_dreamcast_file(entry):
-					continue
+			if 'Dreamcast' not in db:
+				db['Dreamcast'] = {}
 
-				info = None
-				try:
-					info = get_dreamcast_game_info(entry)
-				except:
-					print("Failed to find info for game '{0}'".format(entry))
-					continue
-				print('getting game info: {0}'.format(info['title']))
-				info['file'] = entry
+			# Walk through all the directories
+			percentage = 0
+			path_prefix = 'games/Sega/Dreamcast'
+			for root, dirs, files in os.walk(directory_name):
+				for file in files:
+					# Get the full path
+					entry = root + '/' + file
+					entry = os.path.abspath(entry).replace('\\', '/')
 
-				# Save the info in the db
-				if info:
-					title = info['title']
-					clean_title = title.replace(': ', ' - ').replace('/', '+')
-					dreamcast_db[title] = {
-						'path' : clean_path('{0}/{1}/'.format(path_prefix, clean_title)),
-						'binary' : abs_path(info['file']),
-						'bios' : '',
-						'images' : [],
-						'developer' : info.get('developer', ''),
-						'genre' : info.get('genre', ''),
-					}
+					self.set_long_running_task_percentage("Searching for Dreamcast games", percentage)
+					percentage += 1
 
-					# Get the images
-					image_dir = path_prefix + '/' + title + '/'
-					for img in ['title_big.png', 'title_small.png']:
-						if os.path.isdir(image_dir):
-							image_file = image_dir + img
-							if os.path.isfile(image_file):
-								dreamcast_db[title]['images'].append(image_file)
+					# Skip if the game file has not been modified
+					old_modify_date = 0
+					if entry in file_modify_dates:
+						old_modify_date = file_modify_dates[entry]
+					modify_date = os.path.getmtime(entry)
+					if modify_date == old_modify_date:
+						continue
+					else:
+						file_modify_dates[entry] = modify_date
 
-		db['Dreamcast'] = dreamcast_db
-		with open("db/game_db.json", 'wb') as f:
-			f.write(json.dumps(db, indent=4, separators=(',', ': ')))
+					if not os.path.isfile(entry):
+						continue
 
-		with open("db/file_modify_dates.json", 'wb') as f:
-			f.write(json.dumps(file_modify_dates, indent=4, separators=(',', ': ')))
-		print("Done getting games from directory.")
+					if not console == 'Dreamcast':
+						continue
+
+					if not is_dreamcast_file(entry):
+						continue
+
+					info = None
+					try:
+						info = get_dreamcast_game_info(entry)
+					except:
+						print("Failed to find info for game '{0}'".format(entry))
+						continue
+					print('getting game info: {0}'.format(info['title']))
+					info['file'] = entry
+
+					# Save the info in the db
+					if info:
+						title = info['title']
+						clean_title = title.replace(': ', ' - ').replace('/', '+')
+						db['Dreamcast'][title] = {
+							'path' : clean_path('{0}/{1}/'.format(path_prefix, clean_title)),
+							'binary' : abs_path(info['file']),
+							'bios' : '',
+							'images' : [],
+							'developer' : info.get('developer', ''),
+							'genre' : info.get('genre', ''),
+						}
+
+						# Get the images
+						image_dir = path_prefix + '/' + title + '/'
+						for img in ['title_big.png', 'title_small.png']:
+							if os.path.isdir(image_dir):
+								image_file = image_dir + img
+								if os.path.isfile(image_file):
+									db['Dreamcast'][title]['images'].append(image_file)
+
+			with open("db/game_db.json", 'wb') as f:
+				f.write(json.dumps(db, indent=4, separators=(',', ': ')))
+
+			with open("db/file_modify_dates.json", 'wb') as f:
+				f.write(json.dumps(file_modify_dates, indent=4, separators=(',', ': ')))
+			print("Done getting games from directory.")
+
+			self.remove_long_running_task("Searching for Dreamcast games")
+
+		# Run the task in a thread
+		thread = threading.Thread(target = task, args = (self, data))
+		thread.daemon = True
+		thread.start()
 
 
 	def _play_game(self, data):

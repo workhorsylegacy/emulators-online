@@ -325,6 +325,9 @@
 			<div id="output"></div>
 		</div>
 
+		<div id="notification_footer">
+		</div>
+
 		<footer>
 			<p>Copyright &copy; 2015 Matthew Brennan Jones</p>
 			<p><a href="https://github.com/workhorsy/emu_archive">https://github.com/workhorsy/emu_archive</a></p>
@@ -620,6 +623,14 @@ function on_data(data) {
 				});
 			});
 		}
+	} else if(data['action'] == 'long_running_tasks') {
+		var notification_footer = $('#notification_footer');
+		notification_footer.empty();
+		var long_running_tasks = data['value'];
+		$.each(long_running_tasks, function(task_name, percent) {
+			notification_footer.append("<p>" + task_name + " " + percent + "%</p>");
+			console.log(task_name);
+		});
 	} else {
 		console.log('Data: ' + data);
 	}
