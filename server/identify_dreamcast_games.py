@@ -177,6 +177,13 @@ def _fix_games_that_are_mislabeled(f, title, serial_number):
 	elif serial_number == b"MK-51028": # Virtua Striker 2
 		if _read_blob_at(f, 0x1623B0, 12) == b"zerogunner 2":
 			return (u"Zero Gunner 2", "MK-51028")
+			return (u"OutTrigger: International Counter Terrorism Special Force", "MK-51102")
+	elif serial_number == b"T1240M": # BioHazard Code: Veronica Complete
+		if _read_blob_at(f, 0x157FAD, 14) == b"BASS FISHING 2":
+			return (u"Sega Bass Fishing 2", "MK-51166")
+	elif serial_number == b"MK-51100": # Phantasy Star Online
+		if _read_blob_at(f, 0x52F28A8, 26) == b"Phantasy Star Online Ver.2":
+			return (u"Phantasy Star Online Ver. 2", "MK-51166")
 
 	return (title, serial_number)
 
