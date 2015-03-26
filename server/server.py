@@ -79,7 +79,7 @@ if IS_EXE:
 
 	# Make the directory structure
 	dirs = [
-			'config', 'db', 'downloads',
+			'config', 'cache', 'downloads',
 			'emulators', 'server',
 			'static', 'games',
 			'games/Nintendo/',
@@ -127,8 +127,8 @@ pcsxr = pcsxr.PCSXR()
 
 # Load the game database
 db = {}
-if os.path.isfile("db/game_db.json"):
-	with open("db/game_db.json", 'rb') as f:
+if os.path.isfile("cache/game_db.json"):
+	with open("cache/game_db.json", 'rb') as f:
 		db = json.loads(f.read())
 
 	# Remove any non existent files
@@ -140,8 +140,8 @@ if os.path.isfile("db/game_db.json"):
 
 # Load the file modify dates
 file_modify_dates = {}
-if os.path.isfile("db/file_modify_dates.json"):
-	with open("db/file_modify_dates.json", 'rb') as f:
+if os.path.isfile("cache/file_modify_dates.json"):
+	with open("cache/file_modify_dates.json", 'rb') as f:
 		file_modify_dates = json.loads(f.read())
 
 	# Remove any non existent files from the modify db
@@ -478,10 +478,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 								if os.path.isfile(image_file):
 									db['Dreamcast'][title]['images'].append(image_file)
 
-			with open("db/game_db.json", 'wb') as f:
+			with open("cache/game_db.json", 'wb') as f:
 				f.write(json.dumps(db, indent=4, separators=(',', ': ')))
 
-			with open("db/file_modify_dates.json", 'wb') as f:
+			with open("cache/file_modify_dates.json", 'wb') as f:
 				f.write(json.dumps(file_modify_dates, indent=4, separators=(',', ': ')))
 			print("Done getting games from directory.")
 
