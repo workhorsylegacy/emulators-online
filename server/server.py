@@ -53,7 +53,6 @@ import dolphin
 import mupen64plus
 import pcsxr
 import pcsx2
-from identify_dreamcast_games import *
 
 
 # Move to the main emu_archive directory no matter what path we are launched from
@@ -102,7 +101,12 @@ if IS_EXE:
 	files = ['configure.html', 'index.html', 'static/default.css', 
 			'static/emu_archive.js', 'static/file_uploader.js',
 			'static/input.js', 'static/web_socket.js',
-			'static/jquery-2.1.3.min.js', 'static/favicon.ico']
+			'static/jquery-2.1.3.min.js', 'static/favicon.ico',
+			'db_dreamcast_official_eu.json',
+			'db_dreamcast_official_jp.json',
+			'db_dreamcast_official_us.json',
+			'db_dreamcast_unofficial.json',
+			]
 
 	for file in files:
 		if not os.path.isfile(file):
@@ -110,6 +114,8 @@ if IS_EXE:
 				data = static_files.static_files[file]
 				data = base64.b64decode(data)
 				f.write(data)
+
+from identify_dreamcast_games import *
 
 long_running_tasks = {}
 runner = None

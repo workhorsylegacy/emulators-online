@@ -36,6 +36,18 @@ with open('../static/web_socket.js', 'rb') as f:
 with open('../static/jquery-2.1.3.min.js', 'rb') as f:
 	data['static/jquery-2.1.3.min.js'] = base64.b64encode(f.read())
 
+with open('../server/db_dreamcast_official_eu.json', 'rb') as f:
+	data['db_dreamcast_official_eu.json'] = base64.b64encode(f.read())
+
+with open('../server/db_dreamcast_official_jp.json', 'rb') as f:
+	data['db_dreamcast_official_jp.json'] = base64.b64encode(f.read())
+
+with open('../server/db_dreamcast_official_us.json', 'rb') as f:
+	data['db_dreamcast_official_us.json'] = base64.b64encode(f.read())
+
+with open('../server/db_dreamcast_unofficial.json', 'rb') as f:
+	data['db_dreamcast_unofficial.json'] = base64.b64encode(f.read())
+
 with open('static_files.py', 'wb') as f:
 	f.write(
 	"\r\n"
@@ -50,6 +62,6 @@ with open('static_files.py', 'wb') as f:
 
 setup(
 	options = {'py2exe': {'bundle_files': 1}},
-	windows=['server.py'],
+	console=['server.py'],
 	zipfile=None
 )

@@ -46,6 +46,11 @@ def _strip_comments(data):
 
 root = os.path.dirname(os.path.realpath(__file__))
 
+# Fix bug in py2exe that makes the exe name the dirname
+if root.endswith('.exe'):
+	root = os.path.dirname(root)
+
+
 with open(os.path.join(root, 'db_dreamcast_unofficial.json'), 'rb') as f:
 	unofficial_db = json.loads(_strip_comments(f.read()).decode('utf8'))
 
