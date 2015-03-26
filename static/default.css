@@ -93,11 +93,6 @@ a {
 	border-radius: 15px;
 }
 
-img.black_and_white {
-	filter: grayscale(100%);
-	-webkit-filter: grayscale(100%);
-}
-
 .game_icon img {
 	padding: 0x;
 	margin: 0px;

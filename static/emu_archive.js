@@ -33,8 +33,6 @@ function make_game_icon(console_name, name, data, i) {
 
 	if(data["binary"])
 		text += "<img src=\"" + data["path"] + "title_small.png\" />";
-	else
-		text += "<img src=\"" + data["path"] + "title_small.png\" class=\"black_and_white\" />";
 
 	text += "<br />" + 
 		name + "</a>";
