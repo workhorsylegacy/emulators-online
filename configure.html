@@ -286,11 +286,20 @@
 					<p>
 						<span style="color: red;">FIXME: Can't automate download from build server.</span>
 						<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
+						<p>
+							Manually download from <a href="http://buildbot.orphis.net/pcsx2/index.php">http://buildbot.orphis.net/pcsx2/index.php</a>
+							and extract to the "emulators/pcsx2" folder.
+						</p>
 					</p>
 
 					<h2>Configure buttons</h2>
 					<p>
 						<span style="color: red;">FIXME: Add button configuration.</span>
+					</p>
+
+					<h2>Game folder</h2>
+					<p>
+						<input type="file" id="btn_ps2_folder" name="btn_ps2_folder" disabled webkitdirectory mozdirectory directory></input>
 					</p>
 
 					<h2>BIOS</h2>
@@ -490,8 +499,10 @@ function on_data(data) {
 			is_pcsx2_installed = data['value'];
 			if(is_pcsx2_installed) {
 				$('#btn_install_pcsx2').val('Uninstall');
+				$('#btn_ps2_folder').prop('disabled', false);
 			} else {
 				$('#btn_install_pcsx2').val('Install');
+				$('#btn_ps2_folder').prop('disabled', true);
 			}
 			$('#btn_install_pcsx2').prop('disabled', true);
 		} else if (data['name'] == 'Mupen 64 Plus') {
@@ -938,6 +949,13 @@ function setup_ui() {
 	DirectoryNameGetter('btn_dc_folder', function(directory_name) {
 		directory_name =  "E:/Sega/Dreamcast"; // "C:/Users/matt/Desktop/dc";
 		action_set_game_directory('Dreamcast', directory_name);
+	});
+
+	// FIXME: the directory is hard coded. We need a way to get the dir name
+	// from a html input file directory widget.
+	DirectoryNameGetter('btn_ps2_folder', function(directory_name) {
+		directory_name =  "E:/Sony/Playstation2";
+		action_set_game_directory('Playstation2', directory_name);
 	});
 
 	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_data) {

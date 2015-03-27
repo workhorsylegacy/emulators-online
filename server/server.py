@@ -97,7 +97,7 @@ if IS_EXE:
 		if not os.path.exists(dir):
 			os.mkdir(dir)
 
-	# Make the html, css, and js files
+	# Make the html, css, js, and json files
 	files = ['configure.html', 'index.html', 'static/default.css', 
 			'static/emu_archive.js', 'static/file_uploader.js',
 			'static/input.js', 'static/web_socket.js',
@@ -106,6 +106,12 @@ if IS_EXE:
 			'db_dreamcast_official_jp.json',
 			'db_dreamcast_official_us.json',
 			'db_dreamcast_unofficial.json',
+			'db_playstation2_official_as.json',
+			'db_playstation2_official_au.json',
+			'db_playstation2_official_eu.json',
+			'db_playstation2_official_jp.json',
+			'db_playstation2_official_ko.json',
+			'db_playstation2_official_us.json',
 			]
 
 	for file in files:
@@ -116,6 +122,7 @@ if IS_EXE:
 				f.write(data)
 
 from identify_dreamcast_games import *
+from identify_playstation2_games import *
 
 long_running_tasks = {}
 runner = None
@@ -394,25 +401,38 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def _set_game_directory(self, data):
 
 		# Just return if already a long running "Searching for Dreamcast games" task
-		if self.is_long_running_task("Searching for Dreamcast games"):
+		if self.is_long_running_task("Searching for {0} games".format(data['console'])):
 			return
 
 		def task(socket, data):
 			global db
 			global file_modify_dates
 
-			# Add the thread to the list of long running tasks
-			self.add_long_running_task("Searching for Dreamcast games", threading.current_thread())
-
 			directory_name = data['directory_name']
 			console = data['console']
 
-			if 'Dreamcast' not in db:
-				db['Dreamcast'] = {}
+			# Add the thread to the list of long running tasks
+			self.add_long_running_task("Searching for {0} games".format(console), threading.current_thread())
+
+			if console not in db:
+				db[console] = {}
 
 			# Get the total number of files
 			total_files = 0.0
-			path_prefix = 'games/Sega/Dreamcast'
+			path_prefix = None
+			if console == 'GameCube':
+				path_prefix = 'games/Nintendo/GameCube'
+			elif console == 'Nintendo64':
+				path_prefix = 'games/Nintendo/Nintendo64'
+			elif console == 'Saturn':
+				path_prefix = 'games/Sega/Saturn'
+			elif console == 'Dreamcast':
+				path_prefix = 'games/Sega/Dreamcast'
+			elif console == 'Playstation1':
+				path_prefix = 'games/Sony/Playstation1'
+			elif console == 'Playstation2':
+				path_prefix = 'games/Sony/Playstation2'
+
 			for root, dirs, files in os.walk(directory_name):
 				for file in files:
 					total_files += 1
@@ -425,9 +445,14 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					entry = root + '/' + file
 					entry = os.path.abspath(entry).replace('\\', '/')
 
+					# Get the percentage of the progress looping through files
 					percentage = (done_files / total_files) * 100.0
-					self.set_long_running_task_percentage("Searching for Dreamcast games", percentage)
+					self.set_long_running_task_percentage("Searching for {0} games".format(console), percentage)
 					done_files += 1
+
+					# Skip if the the entry is not a file
+					if not os.path.isfile(entry):
+						continue
 
 					# Skip if the game file has not been modified
 					old_modify_date = 0
@@ -439,18 +464,25 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					else:
 						file_modify_dates[entry] = modify_date
 
-					if not os.path.isfile(entry):
-						continue
+					# Skip if the file is not the right kind for this console
+					if console == 'Dreamcast':
+						if not is_dreamcast_file(entry):
+							continue
+					elif console == 'Playstation2':
+						if not is_playstation2_file(entry):
+							continue
+					else:
+						raise Exception("Unexpected console: {0}".format(console))
 
-					if not console == 'Dreamcast':
-						continue
-
-					if not is_dreamcast_file(entry):
-						continue
-
+					# Get the game info
 					info = None
 					try:
-						info = get_dreamcast_game_info(entry)
+						if console == 'Dreamcast':
+							info = get_dreamcast_game_info(entry)
+						elif console == 'Playstation2':
+							info = get_playstation2_game_info(entry)
+						else:
+							raise Exception("Unexpected console: {0}".format(console))
 					except:
 						print("Failed to find info for game '{0}'".format(entry))
 						continue
@@ -461,7 +493,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					if info:
 						title = info['title']
 						clean_title = title.replace(': ', ' - ').replace('/', '+')
-						db['Dreamcast'][title] = {
+						db[console][title] = {
 							'path' : clean_path('{0}/{1}/'.format(path_prefix, clean_title)),
 							'binary' : abs_path(info['file']),
 							'bios' : '',
@@ -476,8 +508,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 							if os.path.isdir(image_dir):
 								image_file = image_dir + img
 								if os.path.isfile(image_file):
-									db['Dreamcast'][title]['images'].append(image_file)
+									db[console][title]['images'].append(image_file)
 
+			# FIXME: All game finding threads write this file. This can crash when writing the file, and another thread changes the data.
+			# Change to use a separate file for each console.
 			with open("cache/game_db.json", 'wb') as f:
 				f.write(json.dumps(db, indent=4, separators=(',', ': ')))
 
@@ -485,7 +519,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				f.write(json.dumps(file_modify_dates, indent=4, separators=(',', ': ')))
 			print("Done getting games from directory.")
 
-			self.remove_long_running_task("Searching for Dreamcast games")
+			self.remove_long_running_task("Searching for {0} games".format(console))
 
 		# Run the task in a thread
 		thread = threading.Thread(target = task, args = (self, data))
@@ -672,7 +706,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'PCSX2':
-			exist = os.path.exists("emulators/PCSX2/pcsx2.exe")
+			exist = os.path.exists("emulators/pcsx2/pcsx2.exe")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,

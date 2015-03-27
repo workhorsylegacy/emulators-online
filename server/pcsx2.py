@@ -39,8 +39,15 @@ def goodJoin(path_a, path_b):
 	return path
 
 def run(path, binary):
+	# Figure out if running a game or not
+	full_screen = False
+	if binary:
+		full_screen = True
+	else:
+		full_screen = False
+
 	# Run the game
-	os.chdir("emulators/pcsx2-v1.3.1-8-gf88bea5-windows-x86/")
+	os.chdir("emulators/pcsx2/")
 	game_path = goodJoin("../../", path + '/' + binary)
 	command = '"pcsx2.exe" --nogui "' + game_path + '"'
 	runner = emu_runner.EmuRunner(command, 'GSdx', full_screen, full_screen_alt_enter=True)
