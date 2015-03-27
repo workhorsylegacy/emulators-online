@@ -183,31 +183,45 @@
 					A Sega Dreamcast emulator.
 					</p>
 
-					<h2>Install</h2>
-					<p>
-						<input id="btn_install_demul" type="button" value="Loading ..." disabled />
-					</p>
+					<div id="demul_requirements_installed">
+						<h2>Install</h2>
+						<p>
+							<input id="btn_install_demul" type="button" value="Loading ..." disabled />
+						</p>
 
-					<h2>Configure buttons</h2>
-					<p>
-						<input id="btn_controls_demul" type="button" value="Buttons" disabled />
-					</p>
+						<h2>Configure buttons</h2>
+						<p>
+							<input id="btn_controls_demul" type="button" value="Buttons" disabled />
+						</p>
 
-					<h2>Game folder</h2>
-					<p>
-						<input type="file" id="btn_dc_folder" name="btn_dc_folder" disabled webkitdirectory mozdirectory directory></input>
-					</p>
+						<h2>Game folder</h2>
+						<p>
+							<input type="file" id="btn_dc_folder" name="btn_dc_folder" disabled webkitdirectory mozdirectory directory></input>
+						</p>
 
-					<h2>BIOS</h2>
-					<p>
-						<input type="file" id="btn_bios_demul_dc" name="btn_bios_demul_dc" disabled>Dreamcast BIOS (dc.zip)</input>
-						<br />
-						<input type="file" id="btn_bios_demul_aw" name="btn_bios_demul_aw" disabled>Atomiswave BIOS (awbios.zip)</input>
-						<br />
-						<input type="file" id="btn_bios_demul_naomi" name="btn_bios_demul_naomi" disabled>Naomi BIOS (naomi.zip)</input>
-						<br />
-						<input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input>
-					</p>
+						<h2>BIOS</h2>
+						<p>
+							<input type="file" id="btn_bios_demul_dc" name="btn_bios_demul_dc" disabled>Dreamcast BIOS (dc.zip)</input>
+							<br />
+							<input type="file" id="btn_bios_demul_aw" name="btn_bios_demul_aw" disabled>Atomiswave BIOS (awbios.zip)</input>
+							<br />
+							<input type="file" id="btn_bios_demul_naomi" name="btn_bios_demul_naomi" disabled>Naomi BIOS (naomi.zip)</input>
+							<br />
+							<input type="file" id="btn_bios_demul_naomi2" name="btn_bios_demul_naomi2" disabled>Naomi 2 BIOS (naomi2.zip)</input>
+						</p>
+					</div>
+					<div id="demul_directx_end_user_runtime_not_installed">
+						The DirectX End-User Runtime must be installed before Demul can be run: 
+						<a href="http://download.microsoft.com/download/1/7/1/1718CCC4-6315-4D8E-9543-8E28A4E18C4C/dxwebsetup.exe">
+							http://download.microsoft.com/download/1/7/1/1718CCC4-6315-4D8E-9543-8E28A4E18C4C/dxwebsetup.exe
+						</a>
+					</div>
+					<div id="demul_vcpp_2010_redist_not_installed">
+						The Visual C++ 2010 X86 Redistributable Package must be installed before Demul can be run: 
+						<a href="http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe">
+							http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe
+						</a>
+					</div>
 				</div>
 
 				<div id="table_saturn" class="config_table" style="display: none">
@@ -282,7 +296,7 @@
 						A Sony Playstation 2 emulator.
 					</p>
 
-					<div id="playstation2_vcpp_2013_redist_installed">
+					<div id="playstation2_requirements_installed">
 						<h2>Install</h2>
 						<p>
 							<span style="color: red;">FIXME: Can't automate download from build server.</span>
@@ -385,6 +399,8 @@ var button_map_dolphin = {};
 var button_map_mupen = {};
 var button_map_ssf = {};
 
+var is_directx_end_user_runtime_installed = false;
+var is_vcpp_2010_redist_installed = false;
 var is_vcpp_2013_redist_installed = false;
 var is_7zip_installed = false;
 var is_vcd_installed = false;
@@ -420,7 +436,11 @@ function on_data(data) {
 			$('#config_programs').show();
 		}
 	} else if(data['action'] == 'is_installed') {
-		if (data['name'] == 'Visual C++ 2013 redist') {
+		if (data['name'] == 'DirectX End User Runtime') {
+			is_directx_end_user_runtime_installed = data['value'];
+		} else if (data['name'] == 'Visual C++ 2010 redist') {
+			is_vcpp_2010_redist_installed = data['value'];
+		} else if (data['name'] == 'Visual C++ 2013 redist') {
 			is_vcpp_2013_redist_installed = data['value'];
 		} else if (data['name'] == '7-Zip') {
 			is_7zip_installed = data['value'];
@@ -449,26 +469,43 @@ function on_data(data) {
 			$('#btn_install_nulldc').prop('disabled', false);
 		} else if (data['name'] == 'Demul') {
 			is_demul_installed = data['value'];
-			if(is_demul_installed) {
-				$('#btn_install_demul').val('Uninstall');
+			if (is_directx_end_user_runtime_installed && is_vcpp_2010_redist_installed) {
+				if(is_demul_installed) {
+					$('#btn_install_demul').val('Uninstall');
 
-				$('#btn_controls_demul').prop('disabled', false);
-				$('#btn_dc_folder').prop('disabled', false);
-				$('#btn_bios_demul_dc').prop('disabled', false);
-				$('#btn_bios_demul_aw').prop('disabled', false);
-				$('#btn_bios_demul_naomi').prop('disabled', false);
-				$('#btn_bios_demul_naomi2').prop('disabled', false);
-			} else {
-				$('#btn_install_demul').val('Install');
+					$('#btn_controls_demul').prop('disabled', false);
+					$('#btn_dc_folder').prop('disabled', false);
+					$('#btn_bios_demul_dc').prop('disabled', false);
+					$('#btn_bios_demul_aw').prop('disabled', false);
+					$('#btn_bios_demul_naomi').prop('disabled', false);
+					$('#btn_bios_demul_naomi2').prop('disabled', false);
+				} else {
+					$('#btn_install_demul').val('Install');
 
-				$('#btn_controls_demul').prop('disabled', true);
-				$('#btn_dc_folder').prop('disabled', true);
-				$('#btn_bios_demul_dc').prop('disabled', true);
-				$('#btn_bios_demul_aw').prop('disabled', true);
-				$('#btn_bios_demul_naomi').prop('disabled', true);
-				$('#btn_bios_demul_naomi2').prop('disabled', true);
+					$('#btn_controls_demul').prop('disabled', true);
+					$('#btn_dc_folder').prop('disabled', true);
+					$('#btn_bios_demul_dc').prop('disabled', true);
+					$('#btn_bios_demul_aw').prop('disabled', true);
+					$('#btn_bios_demul_naomi').prop('disabled', true);
+					$('#btn_bios_demul_naomi2').prop('disabled', true);
+				}
+				$('#btn_install_demul').prop('disabled', false);
+				$('#demul_requirements_installed').show();
 			}
-			$('#btn_install_demul').prop('disabled', false);
+
+			if (!is_directx_end_user_runtime_installed) {
+				$('#demul_directx_end_user_runtime_not_installed').show();
+				$('#demul_requirements_installed').hide();
+			} else {
+				$('#demul_directx_end_user_runtime_not_installed').hide();
+			}
+
+			if (!is_vcpp_2010_redist_installed) {
+				$('#demul_vcpp_2010_redist_not_installed').show();
+				$('#demul_requirements_installed').hide();
+			} else {
+				$('#demul_vcpp_2010_redist_not_installed').hide();
+			}
 		} else if (data['name'] == 'SSF') {
 			is_ssf_installed = data['value'];
 			if(is_ssf_installed) {
@@ -517,10 +554,10 @@ function on_data(data) {
 					$('#btn_ps2_folder').prop('disabled', true);
 				}
 				$('#btn_install_pcsx2').prop('disabled', true);
-				$('#playstation2_vcpp_2013_redist_installed').show();
+				$('#playstation2_requirements_installed').show();
 				$('#playstation2_vcpp_2013_redist_not_installed').hide();
 			} else {
-				$('#playstation2_vcpp_2013_redist_installed').hide();
+				$('#playstation2_requirements_installed').hide();
 				$('#playstation2_vcpp_2013_redist_not_installed').show();
 			}
 		} else if (data['name'] == 'Mupen 64 Plus') {
@@ -744,6 +781,8 @@ function action_set_bios(console_name, type_name, file_data) {
 
 function setup_ui() {
 	// Figure out if programs are installed
+	action_is_installed('DirectX End User Runtime');
+	action_is_installed('Visual C++ 2010 redist');
 	action_is_installed('Visual C++ 2013 redist');
 	action_is_installed('7-Zip');
 	action_is_installed('VirtualCloneDrive');

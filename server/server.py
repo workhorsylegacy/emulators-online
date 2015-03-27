@@ -648,9 +648,29 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			shutil.rmtree('emulators/pcsx2')
 
 	def _is_installed(self, data):
-		if data['program'] == 'Visual C++ 2013 redist':
-			exist = os.path.exists("C:/Windows/WinSxS/x86_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.8428_none_d08a11e2442dc25d/msvcr80.dll") and \
-					os.path.exists("C:/Windows/WinSxS/amd64_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.8428_none_88dcdb0b2fb19957/msvcr80.dll")
+		if data['program'] == 'DirectX End User Runtime':
+			# FIXME: This assumes that DirectX is installed
+			# I'm guessing it should for a file like "d3dx11_43.dll".
+			# Test on a machine that does not come with DirectX installed already
+			exist = True
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'DirectX End User Runtime'
+			}
+			self.write_data(data)
+		elif data['program'] == 'Visual C++ 2010 redist': # msvcr90.dll
+			# Paths on Windows 8.1 X86_64
+			exist = os.path.exists("C:/Windows/SysWOW64/msvcr100.dll")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'Visual C++ 2010 redist'
+			}
+			self.write_data(data)
+		elif data['program'] == 'Visual C++ 2013 redist': # msvcr120.dll
+			# Paths on Windows 8.1 X86_64
+			exist = os.path.exists("C:/Windows/SysWOW64/msvcr120.dll")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
