@@ -282,30 +282,38 @@
 						A Sony Playstation 2 emulator.
 					</p>
 
-					<h2>Install</h2>
-					<p>
-						<span style="color: red;">FIXME: Can't automate download from build server.</span>
-						<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
+					<div id="playstation2_vcpp_2013_redist_installed">
+						<h2>Install</h2>
 						<p>
-							Manually download from <a href="http://buildbot.orphis.net/pcsx2/index.php">http://buildbot.orphis.net/pcsx2/index.php</a>
-							and extract to the "emulators/pcsx2" folder.
+							<span style="color: red;">FIXME: Can't automate download from build server.</span>
+							<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
+							<p>
+								Manually download from <a href="http://buildbot.orphis.net/pcsx2/index.php">http://buildbot.orphis.net/pcsx2/index.php</a>
+								and extract to the "emulators/pcsx2" folder.
+							</p>
 						</p>
-					</p>
 
-					<h2>Configure buttons</h2>
-					<p>
-						<span style="color: red;">FIXME: Add button configuration.</span>
-					</p>
+						<h2>Configure buttons</h2>
+						<p>
+							<span style="color: red;">FIXME: Add button configuration.</span>
+						</p>
 
-					<h2>Game folder</h2>
-					<p>
-						<input type="file" id="btn_ps2_folder" name="btn_ps2_folder" disabled webkitdirectory mozdirectory directory></input>
-					</p>
+						<h2>Game folder</h2>
+						<p>
+							<input type="file" id="btn_ps2_folder" name="btn_ps2_folder" disabled webkitdirectory mozdirectory directory></input>
+						</p>
 
-					<h2>BIOS</h2>
-					<p>
-						<span style="color: red;">FIXME: Add BIOS configuration.</span>
-					</p>
+						<h2>BIOS</h2>
+						<p>
+							<span style="color: red;">FIXME: Add BIOS configuration.</span>
+						</p>
+					</div>
+					<div id="playstation2_vcpp_2013_redist_not_installed">
+						The Visual C++ 2013 X86 Redistributable Package must be installed before PCSX2 can be run: 
+						<a href="http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe">
+							http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe
+						</a>
+					</div>
 				</div>
 
 				<div id="table_nintendo64" class="config_table" style="display: none">
@@ -377,6 +385,7 @@ var button_map_dolphin = {};
 var button_map_mupen = {};
 var button_map_ssf = {};
 
+var is_vcpp_2013_redist_installed = false;
 var is_7zip_installed = false;
 var is_vcd_installed = false;
 var is_nulldc_installed = false;
@@ -411,7 +420,9 @@ function on_data(data) {
 			$('#config_programs').show();
 		}
 	} else if(data['action'] == 'is_installed') {
-		if (data['name'] == '7-Zip') {
+		if (data['name'] == 'Visual C++ 2013 redist') {
+			is_vcpp_2013_redist_installed = data['value'];
+		} else if (data['name'] == '7-Zip') {
 			is_7zip_installed = data['value'];
 			if(is_7zip_installed) {
 				$('#btn_install_7zip').val('Uninstall');
@@ -497,14 +508,21 @@ function on_data(data) {
 			$('#btn_install_pcsxr').prop('disabled', false);
 		} else if (data['name'] == 'PCSX2') {
 			is_pcsx2_installed = data['value'];
-			if(is_pcsx2_installed) {
-				$('#btn_install_pcsx2').val('Uninstall');
-				$('#btn_ps2_folder').prop('disabled', false);
+			if (is_vcpp_2013_redist_installed) {
+				if(is_pcsx2_installed) {
+					$('#btn_install_pcsx2').val('Uninstall');
+					$('#btn_ps2_folder').prop('disabled', false);
+				} else {
+					$('#btn_install_pcsx2').val('Install');
+					$('#btn_ps2_folder').prop('disabled', true);
+				}
+				$('#btn_install_pcsx2').prop('disabled', true);
+				$('#playstation2_vcpp_2013_redist_installed').show();
+				$('#playstation2_vcpp_2013_redist_not_installed').hide();
 			} else {
-				$('#btn_install_pcsx2').val('Install');
-				$('#btn_ps2_folder').prop('disabled', true);
+				$('#playstation2_vcpp_2013_redist_installed').hide();
+				$('#playstation2_vcpp_2013_redist_not_installed').show();
 			}
-			$('#btn_install_pcsx2').prop('disabled', true);
 		} else if (data['name'] == 'Mupen 64 Plus') {
 			is_mupen_installed = data['value'];
 			if(is_mupen_installed) {
@@ -726,6 +744,7 @@ function action_set_bios(console_name, type_name, file_data) {
 
 function setup_ui() {
 	// Figure out if programs are installed
+	action_is_installed('Visual C++ 2013 redist');
 	action_is_installed('7-Zip');
 	action_is_installed('VirtualCloneDrive');
 	action_is_installed('NullDC');

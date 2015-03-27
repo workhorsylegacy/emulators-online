@@ -648,7 +648,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			shutil.rmtree('emulators/pcsx2')
 
 	def _is_installed(self, data):
-		if data['program'] == '7-Zip':
+		if data['program'] == 'Visual C++ 2013 redist':
+			exist = os.path.exists("C:/Windows/WinSxS/x86_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.8428_none_d08a11e2442dc25d/msvcr80.dll") and \
+					os.path.exists("C:/Windows/WinSxS/amd64_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.8428_none_88dcdb0b2fb19957/msvcr80.dll")
+			data = {
+				'action' : 'is_installed',
+				'value' : exist,
+				'name' : 'Visual C++ 2013 redist'
+			}
+			self.write_data(data)
+		elif data['program'] == '7-Zip':
 			exist = os.path.exists("C:/Program Files/7-Zip/7z.exe") or \
 					os.path.exists("C:/Program Files (x86)/7-Zip/7z.exe")
 			data = {
