@@ -258,7 +258,57 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			self._get_db(data)
 
 		elif data['action'] == 'set_game_directory':
-			self._set_game_directory(data)
+			from win32gui import GetWindowText, EnumWindows, GetForegroundWindow, GetDesktopWindow
+			from win32com.shell import shell, shellcon
+
+			def findWindowWithTitleText(title_text):
+				# Get the handles of all the windows
+				res = []
+				def callback(hwnd, arg):
+					res.append(hwnd)
+				EnumWindows(callback, 0)
+
+				# Find the window with the desired title bar text
+				for hwnd in res:
+					text = GetWindowText(hwnd)
+					#print(text)
+					if title_text in text:
+						return(hwnd, text)
+
+				return (None, None)
+
+			# First try checking if Firefox or Chrome is the foreground window
+			hwnd = GetForegroundWindow()
+			text = GetWindowText(hwnd)
+
+			# If the focused window is not Chrome or Firefox, find them manually
+			if ' - Mozilla Firefox' not in text and ' - Google Chrome' not in text:
+				# If not, find any Firefox window
+				hwnd, text = findWindowWithTitleText(' - Mozilla Firefox')
+				if not hwnd or not text:
+					# If not, find any Chrome window
+					hwnd, text = findWindowWithTitleText(' - Google Chrome')
+					if not hwnd or not text:
+						# If not, find the Desktop window
+						hwnd = GetDesktopWindow()
+						text = 'Desktop'
+			if not hwnd or not text:
+				print("Failed to find any Firefox, Chrome, or Desktop window to put the Folder Dialog on top of.")
+				sys.exit(1)
+
+			print(hwnd, text)
+			desktop_pidl = shell.SHGetFolderLocation(0, shellcon.CSIDL_DESKTOP, 0, 0)
+			pidl, display_name, image_list = shell.SHBrowseForFolder(
+				hwnd,
+				desktop_pidl,
+				"Select a folder search for games",
+				0,
+				None,
+				None
+			)
+			if pidl:
+				print(shell.SHGetPathFromIDList(pidl))
+			#self._set_game_directory(data)
 
 		# Unknown message from the client
 		else:

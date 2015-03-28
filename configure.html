@@ -196,7 +196,10 @@
 
 						<h2>Game folder</h2>
 						<p>
+							<input id="btn_dc_folder" type="button" value="Select a folder search for games" disabled />
+							<!--
 							<input type="file" id="btn_dc_folder" name="btn_dc_folder" disabled webkitdirectory mozdirectory directory></input>
+							-->
 						</p>
 
 						<h2>BIOS</h2>
@@ -966,6 +969,17 @@ function setup_ui() {
 		action_get_button_map('saturn', button_map_ssf);
 	});
 
+	btn = $('#btn_dc_folder');
+	btn.on('click', function() {
+		// 
+		var message = {
+			'action' : 'set_game_directory',
+			'console' : 'dreamcast'
+		};
+		socket_send_data(message);
+		console.log('set_game_directory');
+	});
+
 	btn = $('#btn_done_button_config_demul');
 	btn.on('click', function() {
 		$('#config_buttons_demul').hide();
@@ -1001,14 +1015,14 @@ function setup_ui() {
 		// Save the button map
 		action_set_button_map('saturn', button_map_ssf);
 	});
-
+	/*
 	// FIXME: the directory is hard coded. We need a way to get the dir name
 	// from a html input file directory widget.
 	DirectoryNameGetter('btn_dc_folder', function(directory_name) {
 		directory_name =  "E:/Sega/Dreamcast"; // "C:/Users/matt/Desktop/dc";
 		action_set_game_directory('dreamcast', directory_name);
 	});
-
+	*/
 	// FIXME: the directory is hard coded. We need a way to get the dir name
 	// from a html input file directory widget.
 	DirectoryNameGetter('btn_ps2_folder', function(directory_name) {

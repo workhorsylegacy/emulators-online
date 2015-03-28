@@ -98,10 +98,11 @@ var DirectoryNameGetter = function(file_id, doneCB) {
 	function handle_file_select(evt) {
 		/*
 		inspect(evt);
+		inspect(evt.path[0]);
 		console.log("path: " + evt.srcElement.value);
-		for(var path in evt.path) {
-			console.log("path: " + path);
-		}
+		$.each(evt.path, function(k, v) {
+			console.log("path: " + k + " " + v);
+		});
 		*/
 		var dir_name = "failed to get directory name.";
 		doneCB(dir_name);
