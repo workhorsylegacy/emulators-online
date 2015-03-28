@@ -657,10 +657,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def _is_installed(self, data):
 		if data['program'] == 'DirectX End User Runtime':
 			# Paths on Windows 8.1 X86_32 and X86_64
-			exist = (glob.glob("C:/Windows/SysWOW64/d3dx10_*.dll") and \
-					glob.glob("C:/Windows/System32/d3dx11_*.dll")) or \
-					(glob.glob("C:/Windows/SysWOW64/d3dx11_*.dll") and \
-					glob.glob("C:/Windows/System32/d3dx10_*.dll"))
+			exist = (len(glob.glob("C:/Windows/SysWOW64/d3dx10_*.dll")) > 0 or \
+					len(glob.glob("C:/Windows/System32/d3dx11_*.dll")) > 0) and \
+					(len(glob.glob("C:/Windows/SysWOW64/d3dx11_*.dll")) > 0 or \
+					len(glob.glob("C:/Windows/System32/d3dx10_*.dll")) > 0)
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
