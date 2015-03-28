@@ -667,7 +667,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			self.write_data(data)
 		elif data['program'] == 'Visual C++ 2010 redist': # msvcr100.dll
 			# Paths on Windows 8.1 X86_64
-			exist = os.path.exists("C:/Windows/SysWOW64/msvcr100.dll")
+			exist = os.path.exists("C:/Windows/SysWOW64/msvcr100.dll") or \
+					os.path.exists("C:/Windows/System32/msvcr100.dll")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -676,7 +677,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			self.write_data(data)
 		elif data['program'] == 'Visual C++ 2013 redist': # msvcr120.dll
 			# Paths on Windows 8.1 X86_64
-			exist = os.path.exists("C:/Windows/SysWOW64/msvcr120.dll")
+			exist = os.path.exists("C:/Windows/SysWOW64/msvcr120.dll") or \
+					os.path.exists("C:/Windows/System32/msvcr120.dll")
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
