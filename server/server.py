@@ -134,27 +134,38 @@ pcsxr = pcsxr.PCSXR()
 
 # Load the game database
 db = {}
-if os.path.isfile("cache/game_db.json"):
-	with open("cache/game_db.json", 'rb') as f:
-		db = json.loads(f.read())
+consoles = [
+	'gamecube',
+	'nintendo64',
+	'saturn',
+	'dreamcast',
+	'playstation1',
+	'playstation2',
+]
+for console in consoles:
+	db[console] = {}
+	if os.path.isfile("cache/game_db_{0}.json".format(console)):
+		with open("cache/game_db_{0}.json".format(console), 'rb') as f:
+			db[console] = json.loads(f.read())
 
-	# Remove any non existent files
-	for console, console_data in db.items():
-		for name in console_data.keys():
-			data = console_data[name]
+		# Remove any non existent files
+		for name in db[console].keys():
+			data = db[console][name]
 			if not os.path.isfile(data['binary']):
-				console_data.pop(name)
+				db[console].pop(name)
 
 # Load the file modify dates
 file_modify_dates = {}
-if os.path.isfile("cache/file_modify_dates.json"):
-	with open("cache/file_modify_dates.json", 'rb') as f:
-		file_modify_dates = json.loads(f.read())
+for console in consoles:
+	file_modify_dates[console] = {}
+	if os.path.isfile("cache/file_modify_dates_{0}.json".format(console)):
+		with open("cache/file_modify_dates_{0}.json".format(console), 'rb') as f:
+			file_modify_dates[console] = json.loads(f.read())
 
-	# Remove any non existent files from the modify db
-	for entry in file_modify_dates.keys():
-		if not os.path.isfile(entry):
-			file_modify_dates.pop(entry)
+		# Remove any non existent files from the modify db
+		for entry in file_modify_dates[console].keys():
+			if not os.path.isfile(entry):
+				file_modify_dates[console].pop(entry)
 
 def clean_path(file_path):
 	#file_path = os.path.abspath(file_path)
@@ -414,9 +425,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			# Add the thread to the list of long running tasks
 			self.add_long_running_task("Searching for {0} games".format(console), threading.current_thread())
 
-			if console not in db:
-				db[console] = {}
-
 			# Get the total number of files
 			total_files = 0.0
 			path_prefix = None
@@ -456,13 +464,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 					# Skip if the game file has not been modified
 					old_modify_date = 0
-					if entry in file_modify_dates:
-						old_modify_date = file_modify_dates[entry]
+					if entry in file_modify_dates[console.lower()]:
+						old_modify_date = file_modify_dates[console.lower()][entry]
 					modify_date = os.path.getmtime(entry)
 					if modify_date == old_modify_date:
 						continue
 					else:
-						file_modify_dates[entry] = modify_date
+						file_modify_dates[console.lower()][entry] = modify_date
 
 					# Skip if the file is not the right kind for this console
 					if console == 'Dreamcast':
@@ -493,7 +501,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					if info:
 						title = info['title']
 						clean_title = title.replace(': ', ' - ').replace('/', '+')
-						db[console][title] = {
+						db[console.lower()][title] = {
 							'path' : clean_path('{0}/{1}/'.format(path_prefix, clean_title)),
 							'binary' : abs_path(info['file']),
 							'bios' : '',
@@ -508,15 +516,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 							if os.path.isdir(image_dir):
 								image_file = image_dir + img
 								if os.path.isfile(image_file):
-									db[console][title]['images'].append(image_file)
+									db[console.lower()][title]['images'].append(image_file)
 
-			# FIXME: All game finding threads write this file. This can crash when writing the file, and another thread changes the data.
-			# Change to use a separate file for each console.
-			with open("cache/game_db.json", 'wb') as f:
-				f.write(json.dumps(db, indent=4, separators=(',', ': ')))
+			with open("cache/game_db_{0}.json".format(console.lower()), 'wb') as f:
+				f.write(json.dumps(db[console.lower()], indent=4, separators=(',', ': ')))
 
-			with open("cache/file_modify_dates.json", 'wb') as f:
-				f.write(json.dumps(file_modify_dates, indent=4, separators=(',', ': ')))
+			with open("cache/file_modify_dates_{0}.json".format(console.lower()), 'wb') as f:
+				f.write(json.dumps(file_modify_dates[console.lower()], indent=4, separators=(',', ': ')))
 			print("Done getting games from directory.")
 
 			self.remove_long_running_task("Searching for {0} games".format(console))
