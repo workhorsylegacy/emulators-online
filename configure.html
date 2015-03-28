@@ -196,10 +196,7 @@
 
 						<h2>Game folder</h2>
 						<p>
-							<input id="btn_dc_folder" type="button" value="Select a folder search for games" disabled />
-							<!--
-							<input type="file" id="btn_dc_folder" name="btn_dc_folder" disabled webkitdirectory mozdirectory directory></input>
-							-->
+							<input id="btn_dc_folder" type="button" value="Select a folder to search for games" disabled />
 						</p>
 
 						<h2>BIOS</h2>
@@ -317,7 +314,7 @@
 
 						<h2>Game folder</h2>
 						<p>
-							<input type="file" id="btn_ps2_folder" name="btn_ps2_folder" disabled webkitdirectory mozdirectory directory></input>
+							<input id="btn_ps2_folder" type="button" value="Select a folder to search for games" disabled />
 						</p>
 
 						<h2>BIOS</h2>
@@ -971,10 +968,21 @@ function setup_ui() {
 
 	btn = $('#btn_dc_folder');
 	btn.on('click', function() {
-		// 
+		// Have the server create a win32 folder selection dialog
 		var message = {
 			'action' : 'set_game_directory',
 			'console' : 'dreamcast'
+		};
+		socket_send_data(message);
+		console.log('set_game_directory');
+	});
+
+	btn = $('#btn_ps2_folder');
+	btn.on('click', function() {
+		// Have the server create a win32 folder selection dialog
+		var message = {
+			'action' : 'set_game_directory',
+			'console' : 'playstation2'
 		};
 		socket_send_data(message);
 		console.log('set_game_directory');
@@ -1014,20 +1022,6 @@ function setup_ui() {
 
 		// Save the button map
 		action_set_button_map('saturn', button_map_ssf);
-	});
-	/*
-	// FIXME: the directory is hard coded. We need a way to get the dir name
-	// from a html input file directory widget.
-	DirectoryNameGetter('btn_dc_folder', function(directory_name) {
-		directory_name =  "E:/Sega/Dreamcast"; // "C:/Users/matt/Desktop/dc";
-		action_set_game_directory('dreamcast', directory_name);
-	});
-	*/
-	// FIXME: the directory is hard coded. We need a way to get the dir name
-	// from a html input file directory widget.
-	DirectoryNameGetter('btn_ps2_folder', function(directory_name) {
-		directory_name =  "E:/Sony/Playstation2";
-		action_set_game_directory('playstation2', directory_name);
 	});
 
 	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_data) {

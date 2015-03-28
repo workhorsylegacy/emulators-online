@@ -94,20 +94,4 @@ function inspect(obj) {
 	console.log("/////////////////////////////////////////////////////");
 }
 
-var DirectoryNameGetter = function(file_id, doneCB) {
-	function handle_file_select(evt) {
-		/*
-		inspect(evt);
-		inspect(evt.path[0]);
-		console.log("path: " + evt.srcElement.value);
-		$.each(evt.path, function(k, v) {
-			console.log("path: " + k + " " + v);
-		});
-		*/
-		var dir_name = "failed to get directory name.";
-		doneCB(dir_name);
-	}
-
-	document.getElementById(file_id).addEventListener('change', handle_file_select, false);
-};
 
