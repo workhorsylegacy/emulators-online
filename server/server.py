@@ -331,7 +331,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.write_data(data)
 
 	def _set_bios(self, data):
-		if data['console'] == 'Dreamcast':
+		if data['console'] == 'dreamcast':
 			if not os.path.isdir('emulators/Demul/roms'):
 				os.mkdir('emulators/Demul/roms')
 
@@ -348,7 +348,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				with open('emulators/Demul/roms/naomi2.zip', 'wb') as f:
 					f.write(base64.b64decode(data['value']))
 
-		elif data['console'] == 'Saturn':
+		elif data['console'] == 'saturn':
 			if not os.path.isdir('emulators/SSF_012_beta_R4/bios'):
 				os.mkdir('emulators/SSF_012_beta_R4/bios')
 
@@ -364,43 +364,43 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 
 	def _set_button_map(self, data):
-		if data['console'] == 'GameCube':
+		if data['console'] == 'gamecube':
 			dolphin.set_button_map(data['value'])
 
-		elif data['console'] == 'Nintendo64':
+		elif data['console'] == 'nintendo64':
 			mupen64plus.set_button_map(data['value'])
 
-		elif data['console'] == 'Saturn':
+		elif data['console'] == 'saturn':
 			ssf.set_button_map(data['value'])
 
-		elif data['console'] == 'Dreamcast':
+		elif data['console'] == 'dreamcast':
 			demul.set_button_map(data['value'])
 
 		elif data['console'] == 'Playstation':
 			pcsxr.set_button_map(data['value'])
 
-		elif data['console'] == 'Playstation2':
+		elif data['console'] == 'playstation2':
 			pcsx2.set_button_map(data['value'])
 
 	def _get_button_map(self, data):
 		value = None
 
-		if data['console'] == 'GameCube':
+		if data['console'] == 'gamecube':
 			value = dolphin.get_button_map()
 
-		elif data['console'] == 'Nintendo64':
+		elif data['console'] == 'nintendo64':
 			value = mupen64plus.get_button_map()
 
-		elif data['console'] == 'Saturn':
+		elif data['console'] == 'saturn':
 			value = ssf.get_button_map()
 
-		elif data['console'] == 'Dreamcast':
+		elif data['console'] == 'dreamcast':
 			value = demul.get_button_map()
 
 		elif data['console'] == 'Playstation':
 			value = pcsxr.get_button_map()
 
-		elif data['console'] == 'Playstation2':
+		elif data['console'] == 'playstation2':
 			value = pcsx2.get_button_map()
 
 		data = {
@@ -412,7 +412,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _set_game_directory(self, data):
 
-		# Just return if already a long running "Searching for Dreamcast games" task
+		# Just return if already a long running "Searching for dreamcast games" task
 		if self.is_long_running_task("Searching for {0} games".format(data['console'])):
 			return
 
@@ -429,17 +429,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			# Get the total number of files
 			total_files = 0.0
 			path_prefix = None
-			if console == 'GameCube':
+			if console == 'gamecube':
 				path_prefix = 'games/Nintendo/GameCube'
-			elif console == 'Nintendo64':
+			elif console == 'nintendo64':
 				path_prefix = 'games/Nintendo/Nintendo64'
-			elif console == 'Saturn':
+			elif console == 'saturn':
 				path_prefix = 'games/Sega/Saturn'
-			elif console == 'Dreamcast':
+			elif console == 'dreamcast':
 				path_prefix = 'games/Sega/Dreamcast'
-			elif console == 'Playstation1':
+			elif console == 'playstation1':
 				path_prefix = 'games/Sony/Playstation1'
-			elif console == 'Playstation2':
+			elif console == 'playstation2':
 				path_prefix = 'games/Sony/Playstation2'
 
 			for root, dirs, files in os.walk(directory_name):
@@ -465,19 +465,19 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 					# Skip if the game file has not been modified
 					old_modify_date = 0
-					if entry in file_modify_dates[console.lower()]:
-						old_modify_date = file_modify_dates[console.lower()][entry]
+					if entry in file_modify_dates[console]:
+						old_modify_date = file_modify_dates[console][entry]
 					modify_date = os.path.getmtime(entry)
 					if modify_date == old_modify_date:
 						continue
 					else:
-						file_modify_dates[console.lower()][entry] = modify_date
+						file_modify_dates[console][entry] = modify_date
 
 					# Skip if the file is not the right kind for this console
-					if console == 'Dreamcast':
+					if console == 'dreamcast':
 						if not is_dreamcast_file(entry):
 							continue
-					elif console == 'Playstation2':
+					elif console == 'playstation2':
 						if not is_playstation2_file(entry):
 							continue
 					else:
@@ -486,9 +486,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					# Get the game info
 					info = None
 					try:
-						if console == 'Dreamcast':
+						if console == 'dreamcast':
 							info = get_dreamcast_game_info(entry)
-						elif console == 'Playstation2':
+						elif console == 'playstation2':
 							info = get_playstation2_game_info(entry)
 						else:
 							raise Exception("Unexpected console: {0}".format(console))
@@ -502,7 +502,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 					if info:
 						title = info['title']
 						clean_title = title.replace(': ', ' - ').replace('/', '+')
-						db[console.lower()][title] = {
+						db[console][title] = {
 							'path' : clean_path('{0}/{1}/'.format(path_prefix, clean_title)),
 							'binary' : abs_path(info['file']),
 							'bios' : '',
@@ -517,13 +517,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 							if os.path.isdir(image_dir):
 								image_file = image_dir + img
 								if os.path.isfile(image_file):
-									db[console.lower()][title]['images'].append(image_file)
+									db[console][title]['images'].append(image_file)
 
-			with open("cache/game_db_{0}.json".format(console.lower()), 'wb') as f:
-				f.write(json.dumps(db[console.lower()], indent=4, separators=(',', ': ')))
+			with open("cache/game_db_{0}.json".format(console), 'wb') as f:
+				f.write(json.dumps(db[console], indent=4, separators=(',', ': ')))
 
-			with open("cache/file_modify_dates_{0}.json".format(console.lower()), 'wb') as f:
-				f.write(json.dumps(file_modify_dates[console.lower()], indent=4, separators=(',', ': ')))
+			with open("cache/file_modify_dates_{0}.json".format(console), 'wb') as f:
+				f.write(json.dumps(file_modify_dates[console], indent=4, separators=(',', ': ')))
 			print("Done getting games from directory.")
 
 			self.remove_long_running_task("Searching for {0} games".format(console))
@@ -535,22 +535,22 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 
 	def _play_game(self, data):
-		if data['console'] == 'GameCube':
+		if data['console'] == 'gamecube':
 			dolphin.run(data['path'], data['binary'])
 			self.log('playing')
 			print('Running Dolphin ...')
 
-		elif data['console'] == 'Nintendo64':
+		elif data['console'] == 'nintendo64':
 			mupen64plus.run(data['path'], data['binary'])
 			self.log('playing')
 			print('Running Mupen64plus ...')
 
-		elif data['console'] == 'Saturn':
+		elif data['console'] == 'saturn':
 			ssf.run(data['path'], data['binary'], data['bios'])
 			self.log('playing')
 			print('Running SSF ...')
 
-		elif data['console'] == 'Dreamcast':
+		elif data['console'] == 'dreamcast':
 			def save_memory_card_cb(memory_card):
 				memory_card = zlib.compress(memory_card, 9)
 				# FIXME: Send the memory card to the server
@@ -565,7 +565,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			self.log('playing')
 			print('Running PCSX-Reloaded ...')
 
-		elif data['console'] == 'Playstation2':
+		elif data['console'] == 'playstation2':
 			pcsx2.run(data['path'], data['binary'])
 			self.log('playing')
 			print('Running PCSX2 ...')

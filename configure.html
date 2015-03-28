@@ -572,7 +572,7 @@ function on_data(data) {
 			$('#btn_install_mupen').prop('disabled', false);
 		}
 	} else if(data['action'] == 'get_button_map') {
-		if(data['console'] == 'Dreamcast') {
+		if(data['console'] == 'dreamcast') {
 			button_map_demul = data['value'];
 
 			// Setup each button
@@ -601,7 +601,7 @@ function on_data(data) {
 					});
 				});
 			});
-		} else if(data['console'] == 'GameCube') {
+		} else if(data['console'] == 'gamecube') {
 			button_map_dolphin = data['value'];
 
 			// Setup each button
@@ -630,7 +630,7 @@ function on_data(data) {
 					});
 				});
 			});
-		} else if(data['console'] == 'Nintendo64') {
+		} else if(data['console'] == 'nintendo64') {
 			button_map_mupen = data['value'];
 
 			// Setup each button
@@ -659,7 +659,7 @@ function on_data(data) {
 					});
 				});
 			});
-		} else if(data['console'] == 'Saturn') {
+		} else if(data['console'] == 'saturn') {
 			button_map_ssf = data['value'];
 
 			// Setup each button
@@ -936,7 +936,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		action_get_button_map('Dreamcast', button_map_demul);
+		action_get_button_map('dreamcast', button_map_demul);
 	});
 
 	btn = $('#btn_controls_dolphin');
@@ -945,7 +945,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		action_get_button_map('GameCube', button_map_dolphin);
+		action_get_button_map('gamecube', button_map_dolphin);
 	});
 
 	btn = $('#btn_controls_mupen');
@@ -954,7 +954,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		action_get_button_map('Nintendo64', button_map_mupen);
+		action_get_button_map('nintendo64', button_map_mupen);
 	});
 
 	btn = $('#btn_controls_ssf');
@@ -963,7 +963,7 @@ function setup_ui() {
 		$('#config_programs').hide();
 
 		// Load the button map
-		action_get_button_map('Saturn', button_map_ssf);
+		action_get_button_map('saturn', button_map_ssf);
 	});
 
 	btn = $('#btn_done_button_config_demul');
@@ -972,7 +972,7 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		action_set_button_map('Dreamcast', button_map_demul);
+		action_set_button_map('dreamcast', button_map_demul);
 	});
 
 	btn = $('#btn_done_button_config_dolphin');
@@ -981,7 +981,7 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		action_set_button_map('GameCube', button_map_dolphin);
+		action_set_button_map('gamecube', button_map_dolphin);
 	});
 
 	btn = $('#btn_done_button_config_mupen');
@@ -990,7 +990,7 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		action_set_button_map('Nintendo64', button_map_mupen);
+		action_set_button_map('nintendo64', button_map_mupen);
 	});
 
 	btn = $('#btn_done_button_config_ssf');
@@ -999,49 +999,49 @@ function setup_ui() {
 		$('#config_programs').show();
 
 		// Save the button map
-		action_set_button_map('Saturn', button_map_ssf);
+		action_set_button_map('saturn', button_map_ssf);
 	});
 
 	// FIXME: the directory is hard coded. We need a way to get the dir name
 	// from a html input file directory widget.
 	DirectoryNameGetter('btn_dc_folder', function(directory_name) {
-		directory_name =  "C:/Users/matt/Desktop/games/Sega/Dreamcast"; // "C:/Users/matt/Desktop/dc";
-		action_set_game_directory('Dreamcast', directory_name);
+		directory_name =  "E:/Sega/Dreamcast"; // "C:/Users/matt/Desktop/dc";
+		action_set_game_directory('dreamcast', directory_name);
 	});
 
 	// FIXME: the directory is hard coded. We need a way to get the dir name
 	// from a html input file directory widget.
 	DirectoryNameGetter('btn_ps2_folder', function(directory_name) {
 		directory_name =  "E:/Sony/Playstation2";
-		action_set_game_directory('Playstation2', directory_name);
+		action_set_game_directory('playstation2', directory_name);
 	});
 
 	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_data) {
-		action_set_bios('Dreamcast', 'dc.zip', file_data);
+		action_set_bios('dreamcast', 'dc.zip', file_data);
 	});
 
 	FileUploader('btn_bios_demul_aw', 'generic_progress', function(file_data) {
-		action_set_bios('Dreamcast', 'awbios.zip', file_data);
+		action_set_bios('dreamcast', 'awbios.zip', file_data);
 	});
 
 	FileUploader('btn_bios_demul_naomi', 'generic_progress', function(file_data) {
-		action_set_bios('Dreamcast', 'naomi.zip', file_data);
+		action_set_bios('dreamcast', 'naomi.zip', file_data);
 	});
 
 	FileUploader('btn_bios_demul_naomi2', 'generic_progress', function(file_data) {
-		action_set_bios('Dreamcast', 'naomi2.zip', file_data);
+		action_set_bios('dreamcast', 'naomi2.zip', file_data);
 	});
 
 	FileUploader('btn_bios_ssf_usa', 'generic_progress', function(file_data) {
-		action_set_bios('Saturn', 'USA', file_data);
+		action_set_bios('saturn', 'USA', file_data);
 	});
 
 	FileUploader('btn_bios_ssf_eur', 'generic_progress', function(file_data) {
-		action_set_bios('Saturn', 'EUR', file_data);
+		action_set_bios('saturn', 'EUR', file_data);
 	});
 
 	FileUploader('btn_bios_ssf_jap', 'generic_progress', function(file_data) {
-		action_set_bios('Saturn', 'JAP', file_data);
+		action_set_bios('saturn', 'JAP', file_data);
 	});
 }
 

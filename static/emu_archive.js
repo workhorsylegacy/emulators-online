@@ -29,7 +29,7 @@ var db = {};
 function make_game_icon(console_name, name, data, i) {
 	// Create the icon
 	var text = "" +
-			"<a href=\"#dialog_" + name + "\" id=\"preview_" + i + "\">";
+			"<a href=\"#dialog_" + name + "\" id=\"preview_" + console_name + "_" + i + "\">";
 
 	if(data["binary"])
 		text += "<img src=\"" + data["path"] + "title_small.png\" />";
@@ -42,7 +42,7 @@ function make_game_icon(console_name, name, data, i) {
 	d.innerHTML = text;
 	document.getElementById('game_selector').appendChild(d);
 
-	var btn = $("#preview_" + i);
+	var btn = $("#preview_" + console_name + "_" + i);
 	btn.on('click', function() {
 		// Create the dialog
 		var text = "" +
@@ -50,7 +50,7 @@ function make_game_icon(console_name, name, data, i) {
 		"	<a href=\"#close_game_dialog\" class=\"close_game_dialog\">X</a>" + 
 		"	<h2>" + name + "</h2>" + 
 		"	<img src=\"" + data["path"] + "title_big.png\" />" +
-		"	<input id=\"btn_" + i + "\" type=\"button\" value=\"play\" \>" +
+		"	<input id=\"btn_" + console_name + "_" + i + "\" type=\"button\" value=\"play\" \>" +
 		"	<br />";
 
 		$.each(data["images"], function(n, image) {
@@ -70,7 +70,7 @@ function make_game_icon(console_name, name, data, i) {
 
 
 		// Have the dialog play button launch the game
-		var btn = $("#btn_" + i);
+		var btn = $("#btn_" + console_name + "_" + i);
 		btn.on('click', function() {
 			var message = {
 				'action' : 'play',
@@ -329,7 +329,7 @@ function on_search(evt) {
 //*/
 			if(is_match) {
 				var data = console_data[name];
-				make_game_icon(console_name, name, data, i);
+				//make_game_icon(console_name, name, data, i);
 			}
 
 			++i;
