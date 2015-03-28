@@ -665,7 +665,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				'name' : 'DirectX End User Runtime'
 			}
 			self.write_data(data)
-		elif data['program'] == 'Visual C++ 2010 redist': # msvcr90.dll
+		elif data['program'] == 'Visual C++ 2010 redist': # msvcr100.dll
 			# Paths on Windows 8.1 X86_64
 			exist = os.path.exists("C:/Windows/SysWOW64/msvcr100.dll")
 			data = {
