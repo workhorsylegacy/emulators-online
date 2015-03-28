@@ -38,6 +38,7 @@ import base64
 import subprocess
 import zlib
 import threading
+import glob
 
 import tornado.ioloop
 import tornado.web
@@ -655,10 +656,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 	def _is_installed(self, data):
 		if data['program'] == 'DirectX End User Runtime':
-			# FIXME: This assumes that DirectX is installed
-			# I'm guessing it should for a file like "d3dx11_43.dll".
-			# Test on a machine that does not come with DirectX installed already
-			exist = True
+			# Paths on Windows 8.1 X86_32 and X86_64
+			exist = (glob.glob("C:/Windows/SysWOW64/d3dx10_*.dll") and \
+					glob.glob("C:/Windows/System32/d3dx11_*.dll")) or \
+					(glob.glob("C:/Windows/SysWOW64/d3dx11_*.dll") and \
+					glob.glob("C:/Windows/System32/d3dx10_*.dll"))
 			data = {
 				'action' : 'is_installed',
 				'value' : exist,
@@ -666,7 +668,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'Visual C++ 2010 redist': # msvcr100.dll
-			# Paths on Windows 8.1 X86_64
+			# Paths on Windows 8.1 X86_32 and X86_64
 			exist = os.path.exists("C:/Windows/SysWOW64/msvcr100.dll") or \
 					os.path.exists("C:/Windows/System32/msvcr100.dll")
 			data = {
@@ -676,7 +678,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			self.write_data(data)
 		elif data['program'] == 'Visual C++ 2013 redist': # msvcr120.dll
-			# Paths on Windows 8.1 X86_64
+			# Paths on Windows 8.1 X86_32 and X86_64
 			exist = os.path.exists("C:/Windows/SysWOW64/msvcr120.dll") or \
 					os.path.exists("C:/Windows/System32/msvcr120.dll")
 			data = {
