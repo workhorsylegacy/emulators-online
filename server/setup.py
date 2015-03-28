@@ -49,7 +49,7 @@ with open('../server/db_dreamcast_unofficial.json', 'rb') as f:
 	data['db_dreamcast_unofficial.json'] = base64.b64encode(f.read())
 
 with open('../server/db_playstation2_official_as.json', 'rb') as f:
-	data['db_playstation2_official_as.json'] = base64.b64encode(f.read
+	data['db_playstation2_official_as.json'] = base64.b64encode(f.read())
 
 with open('../server/db_playstation2_official_au.json', 'rb') as f:
 	data['db_playstation2_official_au.json'] = base64.b64encode(f.read())

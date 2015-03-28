@@ -329,7 +329,7 @@ function on_search(evt) {
 //*/
 			if(is_match) {
 				var data = console_data[name];
-				//make_game_icon(console_name, name, data, i);
+				make_game_icon(console_name, name, data, i);
 			}
 
 			++i;
