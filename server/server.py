@@ -865,17 +865,17 @@ if __name__ == '__main__':
 		view_in_browser(None)
 
 	menu_options = (
-						('Start Server (FIXME: Breaks if already started)', icon, start),
-						('Stop Server (FIXME: Does not free the port)', icon, stop),
+						#('Start Server (FIXME: Breaks if already started)', icon, start),
+						#('Stop Server (FIXME: Does not free the port)', icon, stop),
 						('View in Browser', icon, view_in_browser),
 						('Emulators', icon,
 							(
 								('Demul', icon, run_demul),
-								('SSF', icon, run_ssf),
-								('Dolphin', icon, run_dolphin),
-								('Mupen 64 Plus', icon, run_mupen64plus),
-								('PSX-Reloaded', icon, run_pcsxr),
-								('PCSX2', icon, run_pcsx2),
+								#('SSF', icon, run_ssf),
+								#('Dolphin', icon, run_dolphin),
+								#('Mupen 64 Plus', icon, run_mupen64plus),
+								#('PSX-Reloaded', icon, run_pcsxr),
+								#('PCSX2', icon, run_pcsx2),
 							)
 						)
 					)
