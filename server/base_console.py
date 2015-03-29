@@ -36,14 +36,14 @@ class BaseConsole(object):
 
 		# Load the config
 		if os.path.isfile(self.config_path):
-			with open(self.config_path, 'rb') as f:
+			with open(self.config_path, 'r') as f:
 				self.button_map = json.loads(f.read())
 
 	def set_button_map(self, button_map):
 		self.button_map = button_map
 		
 		# Save the config
-		with open(self.config_path, 'wb') as f:
+		with open(self.config_path, 'w') as f:
 			f.write(json.dumps(self.button_map, sort_keys=True, indent=4, separators=(',', ': ')))
 
 	def get_button_map(self):

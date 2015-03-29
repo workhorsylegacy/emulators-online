@@ -9,7 +9,7 @@ git clone http://github.com/workhorsy/emu_archive_meta_data games
 
 # Requirements
 
-# python 2.7
+# python 3.X
 http://www.python.org
 
 # python modules
@@ -17,10 +17,8 @@ http://www.python.org
 ~~~bash
 python -m pip install -U tornado
 python -m pip install -U pypiwin32
+python -m pip install -U py2exe
 ~~~
-
-# py2exe
-http://www.py2exe.org
 
 # Virtual Clone Drive
 http://www.slysoft.com/en/virtual-clonedrive.html

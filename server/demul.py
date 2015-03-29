@@ -61,7 +61,7 @@ gpu_dll_version = None
 directx_version = None
 retcode = subprocess.call(["dxdiag.exe", "/t", "directx_info.txt"], shell=True)
 if retcode == 0:
-	with open("directx_info.txt", 'rb') as f:
+	with open("directx_info.txt", 'r') as f:
 		data = f.read()
 	directx_version = data.split("DirectX Version: ")[1].split("\r\n")[0]
 
@@ -634,6 +634,8 @@ class Demul(base_console.BaseConsole):
 		ini.write_ini_file('emulators/Demul/gdrImage.ini', config)
 
 	def _setup_directx(self):
+		global directx_version
+
 		# Setup DirectX
 		config = {
 			'main' : {

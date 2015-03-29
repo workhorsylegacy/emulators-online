@@ -28,8 +28,8 @@
 
 import os, sys
 
-if sys.version_info[0] == 3:
-	print("Python 3 is not yet supported. Use python 2.x instead.")
+if sys.version_info[0] == 2:
+	print("Python 2 is not longer supported. Use python 3.x instead.")
 	sys.exit()
 
 import shutil
@@ -149,7 +149,7 @@ consoles = [
 for console in consoles:
 	db[console] = {}
 	if os.path.isfile("cache/game_db_{0}.json".format(console)):
-		with open("cache/game_db_{0}.json".format(console), 'rb') as f:
+		with open("cache/game_db_{0}.json".format(console), 'r') as f:
 			db[console] = json.loads(f.read())
 
 		# Remove any non existent files
@@ -163,8 +163,12 @@ file_modify_dates = {}
 for console in consoles:
 	file_modify_dates[console] = {}
 	if os.path.isfile("cache/file_modify_dates_{0}.json".format(console)):
-		with open("cache/file_modify_dates_{0}.json".format(console), 'rb') as f:
-			file_modify_dates[console] = json.loads(f.read())
+		file_name = "cache/file_modify_dates_{0}.json".format(console)
+		with open(file_name, 'r') as f:
+			try:
+				file_modify_dates[console] = json.loads(f.read())
+			except:
+				sys.stderr.write("The file is not valid json '{0}'\r\n".format(file_name))
 
 		# Remove any non existent files from the modify db
 		for entry in file_modify_dates[console].keys():
@@ -309,7 +313,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				None
 			)
 			if pidl:
-				data['directory_name'] = win32com.shell.shell.SHGetPathFromIDList(pidl)
+				data['directory_name'] = win32com.shell.shell.SHGetPathFromIDList(pidl).decode('utf-8')
 				self._set_game_directory(data)
 
 		# Unknown message from the client
@@ -463,7 +467,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.write_data(data)
 
 	def _set_game_directory(self, data):
-
 		# Just return if already a long running "Searching for dreamcast games" task
 		if self.is_long_running_task("Searching for {0} games".format(data['console'])):
 			return
@@ -571,10 +574,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 								if os.path.isfile(image_file):
 									db[console][title]['images'].append(image_file)
 
-			with open("cache/game_db_{0}.json".format(console), 'wb') as f:
+			with open("cache/game_db_{0}.json".format(console), 'w') as f:
 				f.write(json.dumps(db[console], indent=4, separators=(',', ': ')))
 
-			with open("cache/file_modify_dates_{0}.json".format(console), 'wb') as f:
+			with open("cache/file_modify_dates_{0}.json".format(console), 'w') as f:
 				f.write(json.dumps(file_modify_dates[console], indent=4, separators=(',', ': ')))
 			print("Done getting games from directory.")
 

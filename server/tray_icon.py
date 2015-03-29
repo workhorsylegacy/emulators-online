@@ -14,6 +14,7 @@ def non_string_iterable(obj):
 	except TypeError:
 		return False
 	else:
+		basestring = (str, bytes)
 		return not isinstance(obj, basestring)
 
 

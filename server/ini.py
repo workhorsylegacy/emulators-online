@@ -30,7 +30,7 @@ import os
 
 
 def read_ini_file(file_path):
-	with open(file_path, 'rb') as f:
+	with open(file_path, 'r') as f:
 		ini_data = f.read()
 
 	config = {}
@@ -53,7 +53,7 @@ def read_ini_file(file_path):
 
 
 def write_ini_file(file_name, config):
-	with open(file_name, 'wb') as f:
+	with open(file_name, 'w') as f:
 		for header, pairs in config.items():
 			# Header
 			f.write('[{0}]\r\n'.format(header))
