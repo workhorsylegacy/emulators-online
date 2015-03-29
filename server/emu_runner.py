@@ -75,7 +75,7 @@ class EmuRunner(object):
 		# Focus the window
 		time.sleep(wait_time)
 		while True:
-			print('Wating ...')
+			print('Waiting ...')
 			# Look through all the windows and find the one with the title bar text we want
 			win32gui.EnumWindows(enumWindowFunc, self.foundWindows)
 
