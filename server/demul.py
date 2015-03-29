@@ -785,7 +785,6 @@ class Demul(base_console.BaseConsole):
 		full_screen = False
 		if binary:
 			command = '"demul.exe" -run=dc -image="' + binary + '"'
-			print('command', command)
 			full_screen = True
 		else:
 			command = '"demul.exe" -run=dc'

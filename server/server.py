@@ -29,7 +29,7 @@
 import os, sys
 
 if sys.version_info[0] == 2:
-	print("Python 2 is not longer supported. Use python 3.x instead.")
+	print("Python 2 is not longer supported. Use python 3.X instead.")
 	sys.exit()
 
 import shutil
