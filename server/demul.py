@@ -774,9 +774,9 @@ class Demul(base_console.BaseConsole):
 		if not path and not binary:
 			window_name = 'Demul'
 		elif directx_dll == 'gpuDX11.dll':
-			window_name = 'gpuDX11hw'
+			window_name = 'gpuDX11'
 		elif directx_dll == 'gpuDX10.dll':
-			window_name = 'gpuDX10hw'
+			window_name = 'gpuDX10'
 
 		os.chdir("emulators/Demul/")
 
