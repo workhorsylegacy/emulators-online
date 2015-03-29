@@ -68,15 +68,15 @@ with open('../server/db_playstation2_official_us.json', 'rb') as f:
 
 with open('static_files.py', 'wb') as f:
 	f.write(
-	"\r\n"
-	+ "static_files = {\r\n")
+	b"\r\n"
+	+ b"static_files = {\r\n")
 
 	for file, content in data.items():
 		f.write(
-		"'" + file + "' : \"" + content + "\",\r\n")
+		b"'" + bytes(file, 'utf-8') + b"' : \"" + content + b"\",\r\n")
 
 	f.write(
-	"}")
+	b"}")
 
 setup(
 	options = {'py2exe': {'bundle_files': 1}},
