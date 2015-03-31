@@ -42,36 +42,11 @@ import (
 	"net/http"
 	"golang.org/x/net/websocket"
 
+	"emu_archive/server/helpers"
 	//from identify_dreamcast_games import *
 	//from identify_playstation2_games import *
 )
-/*
-import shutil
-import json
-import base64
-import subprocess
-import zlib
-import threading
-import glob
-import win32gui
-import win32com.shell.shell
-import win32com.shell.shellcon
 
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
-import tornado.template
-
-import tray_icon
-import downloader
-import wrap_7zip
-import demul
-import ssf
-import dolphin
-import mupen64plus
-import pcsxr
-import pcsx2
-*/
 
 type LongRunningTask struct {
 	thread int
@@ -89,17 +64,17 @@ type GameData struct {
 
 type EmuRunner struct {}
 type Demul struct {}
-type Dolphin struct {}
-type SSF struct {}
-type Mupen64Plus struct {}
-type PCSXR struct {}
-type PCSX2 struct {}
+//type Dolphin struct {}
+//type SSF struct {}
+//type Mupen64Plus struct {}
+//type PCSXR struct {}
+//type PCSX2 struct {}
 
 var db map[string]map[string]GameData
 var long_running_tasks map[string]LongRunningTask
 var runner EmuRunner
 var demul Demul
-var dolphin Dolphin
+//var dolphin Dolphin
 var ssf SSF
 var mupen64plus Mupen64Plus
 var pcsxr PCSXR
@@ -120,64 +95,7 @@ func abs_path(file_path string) string {
 	return file_path
 }
 
-func IsFile(file_name string) (bool) {
-	// Get the file info
-	finfo, err := os.Stat(file_name)
 
-	// Return false if failed to get the file info
-	if err != nil {
-		return false
-	}
-
-	// Return false if it is a directory
-	if finfo.IsDir() {
-		return false
-	}
-
-	// Return true if it has a name
-	if len(finfo.Name()) > 0 {
-		return true
-	}
-
-	// Return false otherwise
-	return false
-}
-
-func IsDir(dir_name string) (bool) {
-	// Get the dir info
-	finfo, err := os.Stat(dir_name)
-
-	// Return false if failed to get the dir info
-	if err != nil {
-		return false
-	}
-
-	// Return true if it is a directory
-	if finfo.IsDir() {
-		return true
-	}
-
-	// Return false otherwise
-	return false
-}
-
-func PathExists(path_name string) (bool) {
-	// Get the dir info
-	finfo, err := os.Stat(path_name)
-
-	// Return false if failed to get the path info
-	if err != nil {
-		return false
-	}
-
-	// Return if it has a name
-	if len(finfo.Name()) > 0 {
-		return true
-	}
-
-	// Return false otherwise
-	return true
-}
 
 func is_long_running_task(task_name string) bool {
 	val, ok := long_running_tasks[task_name]
@@ -267,7 +185,7 @@ func _get_db(ws *websocket.Conn) {
 func _set_bios(data map[string]string) (error) {
 	if data["console"] == "dreamcast" {
 		// Make the BIOS dir if missing
-		if ! IsDir("emulators/Demul/roms") {
+		if ! helpers.IsDir("emulators/Demul/roms") {
 			os.Mkdir("emulators/Demul/roms", os.ModeDir)
 		}
 
@@ -293,7 +211,7 @@ func _set_bios(data map[string]string) (error) {
 
 	} else if data["console"] == "saturn" {
 		// Make the BIOS dir if missing
-		if ! IsDir("emulators/SSF_012_beta_R4/bios") {
+		if ! helpers.IsDir("emulators/SSF_012_beta_R4/bios") {
 			os.Mkdir("emulators/SSF_012_beta_R4/bios", os.ModeDir)
 		}
 
@@ -321,51 +239,51 @@ func _set_bios(data map[string]string) (error) {
 
 func _set_button_map(ws *websocket.Conn, data map[string]string)  {
 	if data["console"] == "gamecube" {
-		dolphin.set_button_map(data["value"])
+		//dolphin.set_button_map(data["value"])
 
 	} else if data["console"] == "nintendo64" {
-		mupen64plus.set_button_map(data["value"])
+		//mupen64plus.set_button_map(data["value"])
 
 	} else if data["console"] == "saturn" {
-		ssf.set_button_map(data["value"])
+		//ssf.set_button_map(data["value"])
 
 	} else if data["console"] == "dreamcast" {
 		demul.set_button_map(data["value"])
 
 	} else if data["console"] == "Playstation" {
-		pcsxr.set_button_map(data["value"])
+		//pcsxr.set_button_map(data["value"])
 
 	} else if data["console"] == "playstation2" {
-		pcsx2.set_button_map(data["value"])
+		//pcsx2.set_button_map(data["value"])
 	}
 }
 
 func _get_button_map(ws *websocket.Conn, data map[string]string) {
-	value = nil
+	var value map[string]string
 
 	if data["console"] == "gamecube" {
-		value = dolphin.get_button_map()
+		//value = dolphin.get_button_map()
 
 	} else if data["console"] == "nintendo64" {
-		value = mupen64plus.get_button_map()
+		//value = mupen64plus.get_button_map()
 
 	} else if data["console"] == "saturn" {
-		value = ssf.get_button_map()
+		//value = ssf.get_button_map()
 
 	} else if data["console"] == "dreamcast" {
 		value = demul.get_button_map()
 
 	} else if data["console"] == "Playstation" {
-		value = pcsxr.get_button_map()
+		//value = pcsxr.get_button_map()
 
 	} else if data["console"] == "playstation2" {
-		value = pcsx2.get_button_map()
+		//value = pcsx2.get_button_map()
 	}
 
 	message := map[string]interface{} {
-		action: "get_button_map",
-		value: value,
-		console: data["console"],
+		"action" : get_button_map,
+		"value" : value,
+		"console" : data["console"],
 	}
 	websocket.JSON.Send(ws, &message)
 }
@@ -415,7 +333,7 @@ func task(ws *websocket.Conn, data map[string]string) {
 		done_files += 1.0
 
 		// Skip if the the entry is not a file
-		if ! IsFile(entry) {
+		if ! helpers.IsFile(entry) {
 			return nil
 		}
 
@@ -481,9 +399,9 @@ func task(ws *websocket.Conn, data map[string]string) {
 			image_dir = fmt.Sprintf("%s/%s/", path_prefix, title)
 			expected_images := []string{"title_big.png", "title_small.png"}
 			for img := range expected_images {
-				if ! IsDir(image_dir) {
+				if ! helpers.IsDir(image_dir) {
 					image_file := image_dir + img
-					if IsFile(image_file) {
+					if helpers.IsFile(image_file) {
 						append(db[console][title]["images"], image_file)
 					}
 				}
@@ -534,17 +452,17 @@ func _save_memory_card_cb(memory_card string) {
 
 func _play_game(ws *websocket.Conn, data map[string]string) {
 	if data["console"] == "gamecube" {
-		dolphin.run(data["path"], data["binary"])
+		//dolphin.run(data["path"], data["binary"])
 		self.log("playing")
 		print("Running Dolphin ...")
 
 	} else if data["console"] == "nintendo64" {
-		mupen64plus.run(data["path"], data["binary"])
+		//mupen64plus.run(data["path"], data["binary"])
 		self.log("playing")
 		print("Running Mupen64plus ...")
 
 	} else if data["console"] == "saturn" {
-		ssf.run(data["path"], data["binary"], data["bios"])
+		//ssf.run(data["path"], data["binary"], data["bios"])
 		self.log("playing")
 		print("Running SSF ...")
 
@@ -554,12 +472,12 @@ func _play_game(ws *websocket.Conn, data map[string]string) {
 		print("Running Demul ...")
 
 	} else if data["console"] == "Playstation" {
-		pcsxr.run(data["path"], data["binary"])
+		//pcsxr.run(data["path"], data["binary"])
 		self.log("playing")
 		print("Running PCSX-Reloaded ...")
 
 	} else if data["console"] == "playstation2" {
-		pcsx2.run(data["path"], data["binary"])
+		//pcsx2.run(data["path"], data["binary"])
 		self.log("playing")
 		print("Running PCSX2 ...")
 	}
@@ -679,8 +597,8 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		self.write_data(data)
 	} else if data["program"] == "Visual C++ 2010 redist" { // msvcr100.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
-		exist = PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
-				PathExists("C:/Windows/System32/msvcr100.dll")
+		exist = helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
+				helpers.PathExists("C:/Windows/System32/msvcr100.dll")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -689,8 +607,8 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		self.write_data(data)
 	} else if data["program"] == "Visual C++ 2013 redist" { // msvcr120.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
-		exist = PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
-				PathExists("C:/Windows/System32/msvcr120.dll")
+		exist = helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
+				helpers.PathExists("C:/Windows/System32/msvcr120.dll")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -698,8 +616,8 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "7-Zip" {
-		exist = PathExists("C:/Program Files/7-Zip/7z.exe") || 
-				PathExists("C:/Program Files (x86)/7-Zip/7z.exe")
+		exist = helpers.PathExists("C:/Program Files/7-Zip/7z.exe") || 
+				helpers.PathExists("C:/Program Files (x86)/7-Zip/7z.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -707,7 +625,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "VirtualCloneDrive" {
-		exist = PathExists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
+		exist = helpers.PathExists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -715,7 +633,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "NullDC" {
-		exist = PathExists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
+		exist = helpers.PathExists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -723,7 +641,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "Demul" {
-		exist = PathExists("emulators/Demul/demul.exe")
+		exist = helpers.PathExists("emulators/Demul/demul.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -731,7 +649,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "SSF" {
-		exist = PathExists("emulators/SSF_012_beta_R4/SSF.exe")
+		exist = helpers.PathExists("emulators/SSF_012_beta_R4/SSF.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -739,7 +657,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "Dolphin" {
-		exist = PathExists("emulators/Dolphin-x64/Dolphin.exe")
+		exist = helpers.PathExists("emulators/Dolphin-x64/Dolphin.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -747,7 +665,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "PCSX-Reloaded" {
-		exist = PathExists("emulators/pcsxr/pcsxr.exe")
+		exist = helpers.PathExists("emulators/pcsxr/pcsxr.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -755,7 +673,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "PCSX2" {
-		exist = PathExists("emulators/pcsx2/pcsx2.exe")
+		exist = helpers.PathExists("emulators/pcsx2/pcsx2.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -763,7 +681,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		}
 		self.write_data(data)
 	} else if data["program"] == "Mupen 64 Plus" {
-		exist = PathExists("emulators/Mupen64Plus/mupen64plus.exe")
+		exist = helpers.PathExists("emulators/Mupen64Plus/mupen64plus.exe")
 		data = map[string]string{
 			"action" : "is_installed",
 			"value" : exist,
@@ -915,7 +833,7 @@ func main() {
 	]
 
 	for dir in dirs:
-		if ! PathExists(dir):
+		if ! helpers.PathExists(dir):
 			os.Mkdir(dir, os.ModeDir)
 
 	// Make the html, css, js, and json files
@@ -936,7 +854,7 @@ func main() {
 			]
 
 	for file in files:
-		if ! IsFile(file):
+		if ! helpers.IsFile(file):
 			with open(file, "wb") as f:
 				data = static_files.static_files[file]
 				data = base64.b64decode(data)
@@ -957,7 +875,7 @@ func main() {
 
 		// Skip if not file
 		cache_file := fmt.Sprintf("cache/game_db_%s.json", console)
-		if IsFile(cache_file) {
+		if helpers.IsFile(cache_file) {
 			continue
 		}
 
@@ -974,7 +892,7 @@ func main() {
 		keys := make([]string, len(db[console]))
 		for _, name := range keys {
 			data := db[console][name]
-			if IsFile(data["binary"]) {
+			if helpers.IsFile(data["binary"]) {
 				delete(name, db[console])
 			}
 		}
@@ -985,7 +903,7 @@ func main() {
 	for _, console := range consoles {
 		file_modify_dates[console] = map[string]string{}
 		file_name := fmt.Sprintf("cache/file_modify_dates_%s.json", console)
-		if IsFile(file_name) {
+		if helpers.IsFile(file_name) {
 			file_data, err := ioutil.ReadFile(file_name)
 			if err != nil {
 				log.Fatal(err)
@@ -999,7 +917,7 @@ func main() {
 			// Remove any non existent files from the modify db
 			keys := make([]string, len(file_modify_dates[console]))
 			for _, entry := range keys {
-				if IsFile(entry) {
+				if helpers.IsFile(entry) {
 					delete(file_modify_dates[console], entry)
 				}
 			}

@@ -1,30 +1,29 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+// Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+// emu_archive is a HTML based front end for video game console emulators
+// It uses a MIT style license
+// It is hosted at: https://github.com/workhorsy/emu_archive
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# emu_archive is a HTML based front end for video game console emulators
-# It uses a MIT style license
-# It is hosted at: https://github.com/workhorsy/emu_archive
-#
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+package helpers
+/*
 import os, sys
 import subprocess
 
@@ -34,29 +33,29 @@ import base_console
 
 
 BUTTON_CODE_MAP = {
-	'button_12' : 805306368, # up
-	'button_13' : 805306369, # down
-	'button_14' : 805306370, # left
-	'button_15' : 805306371, # right
-	'button_9' : 805306372, # start
-	'button_0' : 805306380, # A
-	'button_1' : 805306381, # B
-	'button_2' : 805306382, # X
-	'button_3' : 805306383, # Y
-	'button_7' : 1342177280, # L Trigger
-	'button_6' : 1342177536, # R Trigger
-	'axes_0-' : -1879048192, # L Stick Left
-	'axes_0+' : -1879047936, # L Stick Right
-	'axes_1-' : -1879047680, # L Stick Up
-	'axes_1+' : -1879047424, # L Stick Down
-	'axes_2-' : -1879047168, # R Stick Left
-	'axes_2+' : -1879046912, # R Stick Right
-	'axes_3-' : -1879046656, # R Stick Up
-	'axes_3+' : -1879046400, # R Stick Down
+	'button_12' : 805306368, // up
+	'button_13' : 805306369, // down
+	'button_14' : 805306370, // left
+	'button_15' : 805306371, // right
+	'button_9' : 805306372, // start
+	'button_0' : 805306380, // A
+	'button_1' : 805306381, // B
+	'button_2' : 805306382, // X
+	'button_3' : 805306383, // Y
+	'button_7' : 1342177280, // L Trigger
+	'button_6' : 1342177536, // R Trigger
+	'axes_0-' : -1879048192, // L Stick Left
+	'axes_0+' : -1879047936, // L Stick Right
+	'axes_1-' : -1879047680, // L Stick Up
+	'axes_1+' : -1879047424, // L Stick Down
+	'axes_2-' : -1879047168, // R Stick Left
+	'axes_2+' : -1879046912, // R Stick Right
+	'axes_3-' : -1879046656, // R Stick Up
+	'axes_3+' : -1879046400, // R Stick Down
 	None : ''
 }
 
-# Figure out the DirectX version
+// Figure out the DirectX version
 gpu_dll_version = None
 directx_version = None
 retcode = subprocess.call(["dxdiag.exe", "/t", "directx_info.txt"], shell=True)
@@ -79,7 +78,7 @@ class Demul(base_console.BaseConsole):
 	def __init__(self):
 		super(Demul, self).__init__('config/demul.json')
 
-		# Setup the initial map, if there is none
+		// Setup the initial map, if there is none
 		if not self.button_map:
 			self.button_map = {
 				'btn_up_demul' : None,
@@ -574,7 +573,7 @@ class Demul(base_console.BaseConsole):
 			}
 		}
 
-		# Setup the gamepad
+		// Setup the gamepad
 		config['JOY0_0'] = {
 			'UP' : BUTTON_CODE_MAP[self.button_map['btn_up_demul']],
 			'DOWN' : BUTTON_CODE_MAP[self.button_map['btn_down_demul']],
@@ -636,7 +635,7 @@ class Demul(base_console.BaseConsole):
 	def _setup_directx(self):
 		global directx_version
 
-		# Setup DirectX
+		// Setup DirectX
 		config = {
 			'main' : {
 				'Vsync' : 0,
@@ -669,7 +668,7 @@ class Demul(base_console.BaseConsole):
 			ini.write_ini_file('emulators/Demul/gpuDX10.ini', config)
 
 	def _setup_demul(self):
-		# Setup Demul
+		// Setup Demul
 		config = {
 			'files' : {
 				'nvram' : os.path.abspath('emulators/Demul/nvram/'),
@@ -760,7 +759,7 @@ class Demul(base_console.BaseConsole):
 		return config
 
 	def run(self, path, binary, on_stop=None):
-		# Setup ini files
+		// Setup ini files
 		self._setup_spu()
 		self._setup_pad()
 		self._setup_net()
@@ -768,7 +767,7 @@ class Demul(base_console.BaseConsole):
 		self._setup_directx()
 		config = self._setup_demul()
 
-		# Get the window title
+		// Get the window title
 		directx_dll = config['plugins']['gpu']
 		window_name = None
 		if not path and not binary:
@@ -780,7 +779,7 @@ class Demul(base_console.BaseConsole):
 
 		os.chdir("emulators/Demul/")
 
-		# Figure out if running a game or not
+		// Figure out if running a game or not
 		command = None
 		full_screen = False
 		if binary:
@@ -790,14 +789,14 @@ class Demul(base_console.BaseConsole):
 			command = '"demul.exe" -run=dc'
 			full_screen = False
 
-		# Run the game
+		// Run the game
 		runner = emu_runner.EmuRunner(command, window_name, full_screen, full_screen_alt_enter=True)
 		runner.run()
 		os.chdir("../..")
 
-		# Upload the memory card to the server
+		// Upload the memory card to the server
 		if on_stop:
 			with open("emulators/Demul/memsaves/vms00.bin", 'rb') as f:
 				memory_card = f.read()
 			on_stop(memory_card)
-
+*/
