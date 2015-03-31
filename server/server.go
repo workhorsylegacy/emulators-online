@@ -43,14 +43,14 @@ import (
 	"golang.org/x/net/websocket"
 
 	"emu_archive/server/helpers"
-	//from identify_dreamcast_games import *
+	"identify_dreamcast_games"
 	//from identify_playstation2_games import *
 )
 
 
 type LongRunningTask struct {
 	thread int
-	percentage float32
+	percentage float64
 }
 
 type GameData struct {
@@ -63,7 +63,7 @@ type GameData struct {
 }
 
 type EmuRunner struct {}
-type Demul struct {}
+//type Demul struct {}
 //type Dolphin struct {}
 //type SSF struct {}
 //type Mupen64Plus struct {}
@@ -71,14 +71,15 @@ type Demul struct {}
 //type PCSX2 struct {}
 
 var db map[string]map[string]GameData
+var file_modify_dates map[string]map[string]int64
 var long_running_tasks map[string]LongRunningTask
 var runner EmuRunner
-var demul Demul
+//var demul Demul
 //var dolphin Dolphin
-var ssf SSF
-var mupen64plus Mupen64Plus
-var pcsxr PCSXR
-var pcsx2 PCSX2
+//var ssf SSF
+//var mupen64plus Mupen64Plus
+//var pcsxr PCSXR
+//var pcsx2 PCSX2
 
 
 func clean_path(file_path string) string {
@@ -118,7 +119,7 @@ func remove_long_running_task(ws *websocket.Conn, task_name string) {
 	}
 
 	// Get a list of the threads and their percentages
-	var task_and_percentages map[string]float32
+	var task_and_percentages map[string]float64
 	for name, long_running_task := range long_running_tasks {
 		task_and_percentages[name] = long_running_task.percentage
 	}
@@ -138,7 +139,7 @@ func add_long_running_task(ws *websocket.Conn, task_name string, thread int) {
 	}
 
 	// Get a list of the threads and their percentages
-	var task_and_percentages map[string]float32
+	var task_and_percentages map[string]float64
 	for name, long_running_task := range long_running_tasks {
 		task_and_percentages[name] = long_running_task.percentage
 	}
@@ -151,7 +152,7 @@ func add_long_running_task(ws *websocket.Conn, task_name string, thread int) {
 	websocket.JSON.Send(ws, &message)
 }
 
-func set_long_running_task_percentage(ws *websocket.Conn, task_name string, percentage float32) {
+func set_long_running_task_percentage(ws *websocket.Conn, task_name string, percentage float64) {
 	// Replace the task with one that has an updated percentage
 	var old_long_running_task LongRunningTask = long_running_tasks[task_name]
 	long_running_tasks[task_name] = LongRunningTask {
@@ -160,7 +161,7 @@ func set_long_running_task_percentage(ws *websocket.Conn, task_name string, perc
 	}
 
 	// Get a list of the threads and their percentages
-	var task_and_percentages map[string]float32
+	var task_and_percentages map[string]float64
 	for name, long_running_task := range long_running_tasks {
 		task_and_percentages[name] = long_running_task.percentage
 	}
@@ -248,7 +249,7 @@ func _set_button_map(ws *websocket.Conn, data map[string]string)  {
 		//ssf.set_button_map(data["value"])
 
 	} else if data["console"] == "dreamcast" {
-		demul.set_button_map(data["value"])
+		//demul.set_button_map(data["value"])
 
 	} else if data["console"] == "Playstation" {
 		//pcsxr.set_button_map(data["value"])
@@ -271,7 +272,7 @@ func _get_button_map(ws *websocket.Conn, data map[string]string) {
 		//value = ssf.get_button_map()
 
 	} else if data["console"] == "dreamcast" {
-		value = demul.get_button_map()
+		//value = demul.get_button_map()
 
 	} else if data["console"] == "Playstation" {
 		//value = pcsxr.get_button_map()
@@ -281,7 +282,7 @@ func _get_button_map(ws *websocket.Conn, data map[string]string) {
 	}
 
 	message := map[string]interface{} {
-		"action" : get_button_map,
+		"action" : "get_button_map",
 		"value" : value,
 		"console" : data["console"],
 	}
@@ -293,10 +294,10 @@ func task(ws *websocket.Conn, data map[string]string) {
 	console := data["console"]
 
 	// Add the thread to the list of long running tasks
-	add_long_running_task(fmt.Sprintf("Searching for %s games", console), threading.current_thread())
+	add_long_running_task(ws, fmt.Sprintf("Searching for %s games", console), 5)
 
 	// Get the path for this console
-	path_prefix = nil
+	var path_prefix string
 	if console == "gamecube" {
 		path_prefix = "games/Nintendo/GameCube"
 	} else if console == "nintendo64" {
@@ -314,9 +315,7 @@ func task(ws *websocket.Conn, data map[string]string) {
 	// Get the total number of files
 	total_files := 0.0
 	filepath.Walk(directory_name, func(path string, _ os.FileInfo, _ error) error {
-		for _, file := range files {
-			total_files += 1.0
-		}
+		total_files += 1.0
 	})
 
 	// Walk through all the directories
@@ -329,7 +328,7 @@ func task(ws *websocket.Conn, data map[string]string) {
 
 		// Get the percentage of the progress looping through files
 		percentage := (done_files / total_files) * 100.0
-		set_long_running_task_percentage(fmt.Sprintf("Searching for %s games", console), percentage)
+		set_long_running_task_percentage(ws, fmt.Sprintf("Searching for %s games", console), percentage)
 		done_files += 1.0
 
 		// Skip if the the entry is not a file
@@ -338,7 +337,7 @@ func task(ws *websocket.Conn, data map[string]string) {
 		}
 
 		// Skip if the game file has not been modified
-		old_modify_date := 0
+		var old_modify_date int64 = 0
 		if val, ok := file_modify_dates[console][entry]; ok {
 			old_modify_date = val // file_modify_dates[console][entry]
 		}
@@ -346,7 +345,7 @@ func task(ws *websocket.Conn, data map[string]string) {
 		if err != nil {
 			return nil
 		}
-		modify_date := finfo.ModTime() // FIXME: Change to decimal
+		modify_date := finfo.ModTime().UnixNano()
 		if modify_date == old_modify_date {
 			return nil
 		} else {
@@ -467,7 +466,7 @@ func _play_game(ws *websocket.Conn, data map[string]string) {
 		print("Running SSF ...")
 
 	} else if data["console"] == "dreamcast" {
-		demul.run(data["path"], data["binary"], _save_memory_card_cb)
+		//demul.run(data["path"], data["binary"], _save_memory_card_cb)
 		self.log("playing")
 		print("Running Demul ...")
 
@@ -899,7 +898,6 @@ func main() {
 	}
 
 	// Load the file modify dates
-	var file_modify_dates map[string]string
 	for _, console := range consoles {
 		file_modify_dates[console] = map[string]string{}
 		file_name := fmt.Sprintf("cache/file_modify_dates_%s.json", console)
