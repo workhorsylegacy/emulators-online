@@ -96,7 +96,7 @@ func web_socket_send(ws *websocket.Conn, thing interface{}) error {
 	message, err := to_b64_json(thing)
 	if err != nil {
 		fmt.Printf("Failed to write web socket message: %s\r\n", err)
-		ws.Close()
+		//ws.Close()
 		return err
 	}
 	fmt.Printf("message: %s\r\n", message)
@@ -110,7 +110,7 @@ func web_socket_send(ws *websocket.Conn, thing interface{}) error {
 	write_len, err := ws.Write(buffer)
 	if err != nil {
 		fmt.Printf("Failed to write web socket message: %s\r\n", err)
-		ws.Close()
+		//ws.Close()
 		return err
 	}
 	fmt.Printf("write_len: %d\r\n", write_len)
@@ -126,7 +126,7 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 	read_len, err := ws.Read(buffer)
 	if err != nil {
 		fmt.Printf("Failed to read web socket message: %s\r\n", err)
-		ws.Close()
+		//ws.Close()
 		return nil, err
 	}
 	fmt.Printf("read_len: %d\r\n", read_len)
@@ -143,7 +143,7 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 	read_len, err = ws.Read(buffer)
 	if err != nil {
 		fmt.Printf("Failed to read web socket message: %s\r\n", err)
-		ws.Close()
+		//ws.Close()
 		return nil, err
 	}
 	fmt.Printf("read_len: %d\r\n", read_len)
@@ -153,7 +153,7 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 	thing, err := from_b64_json(message)
 	if err != nil {
 		fmt.Printf("Failed to decode web socket message: %s\r\n", err)
-		ws.Close()
+		//ws.Close()
 		return nil, err
 	}
 
@@ -816,27 +816,15 @@ func http_cb(w http.ResponseWriter, r *http.Request) {
 
 func web_socket_cb(ws *websocket.Conn) {
 	fmt.Printf("web_socket_cb !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n")
-	//var message string
-	var message_map map[string]string
 
+	for {
 		// Read the message
 		message_map, err := web_socket_recieve(ws)
 		if err != nil {
 			fmt.Printf("Failed to get web socket message: %s\r\n", err)
-			ws.Close()
+			//ws.Close()
 			return
 		}
-
-		// Convert the message to json
-		//err = json.Unmarshal([]byte(message), &message_map)
-		//if err != nil {
-		//	fmt.Printf("Failed to get web socket message: %s\r\n", err)
-		//	//ws.Close()
-		//	return
-		//}
-		//for k, v := range message_map {
-		//	fmt.Printf("%s : %s\r\n", k, v)
-		//}
 
 		// Client wants to play a game
 		if message_map["action"] == "play" {
@@ -926,6 +914,7 @@ func web_socket_cb(ws *websocket.Conn) {
 		} else {
 			log.Fatal(fmt.Sprintf("Unknown action from client: %s", message_map["action"]))
 		}
+	}
 	//ws.Close()
 }
 

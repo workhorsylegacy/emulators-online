@@ -413,6 +413,7 @@ var is_pcsx2_installed = false;
 var is_mupen_installed = false;
 
 function on_data(data) {
+	console.log('called on_data: ' + data['action']);
 	if(data['action'] == 'log') {
 		console.log('Log: ' + data['value']);
 	} else if(data['action'] == 'progress') {

@@ -30,11 +30,11 @@ function socket_send_data(message) {
 	message = JSON.stringify(message);
 
 	// Convert json to base64
-	message = btoa(message)
+	message = btoa(message);
 
-	var header = message.length.toString()
-	message = header + ":" + message
-	console.log("sending message: " + message)
+	var header = message.length.toString();
+	message = header + ":" + message;
+	console.log("sending message: " + message);
 
 	// Send the message
 	socket.send(message);
@@ -79,8 +79,9 @@ function setup_websocket(on_data, on_open_cb) {
 			console.log(data);
 
 			// Convert the actual data to an object
-			data['json_data'] = atob(data['json_data']);
+			//data['json_data'] = atob(data['json_data']);
 			console.log(data);
+			on_data(data);
 		};
 
 		socket.onclose = function() {
