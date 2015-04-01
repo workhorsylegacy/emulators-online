@@ -603,7 +603,7 @@ func progress_cb(name string, ws *websocket.Conn, progress float64) {
 
 func _download_file(ws *websocket.Conn, data map[string]string) {
 	// Get all the info we need
-	file_name := data["name"]
+	file_name := data["file"]
 	url := data["url"]
 	directory := data["dir"]
 	name := data["name"]
@@ -611,33 +611,60 @@ func _download_file(ws *websocket.Conn, data map[string]string) {
 	// Get the download file
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Printf("Download failed: %s\r\n", err)
+		fmt.Printf("!!!!!!!!!!!!!!!Download failed: %s\r\n", err)
 		return
 	}
 	if resp.StatusCode != 200 {
-		fmt.Printf("Download failed with response code: %s\r\n", resp.Status)
+		fmt.Printf("!!!!!!!!!!!!!!!Download failed with response code: %s\r\n", resp.Status)
 		return
 	}
 	content_length := float64(resp.ContentLength)
-	data_length := 0.0
+	total_length := 0.0
 
-	// Download the file a chunk at a time
+	// Create the out file
 	buffer := make([]byte, 32 * 1024)
 	out, err := os.Create(filepath.Join(directory, file_name))
+	if err != nil {
+		fmt.Printf("!!!!!!!!!!!!!!!Failed to create output file: %s\r\n", err)
+		return
+	}
+
+	// Close everything when we exit
+	defer out.Close()
+	defer resp.Body.Close()
+
+	// Download the file one chunk at a time
 	for {
+		// Read the next chunk
 		read_len, err := resp.Body.Read(buffer)
 		if err != nil {
-			fmt.Printf("Download failed: %s\r\n", err)
+			fmt.Printf("!!!!!!!!!!!!!!!Download next chunk failed: %s\r\n", err)
 			return
 		}
-		out.Write(buffer[0 : read_len])
-		data_length += float64(read_len)
 
-		progress := RoundPlus((data_length / content_length) * 100.0, 2)
+		// Write the chunk to file
+		write_len, err := out.Write(buffer[0 : read_len])
+		if err != nil {
+			fmt.Printf("!!!!!!!!!!!!!!!Writing chunk to file failed: %s\r\n", err)
+			return
+		}
+
+		// Make sure everything read was written
+		if read_len != write_len {
+			fmt.Printf("!!!!!!!!!!!!!!!Write and read length were different\r\n")
+			return
+		}
+
+		// Fire the progress callback
+		total_length += float64(read_len)
+		progress := RoundPlus((total_length / content_length) * 100.0, 2)
 		progress_cb(name, ws, progress)
+
+		// Exit the loop if the file is done
+		if total_length == content_length {
+			break
+		}
 	}
-	out.Close()
-	resp.Body.Close()
 }
 
 func _install(ws *websocket.Conn, data map[string]string) {
