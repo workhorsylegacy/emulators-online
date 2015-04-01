@@ -22,7 +22,7 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package main
+package helpers
 
 import (
 	"fmt"
@@ -273,7 +273,7 @@ func _get_track_01_from_gdi_file(file_name string, buffer []byte) (string, error
 	return track_01_file, nil
 }
 
-func is_dreamcast_file(game_file string) bool {
+func IsDreamcastFile(game_file string) bool {
 	// Skip if not file
 	finfo, err := os.Stat(game_file)
 	if err != nil {
@@ -299,7 +299,7 @@ func is_dreamcast_file(game_file string) bool {
 	return is_valid
 }
 
-func get_dreamcast_game_info(game_file string) (map[string]string, error) {
+func GetDreamcastGameInfo(game_file string) (map[string]string, error) {
 	// Get the full file name
 	full_entry, err := filepath.Abs(game_file)
 	if err != nil {
@@ -406,7 +406,7 @@ func get_dreamcast_game_info(game_file string) (map[string]string, error) {
 	return retval, nil
 }
 
-func main() {
+func XXXXmain() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// Get the path of the current file
@@ -436,11 +436,11 @@ func main() {
 	games_root := "E:/Sega/Dreamcast"
 	filepath.Walk(games_root, func(path string, _ os.FileInfo, _ error) error {
 		// Skip if not a Dreamcast game
-		if ! is_dreamcast_file(path) {
+		if ! IsDreamcastFile(path) {
 			return nil
 		}
 
-		info, err := get_dreamcast_game_info(path)
+		info, err := GetDreamcastGameInfo(path)
 		if err != nil {
 			fmt.Printf("Failed to find: %s\r\n", path)
 			return nil
@@ -451,7 +451,7 @@ func main() {
 */
 ///*
 	path := "E:/Sega/Dreamcast/Alone in The Dark/alone_in_the_dark_disk_01.cdi"
-	info, err := get_dreamcast_game_info(path)
+	info, err := GetDreamcastGameInfo(path)
 	if err != nil {
 		fmt.Printf("err: %s\r\n", err)
 		return

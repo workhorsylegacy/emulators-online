@@ -38,12 +38,14 @@ import (
 	//"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"bytes"
+	"strconv"
+	//"io"
 
 	"net/http"
 	"golang.org/x/net/websocket"
 
 	"emu_archive/server/helpers"
-	"identify_dreamcast_games"
 	//from identify_playstation2_games import *
 )
 
@@ -51,15 +53,6 @@ import (
 type LongRunningTask struct {
 	thread int
 	percentage float64
-}
-
-type GameData struct {
-	images []string
-	developer string
-	genre string
-	path string
-	bios string
-	binary string
 }
 
 type EmuRunner struct {}
@@ -70,7 +63,7 @@ type EmuRunner struct {}
 //type PCSXR struct {}
 //type PCSX2 struct {}
 
-var db map[string]map[string]GameData
+var db map[string]map[string]map[string]interface{}
 var file_modify_dates map[string]map[string]int64
 var long_running_tasks map[string]LongRunningTask
 var runner EmuRunner
@@ -96,25 +89,122 @@ func abs_path(file_path string) string {
 	return file_path
 }
 
+func web_socket_send(ws *websocket.Conn, thing interface{}) error {
+	fmt.Printf("web_socket_send ????????????????????????????????????????\r\n")
 
+	// Convert the object to base64ed json
+	message, err := to_b64_json(thing)
+	if err != nil {
+		fmt.Printf("Failed to write web socket message: %s\r\n", err)
+		ws.Close()
+		return err
+	}
+	fmt.Printf("message: %s\r\n", message)
 
-func is_long_running_task(task_name string) bool {
-	val, ok := long_running_tasks[task_name]
-	return ok
+	// Get the header
+	whole_message := fmt.Sprintf("%d:%s", len(message), message)
+	fmt.Printf("whole_message: %s\r\n", whole_message)
+
+	// Write the message
+	buffer := []byte(whole_message)
+	write_len, err := ws.Write(buffer)
+	if err != nil {
+		fmt.Printf("Failed to write web socket message: %s\r\n", err)
+		ws.Close()
+		return err
+	}
+	fmt.Printf("write_len: %d\r\n", write_len)
+
+	return nil
 }
 
-func to_b64_json(thing interface{}) string {
-	jsoned_data, _ := json.Marshal(thing)
-	stringed_data := string(jsoned_data)
-	b64ed_data, _ := base64.StdEncoding.DecodeString(stringed_data)
+func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
+	fmt.Printf("web_socket_recieve ???????????????????????????????????\r\n")
+	buffer := make([]byte, 20)
+
+	// Read the message header
+	read_len, err := ws.Read(buffer)
+	if err != nil {
+		fmt.Printf("Failed to read web socket message: %s\r\n", err)
+		ws.Close()
+		return nil, err
+	}
+	fmt.Printf("read_len: %d\r\n", read_len)
+
+	// Get the message length
+	message := string(buffer[0 : read_len])
+	chunks := strings.Split(message, ":")
+	message_length64, _ := strconv.ParseInt(chunks[0], 10, 0)
+	message_length := int(message_length64)
+	message = chunks[1]
+
+	// Read the rest of the message
+	buffer = make([]byte, message_length)
+	read_len, err = ws.Read(buffer)
+	if err != nil {
+		fmt.Printf("Failed to read web socket message: %s\r\n", err)
+		ws.Close()
+		return nil, err
+	}
+	fmt.Printf("read_len: %d\r\n", read_len)
+	message = message + string(buffer[0 : read_len])
+
+	// Convert the message from base64 and json
+	thing, err := from_b64_json(message)
+	if err != nil {
+		fmt.Printf("Failed to decode web socket message: %s\r\n", err)
+		ws.Close()
+		return nil, err
+	}
+
+	fmt.Printf("thing: %s\r\n", thing)
+	return thing, nil
+}
+
+func from_b64_json(message string) (map[string]string, error) {
+	var retval map[string]string
+
+	// Unbase64 the message
+	buffer, err := base64.StdEncoding.DecodeString(message)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Unjson the message
+	err = json.Unmarshal(buffer, &retval)
+	if err != nil {
+		return nil, err
+	}
+
+	return retval, nil
+}
+
+func to_b64_json(thing interface{}) (string, error) {
+	// Convert the object to json
+	jsoned_data, err := json.Marshal(thing)
+	if err != nil {
+		return "", err
+	}
+	//stringed_data := string(jsoned_data)
+
+	// Convert the jsoned object to base64
+	b64ed_data := base64.StdEncoding.EncodeToString(jsoned_data)
+	if err != nil {
+		return "", err
+	}
 	b64ed_and_jsoned_data := string(b64ed_data)
 
-	return b64ed_and_jsoned_data
+	return b64ed_and_jsoned_data, err
+}
+
+func is_long_running_task(task_name string) bool {
+	_, ok := long_running_tasks[task_name]
+	return ok
 }
 
 func remove_long_running_task(ws *websocket.Conn, task_name string) {
 	// Remove the task
-	if val, ok := long_running_tasks[task_name]; ok {
+	if _, ok := long_running_tasks[task_name]; ok {
 		delete(long_running_tasks, task_name)
 	}
 
@@ -124,12 +214,12 @@ func remove_long_running_task(ws *websocket.Conn, task_name string) {
 		task_and_percentages[name] = long_running_task.percentage
 	}
 
-	json_data := to_b64_json(task_and_percentages)
+	json_data, _ := to_b64_json(task_and_percentages)
 	message := map[string]string {
 		"action" : "long_running_tasks",
 		"json_data" : json_data,
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, &message)
 }
 
 func add_long_running_task(ws *websocket.Conn, task_name string, thread int) {
@@ -144,12 +234,12 @@ func add_long_running_task(ws *websocket.Conn, task_name string, thread int) {
 		task_and_percentages[name] = long_running_task.percentage
 	}
 
-	json_data := to_b64_json(task_and_percentages)
+	json_data, _ := to_b64_json(task_and_percentages)
 	message := map[string]string {
 		"action" : "long_running_tasks",
 		"json_data" : json_data,
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, &message)
 }
 
 func set_long_running_task_percentage(ws *websocket.Conn, task_name string, percentage float64) {
@@ -166,21 +256,23 @@ func set_long_running_task_percentage(ws *websocket.Conn, task_name string, perc
 		task_and_percentages[name] = long_running_task.percentage
 	}
 
-	json_data := to_b64_json(task_and_percentages)
+	json_data, _ := to_b64_json(task_and_percentages)
 	message := map[string]string {
 		"action" : "long_running_tasks",
 		"json_data" : json_data,
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, &message)
 }
 
 func _get_db(ws *websocket.Conn) {
-	json_data := to_b64_json(db)
+	fmt.Printf("called _get_db\r\n")
+
+	json_data, _ := to_b64_json(db)
 	message := map[string]string {
 		"action" : "get_db",
 		"json_data" : json_data,
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, message)
 }
 
 func _set_bios(data map[string]string) (error) {
@@ -286,10 +378,10 @@ func _get_button_map(ws *websocket.Conn, data map[string]string) {
 		"value" : value,
 		"console" : data["console"],
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, &message)
 }
 
-func task(ws *websocket.Conn, data map[string]string) {
+func task(ws *websocket.Conn, data map[string]string) error {
 	directory_name := data["directory_name"]
 	console := data["console"]
 
@@ -316,6 +408,7 @@ func task(ws *websocket.Conn, data map[string]string) {
 	total_files := 0.0
 	filepath.Walk(directory_name, func(path string, _ os.FileInfo, _ error) error {
 		total_files += 1.0
+		return nil
 	})
 
 	// Walk through all the directories
@@ -354,23 +447,23 @@ func task(ws *websocket.Conn, data map[string]string) {
 
 		// Skip if the file is not the right kind for this console
 		if console == "dreamcast" {
-			if ! is_dreamcast_file(entry) {
+			if ! helpers.IsDreamcastFile(entry) {
 				return nil
 			}
-		} else if console == "playstation2" {
-			if ! is_playstation2_file(entry) {
-				return nil
-			}
+		//} else if console == "playstation2" {
+		//	if ! is_playstation2_file(entry) {
+		//		return nil
+		//	}
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
 		}
 
 		// Get the game info
-		info = nil
+		var info map[string]string
 		if console == "dreamcast" {
-			info, err = get_dreamcast_game_info(entry)
-		} else if console == "playstation2" {
-			info, err = get_playstation2_game_info(entry)
+			info, err = helpers.GetDreamcastGameInfo(entry)
+		//} else if console == "playstation2" {
+		//	info, err = get_playstation2_game_info(entry)
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
 		}
@@ -382,47 +475,53 @@ func task(ws *websocket.Conn, data map[string]string) {
 		info["file"] = entry
 
 		// Save the info in the db
-		if info {
-			title = info["title"]
-			clean_title = strings.Replace(strings.Replace(title, ": ", " - ", -1), "/", "+", -1)
-			db[console][title] = map[string]string{
+		if info != nil {
+			title := info["title"]
+			clean_title := strings.Replace(strings.Replace(title, ": ", " - ", -1), "/", "+", -1)
+			db[console][title] = map[string]interface{} {
 				"path" : clean_path(fmt.Sprintf("%s/%s/", path_prefix, clean_title)),
 				"binary" : abs_path(info["file"]),
 				"bios" : "",
-				"images" : {},
-				"developer" : info.get("developer", ""),
-				"genre" : info.get("genre", ""),
+				"images" : []string{},
+				"developer" : "", //info["developer"],
+				"genre" : "", //info["genre"],
 			}
-
 			// Get the images
-			image_dir = fmt.Sprintf("%s/%s/", path_prefix, title)
+			image_dir := fmt.Sprintf("%s/%s/", path_prefix, title)
 			expected_images := []string{"title_big.png", "title_small.png"}
-			for img := range expected_images {
+			for _, img := range expected_images {
 				if ! helpers.IsDir(image_dir) {
-					image_file := image_dir + img
+					image_file := fmt.Sprintf("%s%s", image_dir, img)
 					if helpers.IsFile(image_file) {
-						append(db[console][title]["images"], image_file)
+						images := db[console][title]["images"].([]string)
+						images = append(images, image_file)
+						db[console][title]["images"] = images
 					}
 				}
 			}
 		}
+		return nil
 	})
 
 	f, err := os.Open(fmt.Sprintf("cache/game_db_%s.json", console))
 	if err != nil {
 		return err
 	}
-	f.Write(json.Marshal(data["value"]))
+	jsoned_data, _ := json.Marshal(data["value"])
+	f.Write(jsoned_data)
 
 	f, err = os.Open(fmt.Sprintf("cache/file_modify_dates_%s.json", console))
 	if err != nil {
 		return err
 	}
-	f.Write(json.Marshal(data["value"]))
+	jsoned_data, _ = json.Marshal(data["value"])
+	f.Write(jsoned_data)
 
 	fmt.Printf("Done getting games from directory.\r\n")
 
-	self.remove_long_running_task(fmt.Sprintf("Searching for %s games", console))
+	remove_long_running_task(ws, fmt.Sprintf("Searching for %s games", console))
+
+	return nil
 }
 
 func _set_game_directory(ws *websocket.Conn, data map[string]string) {
@@ -446,38 +545,38 @@ func _save_memory_card_cb(memory_card string) {
 	writer.Write([]byte(memory_card))
 	writer.Close()
 	// FIXME: Send the memory card to the server
-	fmt.Printf("FIXME: Memory card needs saving. length %s\r\n", len(out_buffer))
+	fmt.Printf("FIXME: Memory card needs saving. length %s\r\n", out_buffer.Len())
 }
 
 func _play_game(ws *websocket.Conn, data map[string]string) {
 	if data["console"] == "gamecube" {
 		//dolphin.run(data["path"], data["binary"])
-		self.log("playing")
+		//self.log("playing")
 		print("Running Dolphin ...")
 
 	} else if data["console"] == "nintendo64" {
 		//mupen64plus.run(data["path"], data["binary"])
-		self.log("playing")
+		//self.log("playing")
 		print("Running Mupen64plus ...")
 
 	} else if data["console"] == "saturn" {
 		//ssf.run(data["path"], data["binary"], data["bios"])
-		self.log("playing")
+		//self.log("playing")
 		print("Running SSF ...")
 
 	} else if data["console"] == "dreamcast" {
 		//demul.run(data["path"], data["binary"], _save_memory_card_cb)
-		self.log("playing")
+		//self.log("playing")
 		print("Running Demul ...")
 
 	} else if data["console"] == "Playstation" {
 		//pcsxr.run(data["path"], data["binary"])
-		self.log("playing")
+		//self.log("playing")
 		print("Running PCSX-Reloaded ...")
 
 	} else if data["console"] == "playstation2" {
 		//pcsx2.run(data["path"], data["binary"])
-		self.log("playing")
+		//self.log("playing")
 		print("Running PCSX2 ...")
 	}
 }
@@ -502,61 +601,68 @@ func _download_file(self, data) {
 */
 func _install(ws *websocket.Conn, data map[string]string) {
 	// Start uncompressing
-	message := map[string]string{
+	message := map[string]interface{}{
 		"action" : "uncompress",
 		"is_start" : true,
 		"name" : data["file"],
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, &message)
 
 	if data["file"] == "SetupVirtualCloneDrive.exe" {
-		os.ChDir(data["dir"])
+		os.Chdir(data["dir"])
 		//proc = subprocess.Popen([data["file"], "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
 		//proc.communicate()
 		cmd := exec.Command(data["file"], "/S")
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Run()
-		os.ChDir("..")
+		os.Chdir("..")
 	} else if data["file"] == "7z920.exe" {
-		os.ChDir(data["dir"])
+		os.Chdir(data["dir"])
 		//proc = subprocess.Popen([data["file"], "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
 		//proc.communicate()
 		cmd := exec.Command(data["file"], "/S")
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Run()
-		os.ChDir("..")
+		os.Chdir("..")
 	} else if data["file"] == "nullDC_104_r136.7z" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "nullDC_104_r136.7z"), "emulators/NullDC")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "nullDC_104_r136.7z"), "emulators/NullDC")
 	} else if data["file"] == "demul0582.rar" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "demul0582.rar"), "emulators/Demul")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "demul0582.rar"), "emulators/Demul")
 	} else if data["file"] == "SSF_012_beta_R4.zip" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "SSF_012_beta_R4.zip"), "emulators")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "SSF_012_beta_R4.zip"), "emulators")
 	} else if data["file"] == "dolphin-master-4.0-5363-x64.7z" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "dolphin-master-4.0-5363-x64.7z"), "emulators")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "dolphin-master-4.0-5363-x64.7z"), "emulators")
 	} else if data["file"] == "mupen64plus-bundle-win32-2.0.zip" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "mupen64plus-bundle-win32-2.0.zip"), "emulators/Mupen64Plus")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "mupen64plus-bundle-win32-2.0.zip"), "emulators/Mupen64Plus")
 	} else if data["file"] == "pcsxr-1.9.93-win32.zip" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "pcsxr-1.9.93-win32.zip"), "emulators")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "pcsxr-1.9.93-win32.zip"), "emulators")
 	} else if data["file"] == "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z" {
-		wrap = wrap_7zip.Wrap7zip()
-		wrap.uncompress(path.Join(data["dir"], "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z"), "emulators")
+		wrap := helpers.Wrap7zip{}
+		helpers.Setup(&wrap)
+		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z"), "emulators")
 	}
 
 	// End uncompressing
-	message = map[string]string{
+	message = map[string]interface{}{
 		"action" : "uncompress",
 		"is_start" : false,
 		"name" : data["file"],
 	}
-	websocket.JSON.Send(ws, &message)
+	web_socket_send(ws, &message)
 }
 
 func _uninstall(ws *websocket.Conn, data map[string]string) {
@@ -586,107 +692,107 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 		check_64_dx11, _ := filepath.Glob("C:/Windows/SysWOW64/d3dx11_*.dll")
 		check_32_dx10, _ := filepath.Glob("C:/Windows/System32/d3dx10_*.dll")
 		check_32_dx11, _ := filepath.Glob("C:/Windows/System32/d3dx11_*.dll")
-		exist = (len(check_64_dx10) > 0 && len(check_64_dx11) > 0) || 
+		exist := (len(check_64_dx10) > 0 && len(check_64_dx11) > 0) || 
 				(len(check_32_dx10) > 0 && len(check_32_dx11) > 0)
-		data = map[string]string{
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "DirectX End User Runtime",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "Visual C++ 2010 redist" { // msvcr100.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
-		exist = helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
+		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
 				helpers.PathExists("C:/Windows/System32/msvcr100.dll")
-		data = map[string]string{
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "Visual C++ 2010 redist",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "Visual C++ 2013 redist" { // msvcr120.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
-		exist = helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
+		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
 				helpers.PathExists("C:/Windows/System32/msvcr120.dll")
-		data = map[string]string{
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "Visual C++ 2013 redist",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "7-Zip" {
-		exist = helpers.PathExists("C:/Program Files/7-Zip/7z.exe") || 
+		exist := helpers.PathExists("C:/Program Files/7-Zip/7z.exe") || 
 				helpers.PathExists("C:/Program Files (x86)/7-Zip/7z.exe")
-		data = map[string]string{
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "7-Zip",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "VirtualCloneDrive" {
-		exist = helpers.PathExists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "VirtualCloneDrive",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "NullDC" {
-		exist = helpers.PathExists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "NullDC",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "Demul" {
-		exist = helpers.PathExists("emulators/Demul/demul.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/Demul/demul.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "Demul",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "SSF" {
-		exist = helpers.PathExists("emulators/SSF_012_beta_R4/SSF.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/SSF_012_beta_R4/SSF.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "SSF",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "Dolphin" {
-		exist = helpers.PathExists("emulators/Dolphin-x64/Dolphin.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/Dolphin-x64/Dolphin.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "Dolphin",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "PCSX-Reloaded" {
-		exist = helpers.PathExists("emulators/pcsxr/pcsxr.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/pcsxr/pcsxr.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "PCSX-Reloaded",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "PCSX2" {
-		exist = helpers.PathExists("emulators/pcsx2/pcsx2.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/pcsx2/pcsx2.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "PCSX2",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else if data["program"] == "Mupen 64 Plus" {
-		exist = helpers.PathExists("emulators/Mupen64Plus/mupen64plus.exe")
-		data = map[string]string{
+		exist := helpers.PathExists("emulators/Mupen64Plus/mupen64plus.exe")
+		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "Mupen 64 Plus",
 		}
-		self.write_data(data)
+		web_socket_send(ws, &message)
 	} else {
 		fmt.Printf("Unknown program to check if installed: %s\r\n", data["program"])
 	}
@@ -703,48 +809,68 @@ class EmuDownloader(downloader.Downloader):
 	func _cb_dl_progress(self, file_name, chunk, data_length, chunk_size, content_length, percent):
 		self.progress_cb(self.name, self.server, percent)
 */
+
 func http_cb(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "hello, world\n")
+	http.ServeFile(w, r, r.URL.Path[1:])
 }
 
 func web_socket_cb(ws *websocket.Conn) {
-	var data map[string]string
-	for {
-		websocket.JSON.Receive(ws, &data)
+	fmt.Printf("web_socket_cb !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n")
+	//var message string
+	var message_map map[string]string
+
+		// Read the message
+		message_map, err := web_socket_recieve(ws)
+		if err != nil {
+			fmt.Printf("Failed to get web socket message: %s\r\n", err)
+			ws.Close()
+			return
+		}
+
+		// Convert the message to json
+		//err = json.Unmarshal([]byte(message), &message_map)
+		//if err != nil {
+		//	fmt.Printf("Failed to get web socket message: %s\r\n", err)
+		//	//ws.Close()
+		//	return
+		//}
+		//for k, v := range message_map {
+		//	fmt.Printf("%s : %s\r\n", k, v)
+		//}
 
 		// Client wants to play a game
-		if data["action"] == "play" {
-			_play_game(data)
+		if message_map["action"] == "play" {
+			_play_game(ws, message_map)
 
 		// Client wants to download a file
-		} else if data["action"] == "download" {
-			_download_file(data)
+		} else if message_map["action"] == "download" {
+//			_download_file(ws, message_map)
 
 		// Client wants to know if a file is installed
-		} else if data["action"] == "is_installed" {
-			_is_installed(data)
+		} else if message_map["action"] == "is_installed" {
+			_is_installed(ws, message_map)
 
 		// Client wants to install a program
-		} else if data["action"] == "install" {
-			_install(data)
+		} else if message_map["action"] == "install" {
+			_install(ws, message_map)
 
-		} else if data["action"] == "uninstall" {
-			_uninstall(data)
+		} else if message_map["action"] == "uninstall" {
+			_uninstall(ws, message_map)
 
-		} else if data["action"] == "set_button_map" {
-			_set_button_map(data)
+		} else if message_map["action"] == "set_button_map" {
+			_set_button_map(ws, message_map)
 
-		} else if data["action"] == "get_button_map" {
-			_get_button_map(data)
+		} else if message_map["action"] == "get_button_map" {
+			_get_button_map(ws, message_map)
 
-		} else if data["action"] == "set_bios" {
-			_set_bios(data)
+		} else if message_map["action"] == "set_bios" {
+			_set_bios(message_map)
 
-		} else if data["action"] == "get_db" {
-			_get_db(data)
+		} else if message_map["action"] == "get_db" {
+			_get_db(ws)
 
-		} else if data["action"] == "set_game_directory" {
-			/*
+		} else if message_map["action"] == "set_game_directory" {
+/*
 			hwnd, text = nil, nil
 			func findWindowWithTitleText(title_text):
 				// Get the handles of all the windows
@@ -793,19 +919,22 @@ func web_socket_cb(ws *websocket.Conn) {
 				nil
 			)
 			if pidl:
-				data["directory_name"] = win32com.shell.shell.SHGetPathFromIDList(pidl).decode("utf-8")
-				_set_game_directory(data)
-			*/
+				message_map["directory_name"] = win32com.shell.shell.SHGetPathFromIDList(pidl).decode("utf-8")
+				_set_game_directory(message_map)
+*/
 		// Unknown message from the client
 		} else {
-			log.Fatal(fmt.Sprintf("Unknown action from client: %s", data["action"]))
+			log.Fatal(fmt.Sprintf("Unknown action from client: %s", message_map["action"]))
 		}
-	}
+	//ws.Close()
 }
 
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	//db = map[string]map[string]map[string]interface{}
+	file_modify_dates = map[string]map[string]int64{}
 
 	// Move to the main emu_archive directory no matter what path we are launched from
 	_, root, _, _ := runtime.Caller(0)
@@ -869,12 +998,12 @@ func main() {
 		"playstation1",
 		"playstation2",
 	}
-	for console := range consoles {
-		db[console] = map[string]string{}
+	for _, console := range consoles {
+		//db[console] = map[string]make[string]interface{}
 
 		// Skip if not file
 		cache_file := fmt.Sprintf("cache/game_db_%s.json", console)
-		if helpers.IsFile(cache_file) {
+		if ! helpers.IsFile(cache_file) {
 			continue
 		}
 
@@ -882,31 +1011,36 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = json.Unmarshal(file_data, &db[console])
+		console_games := db[console]
+		err = json.Unmarshal(file_data, &console_games)
 		if err != nil {
 			log.Fatal(err)
+		}
+		for k, v := range db[console] {
+			fmt.Printf("%s : %s\r\n", k, v)
 		}
 
 		// Remove any non existent files
 		keys := make([]string, len(db[console]))
 		for _, name := range keys {
 			data := db[console][name]
-			if helpers.IsFile(data["binary"]) {
-				delete(name, db[console])
+			if helpers.IsFile(data["binary"].(string)) {
+				delete(db[console], name)
 			}
 		}
 	}
 
 	// Load the file modify dates
 	for _, console := range consoles {
-		file_modify_dates[console] = map[string]string{}
+		file_modify_dates[console] = map[string]int64{}
 		file_name := fmt.Sprintf("cache/file_modify_dates_%s.json", console)
 		if helpers.IsFile(file_name) {
 			file_data, err := ioutil.ReadFile(file_name)
 			if err != nil {
 				log.Fatal(err)
 			}
-			err = json.Unmarshal(file_data, &file_modify_dates[console])
+			console_dates := file_modify_dates[console]
+			err = json.Unmarshal(file_data, &console_dates)
 			if err != nil {
 				log.Fatal(err)
 				// sys.stderr.write("The file is not valid json "{0}"\r\n".format(file_name))
@@ -922,16 +1056,18 @@ func main() {
 		}
 	}
 
-	icon := "static/favicon.ico"
-	hover_text := "Emu Archive"
-	server = nil
-	port := 8080
-	ws_port := 9090
-	server_thread = nil
+	//icon := "static/favicon.ico"
+	//hover_text := "Emu Archive"
+	//server = nil
+	//port := 8080
+	//ws_port := 9090
+	//server_thread = nil
 
-	http.Handle("/", websocket.Handler(web_socket_cb))
-	http.HandleFunc("/index.html", http.Handler(http_cb))
-	http.HandleFunc("/configure.html", http.Handler(http_cb))
-	http.Handle("/", http.FileServer(http.Dir(".")))
-	err := http.ListenAndServer(":8080")
+	http.Handle("/ws", websocket.Handler(web_socket_cb))
+	http.HandleFunc("/", http_cb)
+	//http.HandleFunc("/configure.html", http_cb)
+	//http.Handle("/(.*)", http.FileServer(http.Dir(".")))
+	http.ListenAndServe("127.0.0.1:9090", nil)
 }
+
+

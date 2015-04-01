@@ -26,7 +26,17 @@
 var socket = null;
 
 function socket_send_data(message) {
+	// Convert message to json
 	message = JSON.stringify(message);
+
+	// Convert json to base64
+	message = btoa(message)
+
+	var header = message.length.toString()
+	message = header + ":" + message
+	console.log("sending message: " + message)
+
+	// Send the message
 	socket.send(message);
 }
 
@@ -53,8 +63,24 @@ function setup_websocket(on_data, on_open_cb) {
 		};
 
 		socket.onmessage = function(msg) {
-			var data = JSON.parse(msg.data);
-			on_data(data);
+			// Read the message
+			var message =  msg.data;
+			console.log("received message: " + message);
+
+			// Get the length and data
+			var chunks = message.split(":");
+			var length = chunks[0];
+			var data = chunks[1];
+			console.log(data);
+
+			// Convert the data to an object
+			data = atob(data);
+			data = JSON.parse(data);
+			console.log(data);
+
+			// Convert the actual data to an object
+			data['json_data'] = atob(data['json_data']);
+			console.log(data);
 		};
 
 		socket.onclose = function() {
