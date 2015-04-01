@@ -1093,11 +1093,13 @@ func main() {
 	//ws_port := 9090
 	//server_thread = nil
 
+	server_address := "127.0.0.1:9090"
 	http.Handle("/ws", websocket.Handler(web_socket_cb))
 	http.HandleFunc("/", http_cb)
 	//http.HandleFunc("/configure.html", http_cb)
 	//http.Handle("/(.*)", http.FileServer(http.Dir(".")))
-	http.ListenAndServe("127.0.0.1:9090", nil)
+	fmt.Printf("Server running at: http://%s\r\n",  server_address)
+	http.ListenAndServe(server_address, nil)
 }
 
 
