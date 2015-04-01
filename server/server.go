@@ -27,6 +27,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	//"io"
 	"io/ioutil"
 	"path/filepath"
 	"os"
@@ -41,6 +42,7 @@ import (
 	"bytes"
 	"strconv"
 	//"io"
+	"math"
 
 	"net/http"
 	"golang.org/x/net/websocket"
@@ -74,6 +76,15 @@ var runner EmuRunner
 //var pcsxr PCSXR
 //var pcsx2 PCSX2
 
+
+func Round(f float64) float64 {
+	return math.Floor(f + .5)
+}
+
+func RoundPlus(f float64, places int) (float64) {
+	shift := math.Pow(10, float64(places))
+	return Round(f * shift) / shift;
+}
 
 func clean_path(file_path string) string {
 	//file_path = filepath.Abs(file_path)
@@ -580,25 +591,55 @@ func _play_game(ws *websocket.Conn, data map[string]string) {
 		print("Running PCSX2 ...")
 	}
 }
-/*
-func _download_file(self, data) {
-	func progress_cb(name, server, progress):
-		data = {
-			"action" : "progress",
-			"value" : progress,
-			"name" : name
-		}
-		server.write_data(data)
 
-	t = EmuDownloader(self, progress_cb, data["name"], data["url"], data["file"], data["dir"])
-	t.daemon = true
-	t.start()
-	t.join()
-	if not t.is_success:
-		print(t.message)
-		sys.exit(1)
+func progress_cb(name string, ws *websocket.Conn, progress float64) {
+	message := map[string]interface{} {
+		"action" : "progress",
+		"value" : progress,
+		"name" : name,
+	}
+	web_socket_send(ws, &message)
 }
-*/
+
+func _download_file(ws *websocket.Conn, data map[string]string) {
+	// Get all the info we need
+	file_name := data["name"]
+	url := data["url"]
+	directory := data["dir"]
+	name := data["name"]
+
+	// Get the download file
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Printf("Download failed: %s\r\n", err)
+		return
+	}
+	if resp.StatusCode != 200 {
+		fmt.Printf("Download failed with response code: %s\r\n", resp.Status)
+		return
+	}
+	content_length := float64(resp.ContentLength)
+	data_length := 0.0
+
+	// Download the file a chunk at a time
+	buffer := make([]byte, 32 * 1024)
+	out, err := os.Create(filepath.Join(directory, file_name))
+	for {
+		read_len, err := resp.Body.Read(buffer)
+		if err != nil {
+			fmt.Printf("Download failed: %s\r\n", err)
+			return
+		}
+		out.Write(buffer[0 : read_len])
+		data_length += float64(read_len)
+
+		progress := RoundPlus((data_length / content_length) * 100.0, 2)
+		progress_cb(name, ws, progress)
+	}
+	out.Close()
+	resp.Body.Close()
+}
+
 func _install(ws *websocket.Conn, data map[string]string) {
 	// Start uncompressing
 	message := map[string]interface{}{
@@ -832,7 +873,7 @@ func web_socket_cb(ws *websocket.Conn) {
 
 		// Client wants to download a file
 		} else if message_map["action"] == "download" {
-//			_download_file(ws, message_map)
+			_download_file(ws, message_map)
 
 		// Client wants to know if a file is installed
 		} else if message_map["action"] == "is_installed" {
