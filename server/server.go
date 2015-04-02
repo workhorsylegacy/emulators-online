@@ -31,7 +31,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"os"
-	//"errors"
+	"errors"
 	"runtime"
 	"log"
 	"os/exec"
@@ -101,7 +101,7 @@ func abs_path(file_path string) string {
 }
 
 func web_socket_send(ws *websocket.Conn, thing interface{}) error {
-	fmt.Printf("web_socket_send ????????????????????????????????????????\r\n")
+	//fmt.Printf("web_socket_send ????????????????????????????????????????\r\n")
 
 	// Convert the object to base64ed json
 	message, err := to_b64_json(thing)
@@ -110,11 +110,11 @@ func web_socket_send(ws *websocket.Conn, thing interface{}) error {
 		//ws.Close()
 		return err
 	}
-	fmt.Printf("message: %s\r\n", message)
+	//fmt.Printf("message: %s\r\n", message)
 
 	// Get the header
 	whole_message := fmt.Sprintf("%d:%s", len(message), message)
-	fmt.Printf("whole_message: %s\r\n", whole_message)
+	//fmt.Printf("whole_message: %s\r\n", whole_message)
 
 	// Write the message
 	buffer := []byte(whole_message)
@@ -124,13 +124,16 @@ func web_socket_send(ws *websocket.Conn, thing interface{}) error {
 		//ws.Close()
 		return err
 	}
-	fmt.Printf("write_len: %d\r\n", write_len)
+	if write_len != len(buffer) {
+		return errors.New("Whole buffer was not written to web socket\r\n")
+	}
+	//fmt.Printf("write_len: %d\r\n", write_len)
 
 	return nil
 }
 
 func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
-	fmt.Printf("web_socket_recieve ???????????????????????????????????\r\n")
+	//fmt.Printf("web_socket_recieve ???????????????????????????????????\r\n")
 	buffer := make([]byte, 20)
 
 	// Read the message header
@@ -140,7 +143,7 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 		//ws.Close()
 		return nil, err
 	}
-	fmt.Printf("read_len: %d\r\n", read_len)
+	//fmt.Printf("read_len: %d\r\n", read_len)
 
 	// Get the message length
 	message := string(buffer[0 : read_len])
@@ -157,7 +160,7 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 		//ws.Close()
 		return nil, err
 	}
-	fmt.Printf("read_len: %d\r\n", read_len)
+	//fmt.Printf("read_len: %d\r\n", read_len)
 	message = message + string(buffer[0 : read_len])
 
 	// Convert the message from base64 and json
@@ -168,7 +171,7 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 		return nil, err
 	}
 
-	fmt.Printf("thing: %s\r\n", thing)
+	//fmt.Printf("thing: %s\r\n", thing)
 	return thing, nil
 }
 
@@ -608,14 +611,14 @@ func _download_file(ws *websocket.Conn, data map[string]string) {
 	directory := data["dir"]
 	name := data["name"]
 
-	// Get the download file
+	// Download the file header
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Printf("!!!!!!!!!!!!!!!Download failed: %s\r\n", err)
+		fmt.Printf("Download failed: %s\r\n", err)
 		return
 	}
 	if resp.StatusCode != 200 {
-		fmt.Printf("!!!!!!!!!!!!!!!Download failed with response code: %s\r\n", resp.Status)
+		fmt.Printf("Download failed with response code: %s\r\n", resp.Status)
 		return
 	}
 	content_length := float64(resp.ContentLength)
@@ -625,33 +628,38 @@ func _download_file(ws *websocket.Conn, data map[string]string) {
 	buffer := make([]byte, 32 * 1024)
 	out, err := os.Create(filepath.Join(directory, file_name))
 	if err != nil {
-		fmt.Printf("!!!!!!!!!!!!!!!Failed to create output file: %s\r\n", err)
+		fmt.Printf("Failed to create output file: %s\r\n", err)
 		return
 	}
 
-	// Close everything when we exit
+	// Close the files when we exit
 	defer out.Close()
 	defer resp.Body.Close()
 
 	// Download the file one chunk at a time
+	EOF := false
 	for {
 		// Read the next chunk
 		read_len, err := resp.Body.Read(buffer)
 		if err != nil {
-			fmt.Printf("!!!!!!!!!!!!!!!Download next chunk failed: %s\r\n", err)
-			return
+			if err.Error() == "EOF" {
+				EOF = true
+			} else {
+				fmt.Printf("Download next chunk failed: %s\r\n", err)
+				return
+			}
 		}
 
-		// Write the chunk to file
+		// Write the next chunk to file
 		write_len, err := out.Write(buffer[0 : read_len])
 		if err != nil {
-			fmt.Printf("!!!!!!!!!!!!!!!Writing chunk to file failed: %s\r\n", err)
+			fmt.Printf("Writing chunk to file failed: %s\r\n", err)
 			return
 		}
 
 		// Make sure everything read was written
 		if read_len != write_len {
-			fmt.Printf("!!!!!!!!!!!!!!!Write and read length were different\r\n")
+			fmt.Printf("Write and read length were different\r\n")
 			return
 		}
 
@@ -661,7 +669,7 @@ func _download_file(ws *websocket.Conn, data map[string]string) {
 		progress_cb(name, ws, progress)
 
 		// Exit the loop if the file is done
-		if total_length == content_length {
+		if EOF || total_length == content_length {
 			break
 		}
 	}
@@ -883,7 +891,7 @@ func http_cb(w http.ResponseWriter, r *http.Request) {
 }
 
 func web_socket_cb(ws *websocket.Conn) {
-	fmt.Printf("web_socket_cb !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n")
+	//fmt.Printf("web_socket_cb !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n")
 
 	for {
 		// Read the message
