@@ -48,6 +48,7 @@ import (
 	"golang.org/x/net/websocket"
 
 	"emu_archive/server/helpers"
+	"emu_archive/server/win32"
 	//from identify_playstation2_games import *
 )
 
@@ -407,9 +408,9 @@ func _get_button_map(ws *websocket.Conn, data map[string]interface{}) {
 	web_socket_send(ws, &message)
 }
 
-func task(ws *websocket.Conn, data map[string]string) error {
-	directory_name := data["directory_name"]
-	console := data["console"]
+func task(ws *websocket.Conn, data map[string]interface{}) error {
+	directory_name := data["directory_name"].(string)
+	console := data["console"].(string)
 
 	// Add the thread to the list of long running tasks
 	add_long_running_task(ws, fmt.Sprintf("Searching for %s games", console), 5)
@@ -551,7 +552,7 @@ func task(ws *websocket.Conn, data map[string]string) error {
 	return nil
 }
 
-func _set_game_directory(ws *websocket.Conn, data map[string]string) {
+func _set_game_directory(ws *websocket.Conn, data map[string]interface{}) {
 	// Just return if already a long running "Searching for dreamcast games" task
 	if is_long_running_task(fmt.Sprintf("Searching for %s games", data["console"])) {
 		return
@@ -901,18 +902,6 @@ func _is_installed(ws *websocket.Conn, data map[string]interface{}) {
 	}
 }
 
-/*
-class EmuDownloader(downloader.Downloader):
-	func __init__(self, server, progress_cb, name, url, file_name, dir_name):
-		super(EmuDownloader, self).__init__(url, file_name, dir_name)
-		self.server = server
-		self.progress_cb = progress_cb
-		self.name = name
-
-	func _cb_dl_progress(self, file_name, chunk, data_length, chunk_size, content_length, percent):
-		self.progress_cb(self.name, self.server, percent)
-*/
-
 func http_cb(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, r.URL.Path[1:])
 }
@@ -963,58 +952,49 @@ func web_socket_cb(ws *websocket.Conn) {
 			_get_db(ws)
 
 		} else if message_map["action"] == "set_game_directory" {
-/*
-			hwnd, text = nil, nil
-			func findWindowWithTitleText(title_text):
-				// Get the handles of all the windows
-				res = []
-				func callback(hwnd, arg):
-					res.append(hwnd)
-					text = win32gui.GetWindowText(hwnd)
-				win32gui.EnumWindows(callback, 0)
-
-				// Find the window with the desired title bar text
-				for hwnd in res:
-					text = win32gui.GetWindowText(hwnd)
-					if title_text in text:
-						return(hwnd, text)
-				return (nil, nil)
-
 			// First try checking if Firefox or Chrome is the foreground window
-			hwnd = win32gui.GetForegroundWindow()
-			text = win32gui.GetWindowText(hwnd)
+			hwnd := win32.GetForegroundWindow()
+			text := win32.GetWindowText(hwnd)
 
 			// If the focused window is not Chrome or Firefox, find them manually
-			if not text or " - Mozilla Firefox" not in text and " - Google Chrome" not in text and " - Internet Explorer" not in text:
+			if len(text)==0 || ! strings.Contains(text, " - Mozilla Firefox") && ! strings.Contains(text, " - Google Chrome") && ! strings.Contains(text, " - Internet Explorer") {
 				// If not, find any Firefox window
-				hwnd, text = findWindowWithTitleText(" - Mozilla Firefox")
-				if not hwnd or not text:
+				hwnd, text = win32.FindWindowWithTitleText(" - Mozilla Firefox")
+				if hwnd < 1 || len(text)==0 {
 					// If not, find any Chrome window
-					hwnd, text = findWindowWithTitleText(" - Google Chrome")
-					if not hwnd or not text:
+					hwnd, text = win32.FindWindowWithTitleText(" - Google Chrome")
+					if hwnd < 1 || len(text)==0 {
 						// If not, find any Internet Explorer window
-						hwnd, text = findWindowWithTitleText(" - Internet Explorer")
-						if not hwnd or not text:
+						hwnd, text = win32.FindWindowWithTitleText(" - Internet Explorer")
+						if hwnd < 1 || len(text)==0 {
 							// If not, find the Desktop window
-							hwnd = win32gui.GetDesktopWindow()
+							hwnd = win32.GetDesktopWindow()
 							text = "Desktop"
-			if not hwnd or not text:
-				print("Failed to find any Firefox, Chrome, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.")
-				sys.exit(1)
+						}
+					}
+				}
+			}
+			if hwnd < 1 || len(text)==0 {
+				log.Fatal("Failed to find any Firefox, Chrome, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
+			}
 
-			desktop_pidl = win32com.shell.shell.SHGetFolderLocation(0, win32com.shell.shellcon.CSIDL_DESKTOP, 0, 0)
-			pidl, display_name, image_list = win32com.shell.shell.SHBrowseForFolder(
+			// FIXME: How do we pass the string to display?
+			browse_info := win32.BROWSEINFO {
 				hwnd,
-				desktop_pidl,
-				"Select a folder search for games",
-				0,
+				nil, //desktop_pidl,
 				nil,
-				nil
-			)
-			if pidl:
-				message_map["directory_name"] = win32com.shell.shell.SHGetPathFromIDList(pidl).decode("utf-8")
-				_set_game_directory(message_map)
-*/
+				nil, // "Select a folder search for games"
+				0,
+				0,
+				0,
+				0,
+			}
+			pidl := win32.SHBrowseForFolder(&browse_info)
+			if pidl > 0 {
+				message_map["directory_name"] = win32.SHGetPathFromIDList(pidl)
+				_set_game_directory(ws, message_map)
+			}
+
 		// Unknown message from the client
 		} else {
 			log.Fatal(fmt.Sprintf("Unknown action from client: %s", message_map["action"]))
