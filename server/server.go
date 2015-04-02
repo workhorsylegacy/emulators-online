@@ -132,7 +132,7 @@ func web_socket_send(ws *websocket.Conn, thing interface{}) error {
 	return nil
 }
 
-func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
+func web_socket_recieve(ws *websocket.Conn) (map[string]interface{}, error) {
 	//fmt.Printf("web_socket_recieve ???????????????????????????????????\r\n")
 	buffer := make([]byte, 20)
 
@@ -167,6 +167,9 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 	thing, err := from_b64_json(message)
 	if err != nil {
 		fmt.Printf("Failed to decode web socket message: %s\r\n", err)
+		fmt.Printf("message: %s\r\n", message)
+		decoded_message, err := base64.StdEncoding.DecodeString(message)
+		fmt.Printf("decoded_message: %s\r\n", decoded_message)
 		//ws.Close()
 		return nil, err
 	}
@@ -175,8 +178,8 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]string, error) {
 	return thing, nil
 }
 
-func from_b64_json(message string) (map[string]string, error) {
-	var retval map[string]string
+func from_b64_json(message string) (map[string]interface{}, error) {
+	var retval map[string]interface{}
 
 	// Unbase64 the message
 	buffer, err := base64.StdEncoding.DecodeString(message)
@@ -289,8 +292,12 @@ func _get_db(ws *websocket.Conn) {
 	web_socket_send(ws, message)
 }
 
-func _set_bios(data map[string]string) (error) {
-	if data["console"] == "dreamcast" {
+func _set_bios(data map[string]interface{}) (error) {
+	console := data["console"].(string)
+	type_name := data["type"].(string)
+	value := data["value"].(string)
+
+	if console == "dreamcast" {
 		// Make the BIOS dir if missing
 		if ! helpers.IsDir("emulators/Demul/roms") {
 			os.Mkdir("emulators/Demul/roms", os.ModeDir)
@@ -298,14 +305,15 @@ func _set_bios(data map[string]string) (error) {
 
 		// Get the BIOS file name
 		var file_name string
-		if data["type"] == "awbios.zip" {
-			file_name = "emulators/Demul/roms/awbios.zip"
-		} else if data["type"] == "dc.zip" {
-			file_name = "emulators/Demul/roms/dc.zip"
-		} else if data["type"] == "naomi.zip" {
-			file_name = "emulators/Demul/roms/naomi.zip"
-		} else if data["type"] == "naomi2.zip" {
-			file_name = "emulators/Demul/roms/naomi2.zip"
+		switch type_name {
+			case "awbios.zip":
+				file_name = "emulators/Demul/roms/awbios.zip"
+			case "dc.zip":
+				file_name = "emulators/Demul/roms/dc.zip"
+			case "naomi.zip":
+				file_name = "emulators/Demul/roms/naomi.zip"
+			case "naomi2.zip":
+				file_name = "emulators/Demul/roms/naomi2.zip"
 		}
 
 		// Convert the base64 data to BIOS and write to file
@@ -313,10 +321,10 @@ func _set_bios(data map[string]string) (error) {
 		if err != nil {
 			return err
 		}
-		b642_data, _ := base64.StdEncoding.DecodeString(data["value"])
+		b642_data, _ := base64.StdEncoding.DecodeString(value)
 		f.Write(b642_data)
 
-	} else if data["console"] == "saturn" {
+	} else if console == "saturn" {
 		// Make the BIOS dir if missing
 		if ! helpers.IsDir("emulators/SSF_012_beta_R4/bios") {
 			os.Mkdir("emulators/SSF_012_beta_R4/bios", os.ModeDir)
@@ -324,12 +332,13 @@ func _set_bios(data map[string]string) (error) {
 
 		// Get the BIOS file name
 		var file_name string
-		if data["type"] == "USA" {
-			file_name = "emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (US).bin"
-		} else if data["type"] == "EUR" {
-			file_name = "emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (EUR).bin"
-		} else if data["type"] == "JAP" {
-			file_name = "emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (JAP).bin"
+		switch type_name {
+			case "USA":
+				file_name = "emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (US).bin"
+			case "EUR":
+				file_name = "emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (EUR).bin"
+			case "JAP":
+				file_name = "emulators/SSF_012_beta_R4/bios/Sega Saturn BIOS (JAP).bin"
 		}
 
 		// Convert the base64 data to BIOS and write to file
@@ -337,60 +346,63 @@ func _set_bios(data map[string]string) (error) {
 		if err != nil {
 			return err
 		}
-		b642_data, _ := base64.StdEncoding.DecodeString(data["value"])
+		b642_data, _ := base64.StdEncoding.DecodeString(value)
 		f.Write(b642_data)
 	}
 
 	return nil
 }
 
-func _set_button_map(ws *websocket.Conn, data map[string]string)  {
-	if data["console"] == "gamecube" {
-		//dolphin.set_button_map(data["value"])
+func _set_button_map(ws *websocket.Conn, data map[string]interface{})  {
+	switch data["console"].(string) {
+		case "gamecube":
+			//dolphin.set_button_map(data["value"])
 
-	} else if data["console"] == "nintendo64" {
-		//mupen64plus.set_button_map(data["value"])
+		case "nintendo64":
+			//mupen64plus.set_button_map(data["value"])
 
-	} else if data["console"] == "saturn" {
-		//ssf.set_button_map(data["value"])
+		case "saturn":
+			//ssf.set_button_map(data["value"])
 
-	} else if data["console"] == "dreamcast" {
-		//demul.set_button_map(data["value"])
+		case "dreamcast":
+			//demul.set_button_map(data["value"])
 
-	} else if data["console"] == "Playstation" {
-		//pcsxr.set_button_map(data["value"])
+		case "Playstation":
+			//pcsxr.set_button_map(data["value"])
 
-	} else if data["console"] == "playstation2" {
-		//pcsx2.set_button_map(data["value"])
+		case "playstation2":
+			//pcsx2.set_button_map(data["value"])
 	}
 }
 
-func _get_button_map(ws *websocket.Conn, data map[string]string) {
+func _get_button_map(ws *websocket.Conn, data map[string]interface{}) {
 	var value map[string]string
+	console := data["console"].(string)
 
-	if data["console"] == "gamecube" {
-		//value = dolphin.get_button_map()
+	switch console {
+		case "gamecube":
+			//value = dolphin.get_button_map()
 
-	} else if data["console"] == "nintendo64" {
-		//value = mupen64plus.get_button_map()
+		case "nintendo64":
+			//value = mupen64plus.get_button_map()
 
-	} else if data["console"] == "saturn" {
-		//value = ssf.get_button_map()
+		case "saturn":
+			//value = ssf.get_button_map()
 
-	} else if data["console"] == "dreamcast" {
-		//value = demul.get_button_map()
+		case "dreamcast":
+			//value = demul.get_button_map()
 
-	} else if data["console"] == "Playstation" {
-		//value = pcsxr.get_button_map()
+		case "Playstation":
+			//value = pcsxr.get_button_map()
 
-	} else if data["console"] == "playstation2" {
-		//value = pcsx2.get_button_map()
+		case "playstation2":
+			//value = pcsx2.get_button_map()
 	}
 
 	message := map[string]interface{} {
 		"action" : "get_button_map",
 		"value" : value,
-		"console" : data["console"],
+		"console" : console,
 	}
 	web_socket_send(ws, &message)
 }
@@ -404,18 +416,19 @@ func task(ws *websocket.Conn, data map[string]string) error {
 
 	// Get the path for this console
 	var path_prefix string
-	if console == "gamecube" {
-		path_prefix = "games/Nintendo/GameCube"
-	} else if console == "nintendo64" {
-		path_prefix = "games/Nintendo/Nintendo64"
-	} else if console == "saturn" {
-		path_prefix = "games/Sega/Saturn"
-	} else if console == "dreamcast" {
-		path_prefix = "games/Sega/Dreamcast"
-	} else if console == "playstation1" {
-		path_prefix = "games/Sony/Playstation1"
-	} else if console == "playstation2" {
-		path_prefix = "games/Sony/Playstation2"
+	switch console {
+		case "gamecube":
+			path_prefix = "games/Nintendo/GameCube"
+		case "nintendo64":
+			path_prefix = "games/Nintendo/Nintendo64"
+		case "saturn":
+			path_prefix = "games/Sega/Saturn"
+		case "dreamcast":
+			path_prefix = "games/Sega/Dreamcast"
+		case "playstation1":
+			path_prefix = "games/Sony/Playstation1"
+		case "playstation2":
+			path_prefix = "games/Sony/Playstation2"
 	}
 
 	// Get the total number of files
@@ -562,36 +575,42 @@ func _save_memory_card_cb(memory_card string) {
 	fmt.Printf("FIXME: Memory card needs saving. length %s\r\n", out_buffer.Len())
 }
 
-func _play_game(ws *websocket.Conn, data map[string]string) {
-	if data["console"] == "gamecube" {
-		//dolphin.run(data["path"], data["binary"])
-		//self.log("playing")
-		print("Running Dolphin ...")
+func _play_game(ws *websocket.Conn, data map[string]interface{}) {
+	console := data["console"].(string)
+	//path := data["path"].(string)
+	//binary := data["binary"].(string)
+	//bios := data["bios"].(string)
+	
+	switch console {
+		case "gamecube":
+			//dolphin.run(path, binary)
+			//self.log("playing")
+			print("Running Dolphin ...")
 
-	} else if data["console"] == "nintendo64" {
-		//mupen64plus.run(data["path"], data["binary"])
-		//self.log("playing")
-		print("Running Mupen64plus ...")
+		case "nintendo64":
+			//mupen64plus.run(path, binary)
+			//self.log("playing")
+			print("Running Mupen64plus ...")
 
-	} else if data["console"] == "saturn" {
-		//ssf.run(data["path"], data["binary"], data["bios"])
-		//self.log("playing")
-		print("Running SSF ...")
+		case "saturn":
+			//ssf.run(path, binary, bios)
+			//self.log("playing")
+			print("Running SSF ...")
 
-	} else if data["console"] == "dreamcast" {
-		//demul.run(data["path"], data["binary"], _save_memory_card_cb)
-		//self.log("playing")
-		print("Running Demul ...")
+		case "dreamcast":
+			//demul.run(path, binary, _save_memory_card_cb)
+			//self.log("playing")
+			print("Running Demul ...")
 
-	} else if data["console"] == "Playstation" {
-		//pcsxr.run(data["path"], data["binary"])
-		//self.log("playing")
-		print("Running PCSX-Reloaded ...")
+		case "Playstation":
+			//pcsxr.run(path, binary)
+			//self.log("playing")
+			print("Running PCSX-Reloaded ...")
 
-	} else if data["console"] == "playstation2" {
-		//pcsx2.run(data["path"], data["binary"])
-		//self.log("playing")
-		print("Running PCSX2 ...")
+		case "playstation2":
+			//pcsx2.run(path, binary)
+			//self.log("playing")
+			print("Running PCSX2 ...")
 	}
 }
 
@@ -604,12 +623,12 @@ func progress_cb(name string, ws *websocket.Conn, progress float64) {
 	web_socket_send(ws, &message)
 }
 
-func _download_file(ws *websocket.Conn, data map[string]string) {
+func _download_file(ws *websocket.Conn, data map[string]interface{}) {
 	// Get all the info we need
-	file_name := data["file"]
-	url := data["url"]
-	directory := data["dir"]
-	name := data["name"]
+	file_name := data["file"].(string)
+	url := data["url"].(string)
+	directory := data["dir"].(string)
+	name := data["name"].(string)
 
 	// Download the file header
 	resp, err := http.Get(url)
@@ -675,94 +694,102 @@ func _download_file(ws *websocket.Conn, data map[string]string) {
 	}
 }
 
-func _install(ws *websocket.Conn, data map[string]string) {
+func _install(ws *websocket.Conn, data map[string]interface{}) {
+	dir := data["dir"].(string)
+	file := data["file"].(string)
+
 	// Start uncompressing
 	message := map[string]interface{}{
 		"action" : "uncompress",
 		"is_start" : true,
-		"name" : data["file"],
+		"name" : file,
 	}
 	web_socket_send(ws, &message)
 
-	if data["file"] == "SetupVirtualCloneDrive.exe" {
-		os.Chdir(data["dir"])
-		//proc = subprocess.Popen([data["file"], "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
+	switch file {
+	case "SetupVirtualCloneDrive.exe":
+		os.Chdir(dir)
+		//proc = subprocess.Popen([file, "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
 		//proc.communicate()
-		cmd := exec.Command(data["file"], "/S")
+		cmd := exec.Command(file, "/S")
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Run()
 		os.Chdir("..")
-	} else if data["file"] == "7z920.exe" {
-		os.Chdir(data["dir"])
-		//proc = subprocess.Popen([data["file"], "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
+	case "7z920.exe":
+		os.Chdir(dir)
+		//proc = subprocess.Popen([file, "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
 		//proc.communicate()
-		cmd := exec.Command(data["file"], "/S")
+		cmd := exec.Command(file, "/S")
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Run()
 		os.Chdir("..")
-	} else if data["file"] == "nullDC_104_r136.7z" {
+	case "nullDC_104_r136.7z":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "nullDC_104_r136.7z"), "emulators/NullDC")
-	} else if data["file"] == "demul0582.rar" {
+		helpers.Uncompress(&wrap, filepath.Join(dir, "nullDC_104_r136.7z"), "emulators/NullDC")
+	case "demul0582.rar":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "demul0582.rar"), "emulators/Demul")
-	} else if data["file"] == "SSF_012_beta_R4.zip" {
+		helpers.Uncompress(&wrap, filepath.Join(dir, "demul0582.rar"), "emulators/Demul")
+	case "SSF_012_beta_R4.zip":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "SSF_012_beta_R4.zip"), "emulators")
-	} else if data["file"] == "dolphin-master-4.0-5363-x64.7z" {
+		helpers.Uncompress(&wrap, filepath.Join(dir, "SSF_012_beta_R4.zip"), "emulators")
+	case "dolphin-master-4.0-5363-x64.7z":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "dolphin-master-4.0-5363-x64.7z"), "emulators")
-	} else if data["file"] == "mupen64plus-bundle-win32-2.0.zip" {
+		helpers.Uncompress(&wrap, filepath.Join(dir, "dolphin-master-4.0-5363-x64.7z"), "emulators")
+	case "mupen64plus-bundle-win32-2.0.zip":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "mupen64plus-bundle-win32-2.0.zip"), "emulators/Mupen64Plus")
-	} else if data["file"] == "pcsxr-1.9.93-win32.zip" {
+		helpers.Uncompress(&wrap, filepath.Join(dir, "mupen64plus-bundle-win32-2.0.zip"), "emulators/Mupen64Plus")
+	case "pcsxr-1.9.93-win32.zip":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "pcsxr-1.9.93-win32.zip"), "emulators")
-	} else if data["file"] == "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z" {
+		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsxr-1.9.93-win32.zip"), "emulators")
+	case "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(data["dir"], "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z"), "emulators")
+		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z"), "emulators")
 	}
 
 	// End uncompressing
 	message = map[string]interface{}{
 		"action" : "uncompress",
 		"is_start" : false,
-		"name" : data["file"],
+		"name" : file,
 	}
 	web_socket_send(ws, &message)
 }
 
-func _uninstall(ws *websocket.Conn, data map[string]string) {
-	if data["program"] == "VirtualCloneDrive" {
-		// nothing ...
-	} else if data["program"] == "NullDC" {
-		os.RemoveAll("emulators/NullDC")
-	} else if data["program"] == "Demul" {
-		os.RemoveAll("emulators/Demul")
-	} else if data["program"] == "SSF" {
-		os.RemoveAll("emulators/SSF_012_beta_R4")
-	} else if data["program"] == "Dolphin" {
-		os.RemoveAll("emulators/Dolphin-x64")
-	} else if data["program"] == "Mupen64Plus" {
-		os.RemoveAll("emulators/Mupen64Plus")
-	} else if data["program"] == "PCSX-Reloaded" {
-		os.RemoveAll("emulators/pcsxr")
-	} else if data["program"] == "PCSX2" {
-		os.RemoveAll("emulators/pcsx2")
+func _uninstall(ws *websocket.Conn, data map[string]interface{}) {
+	switch data["program"].(string) {
+		case "VirtualCloneDrive":
+			// nothing ...
+		case "NullDC":
+			os.RemoveAll("emulators/NullDC")
+		case "Demul":
+			os.RemoveAll("emulators/Demul")
+		case "SSF":
+			os.RemoveAll("emulators/SSF_012_beta_R4")
+		case "Dolphin":
+			os.RemoveAll("emulators/Dolphin-x64")
+		case "Mupen64Plus":
+			os.RemoveAll("emulators/Mupen64Plus")
+		case "PCSX-Reloaded":
+			os.RemoveAll("emulators/pcsxr")
+		case "PCSX2":
+			os.RemoveAll("emulators/pcsx2")
 	}
 }
 
-func _is_installed(ws *websocket.Conn, data map[string]string) {
-	if data["program"] == "DirectX End User Runtime" {
+func _is_installed(ws *websocket.Conn, data map[string]interface{}) {
+	program := data["program"].(string)
+
+	switch program {
+	case "DirectX End User Runtime":
 		// Paths on Windows 8.1 X86_32 and X86_64
 		check_64_dx10, _ := filepath.Glob("C:/Windows/SysWOW64/d3dx10_*.dll")
 		check_64_dx11, _ := filepath.Glob("C:/Windows/SysWOW64/d3dx11_*.dll")
@@ -776,7 +803,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "DirectX End User Runtime",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "Visual C++ 2010 redist" { // msvcr100.dll
+	case "Visual C++ 2010 redist": // msvcr100.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
 		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
 				helpers.PathExists("C:/Windows/System32/msvcr100.dll")
@@ -786,7 +813,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "Visual C++ 2010 redist",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "Visual C++ 2013 redist" { // msvcr120.dll
+	case "Visual C++ 2013 redist": // msvcr120.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
 		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
 				helpers.PathExists("C:/Windows/System32/msvcr120.dll")
@@ -796,7 +823,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "Visual C++ 2013 redist",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "7-Zip" {
+	case "7-Zip":
 		exist := helpers.PathExists("C:/Program Files/7-Zip/7z.exe") || 
 				helpers.PathExists("C:/Program Files (x86)/7-Zip/7z.exe")
 		message := map[string]interface{} {
@@ -805,7 +832,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "7-Zip",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "VirtualCloneDrive" {
+	case "VirtualCloneDrive":
 		exist := helpers.PathExists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -813,7 +840,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "VirtualCloneDrive",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "NullDC" {
+	case "NullDC":
 		exist := helpers.PathExists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -821,7 +848,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "NullDC",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "Demul" {
+	case "Demul":
 		exist := helpers.PathExists("emulators/Demul/demul.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -829,7 +856,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "Demul",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "SSF" {
+	case "SSF":
 		exist := helpers.PathExists("emulators/SSF_012_beta_R4/SSF.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -837,7 +864,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "SSF",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "Dolphin" {
+	case "Dolphin":
 		exist := helpers.PathExists("emulators/Dolphin-x64/Dolphin.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -845,7 +872,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "Dolphin",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "PCSX-Reloaded" {
+	case "PCSX-Reloaded":
 		exist := helpers.PathExists("emulators/pcsxr/pcsxr.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -853,7 +880,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "PCSX-Reloaded",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "PCSX2" {
+	case "PCSX2":
 		exist := helpers.PathExists("emulators/pcsx2/pcsx2.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -861,7 +888,7 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "PCSX2",
 		}
 		web_socket_send(ws, &message)
-	} else if data["program"] == "Mupen 64 Plus" {
+	case "Mupen 64 Plus":
 		exist := helpers.PathExists("emulators/Mupen64Plus/mupen64plus.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -869,8 +896,8 @@ func _is_installed(ws *websocket.Conn, data map[string]string) {
 			"name" : "Mupen 64 Plus",
 		}
 		web_socket_send(ws, &message)
-	} else {
-		fmt.Printf("Unknown program to check if installed: %s\r\n", data["program"])
+	default:
+		fmt.Printf("Unknown program to check if installed: %s\r\n", program)
 	}
 }
 
