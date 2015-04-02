@@ -25,7 +25,6 @@
 package helpers
 
 import (
-	//"os"
 	"fmt"
 	"os/exec"
 	"bytes"
@@ -47,14 +46,26 @@ func Setup(self *Wrap7zip) {
 	}
 }
 
-func Uncompress(self *Wrap7zip, comprerssed_file string, out_dir string) {
-	command := fmt.Sprintf("\"%s\" x -y \"%s\" -o%s", self.exe, comprerssed_file, out_dir)
-	//proc = subprocess.Popen(command, stdout=subprocess.PIPE)
-	//out, err = proc.communicate()
-	cmd := exec.Command(command)
+func Uncompress(self *Wrap7zip, compressed_file string, out_dir string) {
+	fmt.Printf("!!!!!!!!!!!!!! uncomressing!\r\n")
+
+	// Get the command and arguments
+	command := fmt.Sprintf(`%s`, self.exe)
+	args := []string {
+		"x",
+		"-y",
+		fmt.Sprintf(`%s`, compressed_file),
+		fmt.Sprintf("-o%s", out_dir),
+	}
+
+	// Run the command and wait for it to complete
+	cmd := exec.Command(command, args...)
 	var out bytes.Buffer
 	cmd.Stdout = &out
-	cmd.Run()
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("Failed to run command: %s\r\n", err)
+	}
 }
 
 

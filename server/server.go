@@ -902,6 +902,8 @@ func web_socket_cb(ws *websocket.Conn) {
 			return
 		}
 
+		fmt.Printf("!!! action: %s\r\n", message_map["action"])
+
 		// Client wants to play a game
 		if message_map["action"] == "play" {
 			_play_game(ws, message_map)
