@@ -199,7 +199,7 @@ func from_b64_json(message string) (map[string]interface{}, error) {
 
 func to_b64_json(thing interface{}) (string, error) {
 	// Convert the object to json
-	jsoned_data, err := json.Marshal(thing)
+	jsoned_data, err := json.MarshalIndent(thing, "", "\t")
 	if err != nil {
 		return "", err
 	}
@@ -550,7 +550,7 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 		fmt.Printf("Failed to open cache file: %s\r\n", err)
 		return err
 	}
-	jsoned_data, err := json.Marshal(db[console])
+	jsoned_data, err := json.MarshalIndent(db[console], "", "\t")
 	if err != nil {
 		fmt.Printf("Failed to convert db to json: %s\r\n", err)
 		return err
@@ -565,7 +565,7 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 		fmt.Printf("Failed to open file modify dates file: %s\r\n", err)
 		return err
 	}
-	jsoned_data, _ = json.Marshal(data["value"])
+	jsoned_data, _ = json.MarshalIndent(data["value"], "", "\t")
 	f.Write(jsoned_data)
 
 	fmt.Printf("Done getting games from directory.\r\n")
