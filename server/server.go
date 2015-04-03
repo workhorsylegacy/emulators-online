@@ -227,15 +227,14 @@ func remove_long_running_task(ws *websocket.Conn, task_name string) {
 	}
 
 	// Get a list of the threads and their percentages
-	var task_and_percentages map[string]float64
+	task_and_percentages := map[string]float64{}
 	for name, long_running_task := range long_running_tasks {
 		task_and_percentages[name] = long_running_task.percentage
 	}
 
-	json_data, _ := to_b64_json(task_and_percentages)
-	message := map[string]string {
+	message := map[string]interface{} {
 		"action" : "long_running_tasks",
-		"json_data" : json_data,
+		"data" : task_and_percentages,
 	}
 	web_socket_send(ws, &message)
 }
@@ -247,15 +246,14 @@ func add_long_running_task(ws *websocket.Conn, task_name string, thread int) {
 	}
 
 	// Get a list of the threads and their percentages
-	var task_and_percentages map[string]float64
+	task_and_percentages := map[string]float64{}
 	for name, long_running_task := range long_running_tasks {
 		task_and_percentages[name] = long_running_task.percentage
 	}
 
-	json_data, _ := to_b64_json(task_and_percentages)
-	message := map[string]string {
+	message := map[string]interface{} {
 		"action" : "long_running_tasks",
-		"json_data" : json_data,
+		"data" : task_and_percentages,
 	}
 	web_socket_send(ws, &message)
 }
@@ -269,15 +267,14 @@ func set_long_running_task_percentage(ws *websocket.Conn, task_name string, perc
 	}
 
 	// Get a list of the threads and their percentages
-	var task_and_percentages map[string]float64
+	task_and_percentages := map[string]float64{}
 	for name, long_running_task := range long_running_tasks {
 		task_and_percentages[name] = long_running_task.percentage
 	}
 
-	json_data, _ := to_b64_json(task_and_percentages)
-	message := map[string]string {
+	message := map[string]interface{} {
 		"action" : "long_running_tasks",
-		"json_data" : json_data,
+		"data" : task_and_percentages,
 	}
 	web_socket_send(ws, &message)
 }
@@ -408,12 +405,22 @@ func _get_button_map(ws *websocket.Conn, data map[string]interface{}) {
 	web_socket_send(ws, &message)
 }
 
+var thread_id int = 0
+func get_next_thread_id() int {
+	next := thread_id
+	thread_id += 1
+	return next
+}
+
 func task(ws *websocket.Conn, data map[string]interface{}) error {
 	directory_name := data["directory_name"].(string)
 	console := data["console"].(string)
 
+	// Init the map for this console
+	db[console] = make(map[string]map[string]interface{})
+
 	// Add the thread to the list of long running tasks
-	add_long_running_task(ws, fmt.Sprintf("Searching for %s games", console), 5)
+	add_long_running_task(ws, fmt.Sprintf("Searching for %s games", console), get_next_thread_id())
 
 	// Get the path for this console
 	var path_prefix string
@@ -473,42 +480,47 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 			file_modify_dates[console][entry] = modify_date
 		}
 
-		// Skip if the file is not the right kind for this console
+		// Get the game info
+		var info map[string]interface{}
 		if console == "dreamcast" {
-			if ! helpers.IsDreamcastFile(entry) {
+			// Run the command and get the info for this game
+			cmd := exec.Command("python", "server/identify_dreamcast_games.py", entry)
+			var out bytes.Buffer
+			cmd.Stdout = &out
+			err := cmd.Run()
+			if err != nil {
+				fmt.Printf("Failed to run command: %s\r\n", err)
 				return nil
 			}
-		//} else if console == "playstation2" {
-		//	if ! is_playstation2_file(entry) {
-		//		return nil
-		//	}
-		} else {
-			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
-		}
-
-		// Get the game info
-		var info map[string]string
-		if console == "dreamcast" {
-			info, err = helpers.GetDreamcastGameInfo(entry)
+			out_bytes := out.Bytes()
+			if len(out_bytes) > 0 {
+				err := json.Unmarshal(out_bytes, &info)
+				if err != nil {
+					fmt.Printf("Failed to convert json to map: %s\r\n%s\r\n", err, string(out_bytes))
+					return nil
+				}
+			} else {
+				return nil
+			}
 		//} else if console == "playstation2" {
 		//	info, err = get_playstation2_game_info(entry)
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
 		}
 		if err != nil {
-			fmt.Printf("Failed to find info for game \"%s\"", entry)
+			fmt.Printf("Failed to find info for game \"%s\"\r\n%s\r\n", entry, err)
 			return nil
 		}
-		fmt.Printf("getting game info: %s", info["title"])
+		fmt.Printf("getting game info: %s\r\n", info["title"].(string))
 		info["file"] = entry
 
 		// Save the info in the db
 		if info != nil {
-			title := info["title"]
+			title := info["title"].(string)
 			clean_title := strings.Replace(strings.Replace(title, ": ", " - ", -1), "/", "+", -1)
 			db[console][title] = map[string]interface{} {
 				"path" : clean_path(fmt.Sprintf("%s/%s/", path_prefix, clean_title)),
-				"binary" : abs_path(info["file"]),
+				"binary" : abs_path(info["file"].(string)),
 				"bios" : "",
 				"images" : []string{},
 				"developer" : "", //info["developer"],
@@ -531,15 +543,26 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 		return nil
 	})
 
-	f, err := os.Open(fmt.Sprintf("cache/game_db_%s.json", console))
+	// Write the db cache file
+	f, err := os.Create(fmt.Sprintf("cache/game_db_%s.json", console))
+	defer f.Close()
 	if err != nil {
+		fmt.Printf("Failed to open cache file: %s\r\n", err)
 		return err
 	}
-	jsoned_data, _ := json.Marshal(data["value"])
+	jsoned_data, err := json.Marshal(db[console])
+	if err != nil {
+		fmt.Printf("Failed to convert db to json: %s\r\n", err)
+		return err
+	}
 	f.Write(jsoned_data)
 
-	f, err = os.Open(fmt.Sprintf("cache/file_modify_dates_%s.json", console))
+	// FIXME: The modify dates are not gotten or written to file
+	// Write the modify dates cache file
+	f, err = os.Create(fmt.Sprintf("cache/file_modify_dates_%s.json", console))
+	defer f.Close()
 	if err != nil {
+		fmt.Printf("Failed to open file modify dates file: %s\r\n", err)
 		return err
 	}
 	jsoned_data, _ = json.Marshal(data["value"])
@@ -554,17 +577,13 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 
 func _set_game_directory(ws *websocket.Conn, data map[string]interface{}) {
 	// Just return if already a long running "Searching for dreamcast games" task
-	if is_long_running_task(fmt.Sprintf("Searching for %s games", data["console"])) {
+	message := fmt.Sprintf("Searching for %s games", data["console"].(string))
+	if is_long_running_task(message) {
 		return
 	}
 
-	// FIXME: This function should run in its own thread
+	// Run the task in a goroutine
 	go task(ws, data)
-
-	// Run the task in a thread
-	//thread = threading.Thread(target = task, args = (self, data))
-	//thread.daemon = true
-	//thread.start()
 }
 
 func _save_memory_card_cb(memory_card string) {
@@ -997,7 +1016,7 @@ func web_socket_cb(ws *websocket.Conn) {
 
 		// Unknown message from the client
 		} else {
-			log.Fatal(fmt.Sprintf("Unknown action from client: %s", message_map["action"]))
+			log.Fatal(fmt.Sprintf("Unknown action from client: %s\r\n", message_map["action"]))
 		}
 	}
 	//ws.Close()
@@ -1007,8 +1026,10 @@ func web_socket_cb(ws *websocket.Conn) {
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	//db = map[string]map[string]map[string]interface{}
+	// Initialize the globals
+	db = make(map[string]map[string]map[string]interface{})
 	file_modify_dates = map[string]map[string]int64{}
+	long_running_tasks = map[string]LongRunningTask{}
 
 	// Move to the main emu_archive directory no matter what path we are launched from
 	_, root, _, _ := runtime.Caller(0)
