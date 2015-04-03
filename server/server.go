@@ -54,7 +54,7 @@ import (
 
 
 type LongRunningTask struct {
-	thread int
+	name string
 	percentage float64
 }
 
@@ -215,70 +215,6 @@ func to_b64_json(thing interface{}) (string, error) {
 	return b64ed_and_jsoned_data, err
 }
 
-func is_long_running_task(task_name string) bool {
-	_, ok := long_running_tasks[task_name]
-	return ok
-}
-
-func remove_long_running_task(ws *websocket.Conn, task_name string) {
-	// Remove the task
-	if _, ok := long_running_tasks[task_name]; ok {
-		delete(long_running_tasks, task_name)
-	}
-
-	// Get a list of the threads and their percentages
-	task_and_percentages := map[string]float64{}
-	for name, long_running_task := range long_running_tasks {
-		task_and_percentages[name] = long_running_task.percentage
-	}
-
-	message := map[string]interface{} {
-		"action" : "long_running_tasks",
-		"data" : task_and_percentages,
-	}
-	web_socket_send(ws, &message)
-}
-
-func add_long_running_task(ws *websocket.Conn, task_name string, thread int) {
-	long_running_tasks[task_name] = LongRunningTask {
-		thread: thread,
-		percentage: 0,
-	}
-
-	// Get a list of the threads and their percentages
-	task_and_percentages := map[string]float64{}
-	for name, long_running_task := range long_running_tasks {
-		task_and_percentages[name] = long_running_task.percentage
-	}
-
-	message := map[string]interface{} {
-		"action" : "long_running_tasks",
-		"data" : task_and_percentages,
-	}
-	web_socket_send(ws, &message)
-}
-
-func set_long_running_task_percentage(ws *websocket.Conn, task_name string, percentage float64) {
-	// Replace the task with one that has an updated percentage
-	var old_long_running_task LongRunningTask = long_running_tasks[task_name]
-	long_running_tasks[task_name] = LongRunningTask {
-		thread: old_long_running_task.thread,
-		percentage: percentage,
-	}
-
-	// Get a list of the threads and their percentages
-	task_and_percentages := map[string]float64{}
-	for name, long_running_task := range long_running_tasks {
-		task_and_percentages[name] = long_running_task.percentage
-	}
-
-	message := map[string]interface{} {
-		"action" : "long_running_tasks",
-		"data" : task_and_percentages,
-	}
-	web_socket_send(ws, &message)
-}
-
 func _get_db(ws *websocket.Conn) {
 	fmt.Printf("called _get_db\r\n")
 
@@ -405,14 +341,8 @@ func _get_button_map(ws *websocket.Conn, data map[string]interface{}) {
 	web_socket_send(ws, &message)
 }
 
-var thread_id int = 0
-func get_next_thread_id() int {
-	next := thread_id
-	thread_id += 1
-	return next
-}
 
-func task(ws *websocket.Conn, data map[string]interface{}) error {
+func task_get_game_info(channel_task_progress chan LongRunningTask, channel_is_done chan bool, data map[string]interface{}) error {
 	directory_name := data["directory_name"].(string)
 	console := data["console"].(string)
 
@@ -420,7 +350,11 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 	db[console] = make(map[string]map[string]interface{})
 
 	// Add the thread to the list of long running tasks
-	add_long_running_task(ws, fmt.Sprintf("Searching for %s games", console), get_next_thread_id())
+	a_task := LongRunningTask {
+		fmt.Sprintf("Searching for %s games", console),
+		0,
+	}
+	channel_task_progress <- a_task
 
 	// Get the path for this console
 	var path_prefix string
@@ -456,7 +390,8 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 
 		// Get the percentage of the progress looping through files
 		percentage := (done_files / total_files) * 100.0
-		set_long_running_task_percentage(ws, fmt.Sprintf("Searching for %s games", console), percentage)
+		a_task.percentage = percentage
+		channel_task_progress <- a_task
 		done_files += 1.0
 
 		// Skip if the the entry is not a file
@@ -570,20 +505,58 @@ func task(ws *websocket.Conn, data map[string]interface{}) error {
 
 	fmt.Printf("Done getting games from directory.\r\n")
 
-	remove_long_running_task(ws, fmt.Sprintf("Searching for %s games", console))
+	a_task.percentage = 100.0
+	channel_task_progress <- a_task
 
+	// Signal that we are done
+	channel_is_done <- true
 	return nil
 }
 
 func _set_game_directory(ws *websocket.Conn, data map[string]interface{}) {
-	// Just return if already a long running "Searching for dreamcast games" task
-	message := fmt.Sprintf("Searching for %s games", data["console"].(string))
-	if is_long_running_task(message) {
+	// Just return if there is already a long running "Searching for dreamcast games" task
+	name := fmt.Sprintf("Searching for %s games", data["console"].(string))
+	if _, ok := long_running_tasks[name]; ok {
 		return
 	}
 
-	// Run the task in a goroutine
-	go task(ws, data)
+	// Run a goroutine that will look through all the games and get their info
+	channel_task_progress := make(chan LongRunningTask)
+	channel_is_done := make(chan bool)
+	go task_get_game_info(channel_task_progress, channel_is_done, data)
+
+	// FIXME: This will block the user from doing anything else in the web ui
+	// Wait for the goroutine to send its info and exit
+	for {
+		select {
+			case is_done := <-channel_is_done:
+				if is_done {
+					return
+				}
+			case long_running_task := <-channel_task_progress:
+				// Update its percentage
+				long_running_tasks[long_running_task.name] = long_running_task
+
+				// Remove the task if it is at 100 percent
+				if long_running_task.percentage >= 100.0 {
+					delete(long_running_tasks, long_running_task.name)
+				}
+
+				// Convert the list of long running tasks to a map
+				shit := map[string]float64{}
+				for name, task := range long_running_tasks {
+					percentage := task.percentage
+					shit[name] = percentage
+				}
+
+				// Send the web socket the new map of long running tasks
+				message := map[string]interface{} {
+					"action" : "long_running_tasks",
+					"value" : shit,
+				}
+				web_socket_send(ws, &message)
+		}
+	}
 }
 
 func _save_memory_card_cb(memory_card string) {
