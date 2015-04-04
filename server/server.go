@@ -218,10 +218,9 @@ func to_b64_json(thing interface{}) (string, error) {
 func _get_db(ws *websocket.Conn) {
 	fmt.Printf("called _get_db\r\n")
 
-	json_data, _ := to_b64_json(db)
-	message := map[string]string {
+	message := map[string]interface{} {
 		"action" : "get_db",
-		"json_data" : json_data,
+		"value" : db,
 	}
 	web_socket_send(ws, message)
 }
@@ -1082,20 +1081,19 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		console_games := db[console]
+		var console_games map[string]map[string]interface{}
 		err = json.Unmarshal(file_data, &console_games)
 		if err != nil {
 			log.Fatal(err)
 		}
-		for k, v := range db[console] {
-			fmt.Printf("%s : %s\r\n", k, v)
-		}
+		db[console] = console_games
 
 		// Remove any non existent files
 		keys := make([]string, len(db[console]))
 		for _, name := range keys {
 			data := db[console][name]
-			if helpers.IsFile(data["binary"].(string)) {
+			binary := data["binary"]
+			if binary != nil && helpers.IsFile(binary.(string)) {
 				delete(db[console], name)
 			}
 		}
