@@ -1,7 +1,10 @@
 # emu_archive
 HTML based front end for video game console emulators
 
-After cloning the repository, remember to get the submodules too:
+It uses WebSockets to connect the HTML front-end, to a Go back-end. The 
+back-end manages the emulators and game files. The project was written in 
+Python, but is slowly being converted to Go. For now, Python is required to 
+run some of the sub modules.
 
 
 Install python 3.X
@@ -17,7 +20,7 @@ Install 32 bit Go
 -----
 https://storage.googleapis.com/golang/go1.4.2.windows-386.msi
 
-Set GOPATH environmental variable to
+Set GOPATH environmental variable
 -----
 C:/GO_WORKSPACE/
 
@@ -45,5 +48,6 @@ go run server/server.go
 ~~~
 
 Visit this url
+~~~bash
 http://localhost:9090
-
+~~~
