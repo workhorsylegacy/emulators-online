@@ -492,7 +492,6 @@ func task_get_game_info(channel_task_progress chan LongRunningTask, channel_is_d
 	}
 	f.Write(jsoned_data)
 
-	// FIXME: The modify dates are not gotten or written to file
 	// Write the modify dates cache file
 	f, err = os.Create(fmt.Sprintf("cache/file_modify_dates_%s.json", console))
 	defer f.Close()
@@ -500,7 +499,11 @@ func task_get_game_info(channel_task_progress chan LongRunningTask, channel_is_d
 		fmt.Printf("Failed to open file modify dates file: %s\r\n", err)
 		return err
 	}
-	jsoned_data, _ = json.MarshalIndent(data["value"], "", "\t")
+	jsoned_data, err = json.MarshalIndent(file_modify_dates[console], "", "\t")
+	if err != nil {
+		fmt.Printf("Failed to convert file_modify_dates to json: %s\r\n", err)
+		return err
+	}
 	f.Write(jsoned_data)
 
 	fmt.Printf("Done getting games from directory.\r\n")
