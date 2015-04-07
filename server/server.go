@@ -150,25 +150,31 @@ func web_socket_recieve(ws *websocket.Conn) (map[string]interface{}, error) {
 	message_length64, _ := strconv.ParseInt(chunks[0], 10, 0)
 	message_length := int(message_length64)
 	message = chunks[1]
+	message_length -= len(message)
 
 	// Read the rest of the message
-	buffer = make([]byte, message_length)
-	read_len, err = ws.Read(buffer)
-	if err != nil {
-		fmt.Printf("Failed to read web socket message: %s\r\n", err)
-		//ws.Close()
-		return nil, err
+	for {
+		buffer = make([]byte, message_length)
+		read_len, err = ws.Read(buffer)
+		if err != nil {
+			fmt.Printf("Failed to read web socket message: %s\r\n", err)
+			//ws.Close()
+			return nil, err
+		}
+		message += string(buffer[0 : read_len])
+		message_length -= read_len
+		if message_length < 1 {
+			break
+		}
 	}
-	//fmt.Printf("read_len: %d\r\n", read_len)
-	message = message + string(buffer[0 : read_len])
 
 	// Convert the message from base64 and json
 	thing, err := from_b64_json(message)
 	if err != nil {
 		fmt.Printf("Failed to decode web socket message: %s\r\n", err)
-		fmt.Printf("message: %s\r\n", message)
-		decoded_message, err := base64.StdEncoding.DecodeString(message)
-		fmt.Printf("decoded_message: %s\r\n", decoded_message)
+		//fmt.Printf("message: %s\r\n", message)
+		//decoded_message, err := base64.StdEncoding.DecodeString(message)
+		//fmt.Printf("decoded_message: %s\r\n", decoded_message)
 		//ws.Close()
 		return nil, err
 	}

@@ -775,7 +775,7 @@ function action_set_bios(console_name, type_name, file_data) {
 		'action' : 'set_bios',
 		'console' : console_name,
 		'type' : type_name,
-		'value' : window.btoa(file_data)
+		'value' : btoa(file_data)
 	};
 	socket_send_data(message);
 }
