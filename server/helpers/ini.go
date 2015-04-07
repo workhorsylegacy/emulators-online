@@ -26,71 +26,67 @@
 package helpers
 
 import (
-	"os"
+	"io/ioutil"
 	"strings"
+	"os"
+	"fmt"
 )
 
-func Between(original string, before string, after string) string {
-	retval := strings.Split(original, before)[1]
-	retval = strings.Split(retval, after)[0]
-	return retval
-}
 
-func IsFile(file_name string) (bool) {
-	// Get the file info
-	finfo, err := os.Stat(file_name)
-
-	// Return false if failed to get the file info
+func read_ini_file(file_path string) (map[string]map[string]interface{}, error) {
+	data, err := ioutil.ReadFile(file_path)
 	if err != nil {
-		return false
+		return nil, err
+	}
+	ini_data := string(data)
+	var config map[string]map[string]interface{}
+
+	// Read the ini file into a dictionary
+	var header string
+	for _, line := range strings.Split(ini_data, "\r\n") {
+		// Line is a header
+		if strings.Contains(line, "[") && strings.Contains(line, "]") {
+			header = Between(line, "[", "]")
+//			config[header] = map[string]interface{}
+			//fmt.Printf("%\r\n", header)
+		// Line is a key value pair
+		} else if strings.Contains(line, " = ") {
+			pair := strings.Split(line, " = ")
+			key, value := pair[0], pair[1]
+			config[header][key] = value
+			//fmt.Printf("    %s = %s", key, value)
+		}
 	}
 
-	// Return false if it is a directory
-	if finfo.IsDir() {
-		return false
-	}
-
-	// Return true if it has a name
-	if len(finfo.Name()) > 0 {
-		return true
-	}
-
-	// Return false otherwise
-	return false
+	return config, err
 }
 
-func IsDir(dir_name string) (bool) {
-	// Get the dir info
-	finfo, err := os.Stat(dir_name)
 
-	// Return false if failed to get the dir info
+func write_ini_file(file_name string, config map[string]map[string]interface{}) error {
+	f, err := os.Open(file_name)
 	if err != nil {
-		return false
+		return err
+	}
+	defer f.Close()
+	for header, pairs := range config {
+		// Header
+		formatted_header := fmt.Sprintf("[%s]\r\n", header)
+		f.Write([]byte(formatted_header))
+
+		// Keys and values
+		for key, value := range pairs {
+			formatted_entry := fmt.Sprintf("%s = %s\r\n", key, value)
+			f.Write([]byte(formatted_entry))
+		}
+
+		// Two spaces at the end of a section
+		f.Write([]byte("\r\n\r\n"))
 	}
 
-	// Return true if it is a directory
-	if finfo.IsDir() {
-		return true
-	}
-
-	// Return false otherwise
-	return false
+	return nil
 }
 
-func PathExists(path_name string) (bool) {
-	// Get the dir info
-	finfo, err := os.Stat(path_name)
 
-	// Return false if failed to get the path info
-	if err != nil {
-		return false
-	}
 
-	// Return if it has a name
-	if len(finfo.Name()) > 0 {
-		return true
-	}
 
-	// Return false otherwise
-	return true
-}
+

@@ -26,15 +26,15 @@ package helpers
 
 import (
 	//"fmt"
-	//"strings"
-	//"io/ioutil"
-	//"path/filepath"
-	//"os"
+	"strings"
+	"io/ioutil"
+	"path/filepath"
+	"os"
 	//"runtime"
 	//"log"
 	//"os/exec"
 	//"encoding/base64"
-	//"encoding/json"
+	"encoding/json"
 )
 
 
@@ -42,30 +42,56 @@ type BaseConsole struct {
 	config_path string
 	button_map map[string]string
 }
-/*
-func __init__(self *BaseConsole, config_path string):
+
+func (self *BaseConsole) Setup(config_path string) error {
 	self.config_path = config_path
-	self.button_map map[string]string{}
+	//self.button_map = map[string]string{}
 
 	// Load the config
-	if os.path.isfile(self.config_path):
-		with open(self.config_path, 'r') as f:
-			self.button_map = json.loads(f.read())
+	if IsFile(self.config_path) {
+		data, err := ioutil.ReadFile(self.config_path)
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(data, self.button_map)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
-	def set_button_map(self, button_map):
-		self.button_map = button_map
-		
-		// Save the config
-		with open(self.config_path, 'w') as f:
-			f.write(json.dumps(self.button_map, sort_keys=True, indent=4, separators=(',', ': ')))
+func (self *BaseConsole) SetButtonMap(button_map map[string]string) error {
+	self.button_map = button_map
 
-	def get_button_map(self):
-		return self.button_map
+	// Open the file
+	f, err := os.Open(self.config_path)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
 
-	def goodJoin(self, path_a, path_b):
-		path = path_a + path_b
-		path = os.path.abspath(path)
-		path = path.replace("\\", "/")
-		return path
-*/
+	// Convert the button map to json
+	jsoned_data, err := json.MarshalIndent(self.button_map, "", "\t")
+	if err != nil {
+		return err
+	}
+
+	// Write the jsoned button map to file
+	f.Write([]byte(jsoned_data))
+
+	return nil
+}
+
+func (self *BaseConsole) GetButtonMap() map[string]string {
+	return self.button_map
+}
+
+func (self *BaseConsole) goodJoin(path_a string, path_b string) string {
+	path := path_a + path_b
+	path, _ = filepath.Abs(path)
+	path = strings.Replace(path, "\\", "/", -1)
+	return path
+}
+

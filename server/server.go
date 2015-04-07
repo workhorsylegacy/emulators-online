@@ -58,8 +58,6 @@ type LongRunningTask struct {
 	percentage float64
 }
 
-type EmuRunner struct {}
-//type Demul struct {}
 //type Dolphin struct {}
 //type SSF struct {}
 //type Mupen64Plus struct {}
@@ -69,8 +67,8 @@ type EmuRunner struct {}
 var db map[string]map[string]map[string]interface{}
 var file_modify_dates map[string]map[string]int64
 var long_running_tasks map[string]LongRunningTask
-var runner EmuRunner
-//var demul Demul
+//var runner EmuRunner
+var demul helpers.Demul
 //var dolphin Dolphin
 //var ssf SSF
 //var mupen64plus Mupen64Plus
@@ -287,24 +285,30 @@ func _set_bios(data map[string]interface{}) (error) {
 }
 
 func _set_button_map(ws *websocket.Conn, data map[string]interface{})  {
+	ass := data["value"].(map[string]string)
+	//var ass map[string]string
+	//for key, value := range data["value"] {
+	//	ass[key] = string(value)
+	//}
+
 	switch data["console"].(string) {
 		case "gamecube":
-			//dolphin.set_button_map(data["value"])
+			//dolphin.SetButtonMap(data["value"])
 
 		case "nintendo64":
-			//mupen64plus.set_button_map(data["value"])
+			//mupen64plus.SetButtonMap(data["value"])
 
 		case "saturn":
-			//ssf.set_button_map(data["value"])
+			//ssf.SetButtonMap(data["value"])
 
 		case "dreamcast":
-			//demul.set_button_map(data["value"])
+			demul.SetButtonMap(ass)
 
 		case "Playstation":
-			//pcsxr.set_button_map(data["value"])
+			//pcsxr.SetButtonMap(data["value"])
 
 		case "playstation2":
-			//pcsx2.set_button_map(data["value"])
+			//pcsx2.SetButtonMap(data["value"])
 	}
 }
 
@@ -314,22 +318,22 @@ func _get_button_map(ws *websocket.Conn, data map[string]interface{}) {
 
 	switch console {
 		case "gamecube":
-			//value = dolphin.get_button_map()
+			//value = dolphin.GetButtonMap()
 
 		case "nintendo64":
-			//value = mupen64plus.get_button_map()
+			//value = mupen64plus.GetButtonMap()
 
 		case "saturn":
-			//value = ssf.get_button_map()
+			//value = ssf.GetButtonMap()
 
 		case "dreamcast":
-			//value = demul.get_button_map()
+			value = demul.GetButtonMap()
 
 		case "Playstation":
-			//value = pcsxr.get_button_map()
+			//value = pcsxr.GetButtonMap()
 
 		case "playstation2":
-			//value = pcsx2.get_button_map()
+			//value = pcsx2.GetButtonMap()
 	}
 
 	message := map[string]interface{} {
@@ -561,7 +565,7 @@ func _set_game_directory(ws *websocket.Conn, data map[string]interface{}) {
 	}
 }
 
-func _save_memory_card_cb(memory_card string) {
+func _save_memory_card_cb(memory_card []byte) {
 	var out_buffer bytes.Buffer
 	writer := zlib.NewWriter(&out_buffer)
 	writer.Write([]byte(memory_card))
@@ -572,40 +576,40 @@ func _save_memory_card_cb(memory_card string) {
 
 func _play_game(ws *websocket.Conn, data map[string]interface{}) {
 	console := data["console"].(string)
-	//path := data["path"].(string)
-	//binary := data["binary"].(string)
+	path := data["path"].(string)
+	binary := data["binary"].(string)
 	//bios := data["bios"].(string)
 	
 	switch console {
 		case "gamecube":
-			//dolphin.run(path, binary)
+			//dolphin.Run(path, binary)
 			//self.log("playing")
-			print("Running Dolphin ...")
+			fmt.Printf("Running Dolphin ...\r\n")
 
 		case "nintendo64":
-			//mupen64plus.run(path, binary)
+			//mupen64plus.Run(path, binary)
 			//self.log("playing")
-			print("Running Mupen64plus ...")
+			fmt.Printf("Running Mupen64plus ...\r\n")
 
 		case "saturn":
-			//ssf.run(path, binary, bios)
+			//ssf.Run(path, binary, bios)
 			//self.log("playing")
-			print("Running SSF ...")
+			fmt.Printf("Running SSF ...\r\n")
 
 		case "dreamcast":
-			//demul.run(path, binary, _save_memory_card_cb)
+			demul.Run(path, binary, _save_memory_card_cb)
 			//self.log("playing")
-			print("Running Demul ...")
+			fmt.Printf("Running Demul ...\r\n")
 
 		case "Playstation":
-			//pcsxr.run(path, binary)
+			//pcsxr.Run(path, binary)
 			//self.log("playing")
-			print("Running PCSX-Reloaded ...")
+			fmt.Printf("Running PCSX-Reloaded ...\r\n")
 
 		case "playstation2":
-			//pcsx2.run(path, binary)
+			//pcsx2.Run(path, binary)
 			//self.log("playing")
-			print("Running PCSX2 ...")
+			fmt.Printf("Running PCSX2 ...\r\n")
 	}
 }
 
