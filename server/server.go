@@ -254,11 +254,16 @@ func _set_bios(data map[string]interface{}) (error) {
 		}
 
 		// Convert the base64 data to BIOS and write to file
-		f, err := os.Open(file_name)
+		f, err := os.Create(file_name)
 		if err != nil {
+			fmt.Printf("Failed to save BIOS file: %s\r\n", err)
 			return err
 		}
-		b642_data, _ := base64.StdEncoding.DecodeString(value)
+		b642_data, err := base64.StdEncoding.DecodeString(value)
+		if err != nil {
+			fmt.Printf("Failed to un base64 BIOS file: %s\r\n", err)
+			return err
+		}
 		f.Write(b642_data)
 
 	} else if console == "saturn" {
@@ -279,7 +284,7 @@ func _set_bios(data map[string]interface{}) (error) {
 		}
 
 		// Convert the base64 data to BIOS and write to file
-		f, err := os.Open(file_name)
+		f, err := os.Create(file_name)
 		if err != nil {
 			return err
 		}

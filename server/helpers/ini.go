@@ -63,7 +63,7 @@ func read_ini_file(file_path string) (map[string]map[string]interface{}, error) 
 
 
 func write_ini_file(file_name string, config map[string]map[string]interface{}) error {
-	f, err := os.Open(file_name)
+	f, err := os.Create(file_name)
 	if err != nil {
 		return err
 	}
