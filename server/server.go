@@ -355,9 +355,6 @@ func task_get_game_info(channel_task_progress chan LongRunningTask, channel_is_d
 	directory_name := data["directory_name"].(string)
 	console := data["console"].(string)
 
-	// Init the map for this console
-	db[console] = make(map[string]map[string]interface{})
-
 	// Add the thread to the list of long running tasks
 	a_task := LongRunningTask {
 		fmt.Sprintf("Searching for %s games", console),
@@ -1084,6 +1081,8 @@ func main() {
 		// Skip if not file
 		cache_file := fmt.Sprintf("cache/game_db_%s.json", console)
 		if ! helpers.IsFile(cache_file) {
+			// Init the map for this console
+			db[console] = make(map[string]map[string]interface{})
 			continue
 		}
 
