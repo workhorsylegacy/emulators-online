@@ -75,7 +75,7 @@ func write_ini_file(file_name string, config map[string]map[string]interface{}) 
 
 		// Keys and values
 		for key, value := range pairs {
-			formatted_entry := fmt.Sprintf("%s = %s\r\n", key, value)
+			formatted_entry := fmt.Sprintf("%s = %v\r\n", key, value)
 			f.Write([]byte(formatted_entry))
 		}
 

@@ -70,13 +70,14 @@ func (self *EmuRunner) Run() {
 
 	// Start the program
 	self.emu_proc = exec.Command(self.command.name, self.command.args...)
-	var out bytes.Buffer
-	self.emu_proc.Stdout = &out
+	var std_out bytes.Buffer
+	var std_err bytes.Buffer
+	self.emu_proc.Stdout = &std_out
+	self.emu_proc.Stderr = &std_err
 	err := self.emu_proc.Start()
 	if err != nil {
 		fmt.Printf("Failed to start running the command: %s\r\n", err)
 		log.Fatal(err)
-		
 	}
 
 	// Wait for the program's window to actually be created

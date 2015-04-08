@@ -32,6 +32,7 @@ import(
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"log"
 )
 
 
@@ -43,58 +44,6 @@ var directx_version string
 
 type Demul struct {
 	BaseConsole
-}
-
-// FIXME: How do we run this code when the module is loaded?
-func main() {
-	BUTTON_CODE_MAP = map[string]int64 {
-		"button_12" : 805306368, // up
-		"button_13" : 805306369, // down
-		"button_14" : 805306370, // left
-		"button_15" : 805306371, // right
-		"button_9" : 805306372, // start
-		"button_0" : 805306380, // A
-		"button_1" : 805306381, // B
-		"button_2" : 805306382, // X
-		"button_3" : 805306383, // Y
-		"button_7" : 1342177280, // L Trigger
-		"button_6" : 1342177536, // R Trigger
-		"axes_0-" : -1879048192, // L Stick Left
-		"axes_0+" : -1879047936, // L Stick Right
-		"axes_1-" : -1879047680, // L Stick Up
-		"axes_1+" : -1879047424, // L Stick Down
-		"axes_2-" : -1879047168, // R Stick Left
-		"axes_2+" : -1879046912, // R Stick Right
-		"axes_3-" : -1879046656, // R Stick Up
-		"axes_3+" : -1879046400, // R Stick Down
-	}
-
-	// Run the command and wait for it to complete
-	cmd := exec.Command("dxdiag.exe", "/t", "directx_info.txt")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
-		return
-	}
-
-	data, err := ioutil.ReadFile("directx_info.txt")
-	if err != nil {
-		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
-		return
-	}
-	string_data := string(data)
-	directx_version := Between(string_data, "DirectX Version: ", "\r\n")
-
-	if strings.Contains(directx_version, "11") {
-		gpu_dll_version = "gpuDX11.dll"
-	} else if strings.Contains(directx_version, "10") {
-		gpu_dll_version = "gpuDX10.dll"
-	} else {
-		fmt.Printf("Failed to determine DirectX version.\r\n")
-		return
-	}
 }
 
 func (self *Demul) Setup() {
@@ -654,7 +603,7 @@ func (self *Demul) _setup_gdr() {
 		config := map[string]map[string]interface{} {
 			"main" : {
 				"imageFileName" : "",
-				"openDialog" : "true",
+				"openDialog" : "false",
 			},
 		}
 		write_ini_file("emulators/Demul/gdrImage.ini", config)
@@ -692,6 +641,8 @@ func (self *Demul) _setup_directx() {
 			write_ini_file("emulators/Demul/gpuDX11.ini", config)
 		} else if strings.Contains(directx_version, "10") {
 			write_ini_file("emulators/Demul/gpuDX10.ini", config)
+		} else {
+			log.Fatal("Failed to determine DirectX version.\r\n")
 		}
 }
 
@@ -703,89 +654,89 @@ func (self *Demul) _setup_demul() map[string]map[string]interface{} {
 		vms_vmsa0, _ := filepath.Abs("emulators/Demul/memsaves/vms00.bin")
 
 		config := map[string]map[string]interface{} {
-			"files" : {
-				"nvram" : files_nvram,
-				"romsPathsCount" : 1,
-				"roms0" : files_roms0,
-			},
-			"PORTD" : {
-				"device" : -1,
-				"port4" : -1,
-				"port2" : -1,
-				"port3" : -1,
-				"port0" : -1,
-				"port1" : -1,
-			},
-			"PORTB" : {
-				"device" : -1,
-				"port4" : -1,
-				"port2" : -1,
-				"port3" : -1,
-				"port0" : -1,
-				"port1" : -1,
-			},
-			"PORTC" : {
-				"device" : -1,
-				"port4" : -1,
-				"port2" : -1,
-				"port3" : -1,
-				"port0" : -1,
-				"port1" : -1,
+			"main" : {
+				"region" : 1,
+				"broadcast" : 1,
+				"cpumode" : 1,
+				"lastEmuRunMode" : 0,
+				"videomode" : 768,
+				"timehack" : "true",
+				"activateBBA" : "false",
+				"VMUscreendisable" : "false",
+				"windowX" : 100,
+				"windowY" : 100,
+				"dcBios" : 3,
+				"naomiBiosAuto" : "true",
+				"naomiLLEMIE" : "false",
+				"naomifreq" : 1,
+				"hikaruBios" : 1,
 			},
 			"PORTA" : {
 				"device" : 16777216,
-				"port4" : -1,
-				"port2" : -1,
-				"port3" : -1,
 				"port0" : 234881024,
 				"port1" : 65536,
-			},
-			"plugins" : {
-				"gdr" : "gdrImage.dll",
-				"spu" : "spuDemul.dll",
-				"pad" : "padDemul.dll",
-				"directory" : plugins_directory,
-				"gpu" : gpu_dll_version,
-				"net" : "netDemul.dll",
-			},
-			"main" : {
-				"windowY" : 100,
-				"windowX" : 100,
-				"VMUscreendisable" : "false",
-				"dcBios" : 3,
-				"region" : 1,
-				"activateBBA" : "false",
-				"cpumode" : 1,
-				"hikaruBios" : 1,
-				"naomiBiosAuto" : "true",
-				"broadcast" : 1,
-				"lastEmuRunMode" : 0,
-				"naomifreq" : 1,
-				"naomiLLEMIE" : "false",
-				"timehack" : "true",
-				"videomode" : 768,
+				"port2" : -1,
+				"port3" : -1,
+				"port4" : -1,
 			},
 			"VMS" : {
-				"VMSA4" : "",
 				"VMSA0" : vms_vmsa0,
 				"VMSA1" : "",
 				"VMSA2" : "",
 				"VMSA3" : "",
-				"VMSC2" : "",
-				"VMSD4" : "",
-				"VMSD0" : "",
-				"VMSD2" : "",
-				"VMSD1" : "",
-				"VMSC3" : "",
-				"VMSD3" : "",
-				"VMSC0" : "",
-				"VMSB4" : "",
-				"VMSC4" : "",
-				"VMSC1" : "",
-				"VMSB1" : "",
+				"VMSA4" : "",
 				"VMSB0" : "",
-				"VMSB3" : "",
+				"VMSB1" : "",
 				"VMSB2" : "",
+				"VMSB3" : "",
+				"VMSB4" : "",
+				"VMSC0" : "",
+				"VMSC1" : "",
+				"VMSC2" : "",
+				"VMSC3" : "",
+				"VMSC4" : "",
+				"VMSD0" : "",
+				"VMSD1" : "",
+				"VMSD2" : "",
+				"VMSD3" : "",
+				"VMSD4" : "",
+			},
+			"PORTB" : {
+				"device" : -1,
+				"port0" : -1,
+				"port1" : -1,
+				"port2" : -1,
+				"port3" : -1,
+				"port4" : -1,
+			},
+			"PORTC" : {
+				"device" : -1,
+				"port0" : -1,
+				"port1" : -1,
+				"port2" : -1,
+				"port3" : -1,
+				"port4" : -1,
+			},
+			"PORTD" : {
+				"device" : -1,
+				"port0" : -1,
+				"port1" : -1,
+				"port2" : -1,
+				"port3" : -1,
+				"port4" : -1,
+			},
+			"plugins" : {
+				"directory" : plugins_directory,
+				"gdr" : "gdrImage.dll",
+				"gpu" : gpu_dll_version,
+				"spu" : "spuDemul.dll",
+				"pad" : "padDemul.dll",
+				"net" : "netDemul.dll",
+			},
+			"files" : {
+				"nvram" : files_nvram,
+				"roms0" : files_roms0,
+				"romsPathsCount" : 1,
 			},
 		}
 		write_ini_file("emulators/Demul/Demul.ini", config)
@@ -819,7 +770,7 @@ func (self *Demul) Run(path string, binary string, on_stop func(memory_card []by
 	full_screen := false
 	if binary != "" {
 		name := "demul.exe"
-		args := []string {"-run=dc", fmt.Sprintf("-image='%s'", binary)}
+		args := []string {"-run=dc", fmt.Sprintf("-image=%s", binary)}
 		command = CommandWithArgs {name, args}
 		full_screen = true
 	} else {
@@ -840,5 +791,56 @@ func (self *Demul) Run(path string, binary string, on_stop func(memory_card []by
 	if on_stop != nil {
 		memory_card, _ := ioutil.ReadFile("emulators/Demul/memsaves/vms00.bin")
 		on_stop(memory_card)
+	}
+}
+
+func init() {
+	BUTTON_CODE_MAP = map[string]int64 {
+		"button_12" : 805306368, // up
+		"button_13" : 805306369, // down
+		"button_14" : 805306370, // left
+		"button_15" : 805306371, // right
+		"button_9" : 805306372, // start
+		"button_0" : 805306380, // A
+		"button_1" : 805306381, // B
+		"button_2" : 805306382, // X
+		"button_3" : 805306383, // Y
+		"button_7" : 1342177280, // L Trigger
+		"button_6" : 1342177536, // R Trigger
+		"axes_0-" : -1879048192, // L Stick Left
+		"axes_0+" : -1879047936, // L Stick Right
+		"axes_1-" : -1879047680, // L Stick Up
+		"axes_1+" : -1879047424, // L Stick Down
+		"axes_2-" : -1879047168, // R Stick Left
+		"axes_2+" : -1879046912, // R Stick Right
+		"axes_3-" : -1879046656, // R Stick Up
+		"axes_3+" : -1879046400, // R Stick Down
+	}
+
+	// Run dxdiag and write its output to a file
+	cmd := exec.Command("dxdiag.exe", "/t", "directx_info.txt")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
+		return
+	}
+
+	// Get the info from the file
+	data, err := ioutil.ReadFile("directx_info.txt")
+	if err != nil {
+		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
+		return
+	}
+	string_data := string(data)
+	directx_version = Between(string_data, "DirectX Version: ", "\r\n")
+
+	if strings.Contains(directx_version, "11") {
+		gpu_dll_version = "gpuDX11.dll"
+	} else if strings.Contains(directx_version, "10") {
+		gpu_dll_version = "gpuDX10.dll"
+	} else {
+		log.Fatal("Failed to determine DirectX version.\r\n")
 	}
 }
