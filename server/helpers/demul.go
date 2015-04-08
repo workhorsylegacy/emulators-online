@@ -26,9 +26,6 @@ package helpers
 
 import(
 	"os"
-	"strings"
-	"os/exec"
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -40,7 +37,7 @@ var BUTTON_CODE_MAP map[string]int64
 
 // Figure out the DirectX version
 var gpu_dll_version string
-var directx_version string
+var directx_version int
 
 type Demul struct {
 	BaseConsole
@@ -637,9 +634,9 @@ func (self *Demul) _setup_directx() {
 			},
 		}
 
-		if strings.Contains(directx_version, "11") {
+		if directx_version == 11 {
 			write_ini_file("emulators/Demul/gpuDX11.ini", config)
-		} else if strings.Contains(directx_version, "10") {
+		} else if directx_version == 10 {
 			write_ini_file("emulators/Demul/gpuDX10.ini", config)
 		} else {
 			log.Fatal("Failed to determine DirectX version.\r\n")
@@ -744,6 +741,16 @@ func (self *Demul) _setup_demul() map[string]map[string]interface{} {
 }
 
 func (self *Demul) Run(path string, binary string, on_stop func(memory_card []byte)) {
+	directx_version = GetDirectXVersion()
+
+	if directx_version == 11 {
+		gpu_dll_version = "gpuDX11.dll"
+	} else if directx_version == 10 {
+		gpu_dll_version = "gpuDX10.dll"
+	} else {
+		log.Fatal("Failed to determine DirectX version.\r\n")
+	}
+
 	// Setup ini files
 	self._setup_spu()
 	self._setup_pad()
@@ -815,32 +822,5 @@ func init() {
 		"axes_2+" : -1879046912, // R Stick Right
 		"axes_3-" : -1879046656, // R Stick Up
 		"axes_3+" : -1879046400, // R Stick Down
-	}
-
-	// Run dxdiag and write its output to a file
-	cmd := exec.Command("dxdiag.exe", "/t", "directx_info.txt")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
-		return
-	}
-
-	// Get the info from the file
-	data, err := ioutil.ReadFile("directx_info.txt")
-	if err != nil {
-		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
-		return
-	}
-	string_data := string(data)
-	directx_version = Between(string_data, "DirectX Version: ", "\r\n")
-
-	if strings.Contains(directx_version, "11") {
-		gpu_dll_version = "gpuDX11.dll"
-	} else if strings.Contains(directx_version, "10") {
-		gpu_dll_version = "gpuDX10.dll"
-	} else {
-		log.Fatal("Failed to determine DirectX version.\r\n")
 	}
 }
