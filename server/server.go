@@ -68,7 +68,7 @@ var db map[string]map[string]map[string]interface{}
 var file_modify_dates map[string]map[string]int64
 var long_running_tasks map[string]LongRunningTask
 //var runner EmuRunner
-var demul helpers.Demul
+var demul *helpers.Demul
 //var dolphin Dolphin
 //var ssf SSF
 //var mupen64plus Mupen64Plus
@@ -295,31 +295,34 @@ func _set_bios(data map[string]interface{}) (error) {
 	return nil
 }
 
+
+
 func _set_button_map(ws *websocket.Conn, data map[string]interface{})  {
-	ass := data["value"].(map[string]string)
-	//var ass map[string]string
-	//for key, value := range data["value"] {
-	//	ass[key] = string(value)
-	//}
+	// Convert the map[string]interface to map[string]string
+	button_map := make(map[string]string)
+	value := data["value"].(map[string]interface{})
+	for key, value := range value {
+		button_map[key] = value.(string)
+	}
 
 	switch data["console"].(string) {
 		case "gamecube":
-			//dolphin.SetButtonMap(data["value"])
+			//dolphin.SetButtonMap(button_map)
 
 		case "nintendo64":
-			//mupen64plus.SetButtonMap(data["value"])
+			//mupen64plus.SetButtonMap(button_map)
 
 		case "saturn":
-			//ssf.SetButtonMap(data["value"])
+			//ssf.SetButtonMap(button_map)
 
 		case "dreamcast":
-			demul.SetButtonMap(ass)
+			demul.SetButtonMap(button_map)
 
 		case "Playstation":
-			//pcsxr.SetButtonMap(data["value"])
+			//pcsxr.SetButtonMap(button_map)
 
 		case "playstation2":
-			//pcsx2.SetButtonMap(data["value"])
+			//pcsx2.SetButtonMap(button_map)
 	}
 }
 
@@ -1017,6 +1020,8 @@ func main() {
 	db = make(map[string]map[string]map[string]interface{})
 	file_modify_dates = map[string]map[string]int64{}
 	long_running_tasks = map[string]LongRunningTask{}
+
+	demul = helpers.NewDemul()
 
 	// Move to the main emu_archive directory no matter what path we are launched from
 	_, root, _, _ := runtime.Caller(0)

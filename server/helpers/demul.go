@@ -40,15 +40,15 @@ var gpu_dll_version string
 var directx_version int
 
 type Demul struct {
-	BaseConsole
+	*BaseConsole
 }
 
-func (self *Demul) Setup() {
-	// FIXME: How do we run the base class constructor?
-	//BaseConsole.setup("config/demul.json")
+func NewDemul() *Demul {
+	self := &Demul{}
+	self.BaseConsole = NewBaseConsole("config/demul.json")
 
 	// Setup the initial map, if there is none
-	if self.button_map != nil {
+	if self.button_map == nil {
 		self.button_map = map[string]string {
 			"btn_up_demul" : "",
 			"btn_down_demul" : "",
@@ -71,6 +71,8 @@ func (self *Demul) Setup() {
 			"btn_right_stick_right_demul" : "",
 		}
 	}
+
+	return self
 }
 
 func (self *Demul) IsInstalled() bool {

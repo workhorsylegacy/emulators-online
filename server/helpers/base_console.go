@@ -31,7 +31,7 @@ import (
 	"path/filepath"
 	"os"
 	//"runtime"
-	//"log"
+	"log"
 	//"os/exec"
 	//"encoding/base64"
 	"encoding/json"
@@ -43,30 +43,30 @@ type BaseConsole struct {
 	button_map map[string]string
 }
 
-func (self *BaseConsole) Setup(config_path string) error {
+func NewBaseConsole(config_path string) *BaseConsole {
+	self := &BaseConsole{}
 	self.config_path = config_path
-	//self.button_map = map[string]string{}
 
 	// Load the config
 	if IsFile(self.config_path) {
 		data, err := ioutil.ReadFile(self.config_path)
 		if err != nil {
-			return err
+			log.Fatal(err)
 		}
-		err = json.Unmarshal(data, self.button_map)
+		err = json.Unmarshal(data, &self.button_map)
 		if err != nil {
-			return err
+			log.Fatal(err)
 		}
 	}
 
-	return nil
+	return self
 }
 
 func (self *BaseConsole) SetButtonMap(button_map map[string]string) error {
 	self.button_map = button_map
 
 	// Open the file
-	f, err := os.Open(self.config_path)
+	f, err := os.Create(self.config_path)
 	if err != nil {
 		return err
 	}
