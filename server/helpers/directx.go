@@ -36,22 +36,20 @@ import(
 var g_directx_version int
 var g_version_channel chan int
 
-func find_directx_version(version_channel chan int) {
+func findDirectxVersion(version_channel chan int) {
 	// Run dxdiag and write its output to a file
 	cmd := exec.Command("dxdiag.exe", "/t", "directx_info.txt")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
 	if err != nil {
-		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
-		return
+		log.Fatal(fmt.Sprintf("Failed to determine DirectX version: %s\r\n", err))
 	}
 
 	// Get the info from the file
 	data, err := ioutil.ReadFile("directx_info.txt")
 	if err != nil {
-		fmt.Printf("Failed to determine DirectX version: %s\r\n", err)
-		return
+		log.Fatal(fmt.Sprintf("Failed to determine DirectX version: %s\r\n", err))
 	}
 	string_data := string(data)
 	raw_version := Between(string_data, "DirectX Version: ", "\r\n")
@@ -85,7 +83,7 @@ func GetDirectXVersion() int {
 func init() {
 	// Start the goroutine that looks up the DirectX version
 	g_version_channel = make(chan int)
-	go find_directx_version(g_version_channel)
+	go findDirectxVersion(g_version_channel)
 }
 
 
