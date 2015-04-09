@@ -133,7 +133,7 @@ function on_search(evt) {
 		return;
 	}
 //*/
-///*
+/*
 	// Match game developer
 	var match_developer_db = [];
 	var lower_search = search_raw.toLowerCase();
@@ -151,8 +151,8 @@ function on_search(evt) {
 			}
 		});
 	});
-//*/
-///*
+*/
+/*
 	// Match game genre
 	var match_genre_db = [];
 	var lower_search = search_raw.toLowerCase();
@@ -170,7 +170,7 @@ function on_search(evt) {
 			}
 		});
 	});
-//*/
+*/
 ///*
 	// Match whole game name
 	var match_whole_db = [];
@@ -178,7 +178,6 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
-		//console.log(console_name);
 		var console_data = db[console_name];
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -199,7 +198,7 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
-		var console_data = db[console_names];
+		var console_data = db[console_name];
 
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
@@ -282,7 +281,7 @@ function on_search(evt) {
 
 		$.each(names, function(j, name) {
 			var is_match = false;
-///*
+/*
 			// Developer matches
 			$.each(match_developer_db, function(k, gname) {
 				if(name == gname) {
@@ -290,8 +289,8 @@ function on_search(evt) {
 					return false;
 				}
 			});
-//*/
-///*
+*/
+/*
 			// Genre matches
 			$.each(match_genre_db, function(k, gname) {
 				if(name == gname) {
@@ -299,7 +298,7 @@ function on_search(evt) {
 					return false;
 				}
 			});
-//*/
+*/
 ///*
 			// Whole matches
 			$.each(match_whole_db, function(k, gname) {
