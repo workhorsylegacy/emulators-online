@@ -1011,6 +1011,7 @@ func main() {
 	//_, root, _, _ := runtime.Caller(0)
 	//root = filepath.Dir(root)
 
+	// FIXME: If there are no directories, store the data in AppData
 	// Make the directories if they don't exists
 	dirs := []string {
 		"cache",
