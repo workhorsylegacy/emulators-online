@@ -45,7 +45,7 @@ Build and run the exe
 ~~~bash
 cd C:/GO_WORKSPACE/src/emu_archive
 go run server/generate/generate_include_files.go
-go run server/server.go
+go run server/emu_archive.go
 ~~~
 
 Visit this url
