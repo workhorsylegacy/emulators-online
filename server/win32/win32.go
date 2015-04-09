@@ -41,6 +41,13 @@ type (
 	HRESULT int32
 )
 
+type RECT struct {
+	Left int
+	Top int
+	Right int
+	Bottom int
+}
+
 type BROWSEINFO struct {
 	Owner        HWND
 	Root         *uint16
@@ -52,6 +59,18 @@ type BROWSEINFO struct {
 	Image        int32
 }
 
+const (
+	SWP_NOSIZE                        = 0x0001
+	SWP_NOMOVE                        = 0x0002
+	HWND_NOTOPMOST                    = ^HWND(1) // -2
+	HWND_TOPMOST                      = ^HWND(0) // -1
+	MOUSEEVENTF_LEFTDOWN              = 0x0002
+	MOUSEEVENTF_LEFTUP                = 0x0004
+	VK_MENU                           = 0x12
+	VK_RETURN                         = 0x0D
+	KEYEVENTF_KEYUP                   = 0x0002
+)
+
 var (
 	moduser32                         = syscall.NewLazyDLL("user32.dll")
 	procGetWindowTextLength           = moduser32.NewProc("GetWindowTextLengthW")
@@ -59,11 +78,87 @@ var (
 	procEnumWindows                   = moduser32.NewProc("EnumWindows")
 	procGetForegroundWindow           = moduser32.NewProc("GetForegroundWindow")
 	procGetDesktopWindow              = moduser32.NewProc("GetDesktopWindow")
+	procShowWindow                    = moduser32.NewProc("ShowWindow")
+	procSetWindowPos                  = moduser32.NewProc("SetWindowPos")
+	procSetActiveWindow               = moduser32.NewProc("SetActiveWindow")
+	procSetCursorPos                  = moduser32.NewProc("SetCursorPos")
+	procMouseEvent                    = moduser32.NewProc("mouse_event")
+	procKeybdEvent                    = moduser32.NewProc("keybd_event")
+	procGetWindowRect                 = moduser32.NewProc("GetWindowRect")
 
 	modshell32                        = syscall.NewLazyDLL("shell32.dll")
 	procSHBrowseForFolder             = modshell32.NewProc("SHBrowseForFolderW")
 	procSHGetPathFromIDList           = modshell32.NewProc("SHGetPathFromIDListW")
 )
+
+func KeybdEvent(bVk byte, bScan byte, dwFlags int, dwExtraInfo uint) {
+	_, _, _ = procKeybdEvent.Call(
+		uintptr(bVk),
+		uintptr(bScan),
+		uintptr(dwFlags),
+		uintptr(dwExtraInfo),
+	)
+}
+
+func GetWindowRect(hwnd HWND) *RECT {
+	var rect RECT
+	_, _, _ = procGetWindowRect.Call(
+		uintptr(hwnd),
+		uintptr(unsafe.Pointer(&rect)),
+	)
+
+    return &rect
+}
+
+func SetCursorPos(x int, y int) bool {
+	ret, _, _ := procSetCursorPos.Call(uintptr(x), uintptr(y))
+	int_ret := int(ret)
+	if int_ret == 1 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func MouseEvent(dwFlags int, dx int, dy int, dwData int, dwExtraInfo uint) {
+	_, _, _ = procMouseEvent.Call(
+		uintptr(dwFlags),
+		uintptr(dx),
+		uintptr(dy),
+		uintptr(dwData),
+		uintptr(dwExtraInfo),
+	)
+}
+
+func ShowWindow(hwnd HWND, boolCmdShow bool) bool {
+	var nCmdShow int
+	if boolCmdShow {
+		nCmdShow = 1
+	} else {
+		nCmdShow = 0
+	}
+	ret, _, _ := procShowWindow.Call(uintptr(hwnd), uintptr(nCmdShow))
+	return int(ret) > 0
+}
+
+func SetActiveWindow(hwnd HWND) HWND {
+	ret, _, _ := procShowWindow.Call(uintptr(hwnd))
+	return HWND(ret)
+}
+
+func SetWindowPos(hwnd HWND, hWndInsertAfter HWND, x int, y int, cx int, cy int, uFlags uint) bool {
+	ret, _, _ := procSetWindowPos.Call(
+		uintptr(hwnd),
+		uintptr(hWndInsertAfter),
+		uintptr(x),
+		uintptr(y),
+		uintptr(cx),
+		uintptr(cy),
+		uintptr(uFlags),
+	)
+
+    return int(ret) != 0
+}
 
 func GetWindowTextLength(hwnd HWND) int {
 	ret, _, _ := procGetWindowTextLength.Call(uintptr(hwnd))

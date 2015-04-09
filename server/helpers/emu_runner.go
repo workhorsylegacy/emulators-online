@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"time"
 	"log"
+	"emu_archive/server/win32"
 )
 
 type CommandWithArgs struct {
@@ -43,7 +44,6 @@ type EmuRunner struct {
 	full_screen bool
 	full_screen_alt_enter bool
 	emu_proc *exec.Cmd
-	foundWindows []string
 }
 
 func (self *EmuRunner) Setup(command CommandWithArgs, emu_title_bar_text string, full_screen bool, full_screen_alt_enter bool) {
@@ -52,19 +52,9 @@ func (self *EmuRunner) Setup(command CommandWithArgs, emu_title_bar_text string,
 	self.full_screen = full_screen
 	self.full_screen_alt_enter = full_screen_alt_enter
 	//self.emu_proc = nil
-	//self.foundWindows = []
 }
 
 func (self *EmuRunner) Run() {
-/*
-	enumWindowFunc := func(hwnd, windowList) {
-		text = win32gui.GetWindowText(hwnd)
-		className = win32gui.GetClassName(hwnd)
-		if text.find(self.emu_title_bar_text) >= 0 {
-			windowList = windowList.Append((hwnd, text, className))
-		}
-	}
-*/
 	// 1/10th of a second
 	wait_time := time.Millisecond * 100.0
 
@@ -81,68 +71,47 @@ func (self *EmuRunner) Run() {
 	}
 
 	// Wait for the program's window to actually be created
+	var hwnd win32.HWND
+	var title string
 	time.Sleep(wait_time)
 	for {
-		fmt.Printf("Waiting ...\r\n")
+		fmt.Printf("Waiting for emulator window to appear ...\r\n")
 		// Look through all the windows and find the one with the title bar text we want
-//		win32.EnumWindows(enumWindowFunc, self.foundWindows)
+		hwnd, title = win32.FindWindowWithTitleText(self.emu_title_bar_text)
 
 		// Sleep for a bit if the window was not found
-		if len(self.foundWindows) < 1 {
+		if title == "" {
 			time.Sleep(time.Second)
 		} else {
 			break
 		}
 	}
-/*
-	// Focus the window
+
+	// Show the window if it is minimized
 	time.Sleep(wait_time)
-	for {
-		fmt.Printf("Waiting ...\r\n")
-		// Look through all the windows and find the one with the title bar text we want
-		win32gui.EnumWindows(enumWindowFunc, self.foundWindows)
+	win32.ShowWindow(hwnd, true)
+	win32.SetWindowPos(hwnd, win32.HWND_TOPMOST, 0, 0, 0,0, win32.SWP_NOMOVE | win32.SWP_NOSIZE)
+	win32.SetWindowPos(hwnd, win32.HWND_NOTOPMOST, 0, 0, 0,0, win32.SWP_NOMOVE | win32.SWP_NOSIZE)
+	win32.SetActiveWindow(hwnd)
+	//win32.SetForegroundWindow(hwnd)
 
-		if ! self.foundWindows {
-			continue
-		}
-
-		// Focus the window
-		got_window = False
-		for hwnd, text, className in self.foundWindows {
-			// Show the window if it is minimized
-			time.Sleep(wait_time)
-			win32gui.ShowWindow(hwnd, True)
-			win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0,0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
-			win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0,0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
-			win32gui.SetActiveWindow(hwnd)
-			//win32gui.SetForegroundWindow(hwnd)
-
-			// Move the mouse to the window corner, click on it, and move the mouse to the corner
-			time.Sleep(wait_time)
-			x, y, w, h = win32gui.GetWindowRect(hwnd)
-			win32api.SetCursorPos((x+1, y+1))
-			win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
-			win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
-			win32api.SetCursorPos((0, 0))
-			got_window = True
-			break
-		}
-					
-		if got_window {
-			break
-		}
-	}
+	// Move the mouse to the window corner, click on it, and move the mouse to the corner
+	time.Sleep(wait_time)
+	rect := win32.GetWindowRect(hwnd)
+	win32.SetCursorPos(rect.Left + 1, rect.Top + 1)
+	win32.MouseEvent(win32.MOUSEEVENTF_LEFTDOWN, rect.Left, rect.Top, 0, 0)
+	win32.MouseEvent(win32.MOUSEEVENTF_LEFTUP, rect.Left, rect.Top, 0, 0)
+	win32.SetCursorPos(0, 0)
 
 	// Fullscreening the emu window with alt + enter if needed
 	if self.full_screen && self.full_screen_alt_enter {
 		time.Sleep(wait_time)
-		win32api.keybd_event(win32con.VK_MENU, 0, 0, 0)
-		win32api.keybd_event(win32con.VK_RETURN, 0, 0, 0)
-		time.Sleep(time.Second(2))
-		win32api.keybd_event(win32con.VK_RETURN, 0, win32con.KEYEVENTF_KEYUP, 0)
-		win32api.keybd_event(win32con.VK_MENU, 0, win32con.KEYEVENTF_KEYUP, 0)
+		win32.KeybdEvent(win32.VK_MENU, 0, 0, 0)
+		win32.KeybdEvent(win32.VK_RETURN, 0, 0, 0)
+		time.Sleep(time.Second * 2)
+		win32.KeybdEvent(win32.VK_RETURN, 0, win32.KEYEVENTF_KEYUP, 0)
+		win32.KeybdEvent(win32.VK_MENU, 0, win32.KEYEVENTF_KEYUP, 0)
 	}
-*/
 }
 
 func (self *EmuRunner) Stop() string {
