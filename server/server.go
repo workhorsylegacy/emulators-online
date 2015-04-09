@@ -29,6 +29,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"runtime"
 	"io/ioutil"
 	"path/filepath"
 	"os"
@@ -1008,8 +1009,16 @@ func main() {
 	demul = helpers.NewDemul()
 
 	// Move to the main emu_archive directory no matter what path we are launched from
-	//_, root, _, _ := runtime.Caller(0)
+	_, root, _, _ := runtime.Caller(0)
+	fmt.Printf("root: %v\r\n", root)
+	
 	//root = filepath.Dir(root)
+	app_data := filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Local", "emu_archive")
+	fmt.Printf("app_data: %v\r\n", app_data)
+	if ! helpers.IsDir(app_data) {
+		os.Mkdir(app_data, os.ModeDir)
+	}
+	os.Chdir(app_data)
 
 	// FIXME: If there are no directories, store the data in AppData
 	// Make the directories if they don't exists

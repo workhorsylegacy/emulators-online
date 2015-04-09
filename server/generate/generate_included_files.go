@@ -30,6 +30,17 @@ func main() {
 		"server/db_playstation2_official_jp.json",
 		"server/db_playstation2_official_ko.json",
 		"server/db_playstation2_official_us.json",
+		"server/dolphin.py",
+		"server/file_mounter.py",
+		"server/identify_dreamcast_games.py",
+		"server/identify_playstation2_games.py",
+		"server/iso9660.py",
+		"server/mupen64plus.py",
+		"server/pcsx2.py",
+		"server/pcsxr.py",
+		"server/read_udf.py",
+		"server/ssf.py",
+		"server/tray_icon.py",
 	}
 	out, _ := os.Create("server/generated/generated_files.go")
 	out.Write([]byte("package generated\r\n\r\n"))
