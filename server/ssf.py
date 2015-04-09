@@ -474,7 +474,7 @@ class SSF(base_console.BaseConsole):
 			'"'
 
 		# Save SSF.ini
-		ini.write_ini_file('emulators/SSF_012_beta_R4/SSF.ini', config)
+		ini.WriteIniFile('emulators/SSF_012_beta_R4/SSF.ini', config)
 		
 		config = {
 			# CardridgeID
@@ -722,7 +722,7 @@ class SSF(base_console.BaseConsole):
 		}
 
 		# Save Setting.ini
-		ini.write_ini_file('emulators/SSF_012_beta_R4/Setting.ini', config)
+		ini.WriteIniFile('emulators/SSF_012_beta_R4/Setting.ini', config)
 
 	def run(self, path, binary, bios_path):
 		# Unmount any games

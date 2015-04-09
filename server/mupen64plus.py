@@ -117,7 +117,7 @@ class Mupen64Plus(base_console.BaseConsole):
 			}
 		}
 
-		ini.write_ini_file(os.path.expanduser('~/AppData/Roaming/Mupen64Plus/mupen64plus.cfg'), config)
+		ini.WriteIniFile(os.path.expanduser('~/AppData/Roaming/Mupen64Plus/mupen64plus.cfg'), config)
 
 	def run(self, path, binary):
 		self._setup_config()

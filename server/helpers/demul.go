@@ -79,7 +79,7 @@ func (self *Demul) IsInstalled() bool {
 	return IsDir("emulators/Demul/")
 }
 
-func (self *Demul) _setup_pad() {
+func (self *Demul) setupPad() {
 		config := map[string]map[string]interface{} {
 			"JOY0_0" : {
 				"UP" : 0,
@@ -571,10 +571,10 @@ func (self *Demul) _setup_pad() {
 			"S2RIGHT" : BUTTON_CODE_MAP[self.button_map["btn_right_stick_right_demul"]],
 		}
 
-		write_ini_file("emulators/Demul/padDemul.ini", config)
+		WriteIniFile("emulators/Demul/padDemul.ini", config)
 }
 
-func (self *Demul) _setup_spu() {
+func (self *Demul) setupSpu() {
 	config := map[string]map[string]interface{} {
 		"main" : {
 			"spuDisable" : "false",
@@ -584,10 +584,10 @@ func (self *Demul) _setup_spu() {
 			"bufSize" : 2048,
 		},
 	}
-	write_ini_file("emulators/Demul/spuDemul.ini", config)
+	WriteIniFile("emulators/Demul/spuDemul.ini", config)
 }
 
-func (self *Demul) _setup_net() {
+func (self *Demul) setupNet() {
 	config := map[string]map[string]interface{} {
 		"main" : {
 			"netEnable" : "false",
@@ -595,20 +595,20 @@ func (self *Demul) _setup_net() {
 			"NameOverride" : "",
 		},
 	}
-	write_ini_file("emulators/Demul/netDemul.ini", config)
+	WriteIniFile("emulators/Demul/netDemul.ini", config)
 }
 
-func (self *Demul) _setup_gdr() {
+func (self *Demul) setupGdr() {
 		config := map[string]map[string]interface{} {
 			"main" : {
 				"imageFileName" : "",
 				"openDialog" : "false",
 			},
 		}
-		write_ini_file("emulators/Demul/gdrImage.ini", config)
+		WriteIniFile("emulators/Demul/gdrImage.ini", config)
 }
 
-func (self *Demul) _setup_directx() {
+func (self *Demul) setupDirectx() {
 		// Setup DirectX
 		config := map[string]map[string]interface{} {
 			"main" : {
@@ -637,15 +637,15 @@ func (self *Demul) _setup_directx() {
 		}
 
 		if directx_version == 11 {
-			write_ini_file("emulators/Demul/gpuDX11.ini", config)
+			WriteIniFile("emulators/Demul/gpuDX11.ini", config)
 		} else if directx_version == 10 {
-			write_ini_file("emulators/Demul/gpuDX10.ini", config)
+			WriteIniFile("emulators/Demul/gpuDX10.ini", config)
 		} else {
 			log.Fatal("Failed to determine DirectX version.\r\n")
 		}
 }
 
-func (self *Demul) _setup_demul() map[string]map[string]interface{} {
+func (self *Demul) setupDemul() map[string]map[string]interface{} {
 		// Setup Demul
 		files_nvram, _ := filepath.Abs("emulators/Demul/nvram/")
 		files_roms0, _ := filepath.Abs("emulators/Demul/roms/")
@@ -738,7 +738,7 @@ func (self *Demul) _setup_demul() map[string]map[string]interface{} {
 				"romsPathsCount" : 1,
 			},
 		}
-		write_ini_file("emulators/Demul/Demul.ini", config)
+		WriteIniFile("emulators/Demul/Demul.ini", config)
 		return config
 }
 
@@ -754,12 +754,12 @@ func (self *Demul) Run(path string, binary string, on_stop func(memory_card []by
 	}
 
 	// Setup ini files
-	self._setup_spu()
-	self._setup_pad()
-	self._setup_net()
-	self._setup_gdr()
-	self._setup_directx()
-	config := self._setup_demul()
+	self.setupSpu()
+	self.setupPad()
+	self.setupNet()
+	self.setupGdr()
+	self.setupDirectx()
+	config := self.setupDemul()
 
 	// Get the window title
 	directx_dll := config["plugins"]["gpu"]

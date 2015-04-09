@@ -33,7 +33,7 @@ import (
 )
 
 
-func read_ini_file(file_path string) (map[string]map[string]interface{}, error) {
+func ReadIniFile(file_path string) (map[string]map[string]interface{}, error) {
 	data, err := ioutil.ReadFile(file_path)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func read_ini_file(file_path string) (map[string]map[string]interface{}, error) 
 }
 
 
-func write_ini_file(file_name string, config map[string]map[string]interface{}) error {
+func WriteIniFile(file_name string, config map[string]map[string]interface{}) error {
 	f, err := os.Create(file_name)
 	if err != nil {
 		return err

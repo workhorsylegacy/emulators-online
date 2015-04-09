@@ -423,7 +423,7 @@ class Dolphin(base_console.BaseConsole):
 				'LoopReplay' : True
 			}
 		}
-		ini.write_ini_file(ini_dolphin, config)
+		ini.WriteIniFile(ini_dolphin, config)
 
 		# Create GCPadNew.ini
 		ini_gc_pad = os.path.expanduser('~/Documents/Dolphin Emulator/Config/GCPadNew.ini')
@@ -458,7 +458,7 @@ class Dolphin(base_console.BaseConsole):
 				'D-Pad/Right' : BUTTON_CODE_MAP[self.button_map['btn_right_dolphin']],
 			}
 		}
-		ini.write_ini_file(ini_gc_pad, config)
+		ini.WriteIniFile(ini_gc_pad, config)
 
 		# Create gfx_opengl.ini
 		ini_gfx_opengl = os.path.expanduser('~/Documents/Dolphin Emulator/Config/gfx_opengl.ini')
@@ -517,7 +517,7 @@ class Dolphin(base_console.BaseConsole):
 				'EFBEmulateFormatChanges' : False
 			}
 		}
-		ini.write_ini_file(ini_gfx_opengl, config)
+		ini.WriteIniFile(ini_gfx_opengl, config)
 
 		# Create Logger.ini
 		ini_logger = os.path.expanduser('~/Documents/Dolphin Emulator/Config/Logger.ini')
@@ -532,7 +532,7 @@ class Dolphin(base_console.BaseConsole):
 				'WrapLines' : False
 			}
 		}
-		ini.write_ini_file(ini_logger, config)
+		ini.WriteIniFile(ini_logger, config)
 
 		# Create WiimoteNew.ini
 		ini_wiimote = os.path.expanduser('~/Documents/Dolphin Emulator/Config/WiimoteNew.ini')
@@ -553,7 +553,7 @@ class Dolphin(base_console.BaseConsole):
 				'Source' : 0
 			}
 		}
-		ini.write_ini_file(ini_wiimote, config)
+		ini.WriteIniFile(ini_wiimote, config)
 
 	def run(self, path, binary):
 		self._setup_configs()
