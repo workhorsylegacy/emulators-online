@@ -582,7 +582,7 @@ func _save_memory_card_cb(memory_card []byte) {
 	writer.Write([]byte(memory_card))
 	writer.Close()
 	// FIXME: Send the memory card to the server
-	fmt.Printf("FIXME: Memory card needs saving. length %s\r\n", out_buffer.Len())
+	fmt.Printf("FIXME: Memory card needs saving. length %v\r\n", out_buffer.Len())
 }
 
 func _play_game(ws *websocket.Conn, data map[string]interface{}) {
