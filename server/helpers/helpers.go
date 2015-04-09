@@ -30,6 +30,25 @@ import (
 	"strings"
 )
 
+func SanitizeFileName(name string) string {
+	sanitize_map := map[string]string {
+		"/" : "+",
+		"\\" : "+",
+		": " : " - ",
+		"*" : "+",
+		"?" : "",
+		"\"" : "'",
+		"<" : "[",
+		">" : "]",
+		"|" : "+",
+	}
+	for before, after := range sanitize_map {
+		name = strings.Replace(name, before, after, -1)
+	}
+
+	return name
+}
+
 func Between(original string, before string, after string) string {
 	retval := strings.Split(original, before)[1]
 	retval = strings.Split(retval, after)[0]

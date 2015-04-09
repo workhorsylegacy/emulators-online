@@ -466,7 +466,8 @@ func task_get_game_info(channel_task_progress chan LongRunningTask, channel_is_d
 		// Save the info in the db
 		if info != nil {
 			title := info["title"].(string)
-			clean_title := strings.Replace(strings.Replace(title, ": ", " - ", -1), "/", "+", -1)
+			clean_title := helpers.SanitizeFileName(title)
+
 			db[console][title] = map[string]interface{} {
 				"path" : clean_path(fmt.Sprintf("%s/%s/", path_prefix, clean_title)),
 				"binary" : abs_path(info["file"].(string)),
