@@ -1038,55 +1038,6 @@ func main() {
 		}
     }
 
-	/*
-	// When running as an exe, generate the files
-	import static_files
-
-	// Make the directory structure
-	dirs = [
-			"config", "cache", "downloads",
-			"emulators", "server",
-			"static", "games",
-			"games/Nintendo/",
-			"games/Nintendo/GameCube/",
-			"games/Nintendo/Nintendo64/",
-			"games/Sega/",
-			"games/Sega/Saturn/",
-			"games/Sega/Dreamcast/",
-			"games/Sony/",
-			"games/Sony/Playstation/",
-			"games/Sony/Playstation2/"
-	]
-
-	for dir in dirs:
-		if ! helpers.PathExists(dir):
-			os.Mkdir(dir, os.ModeDir)
-
-	// Make the html, css, js, and json files
-	files = ["configure.html", "index.html", "static/funcault.css", 
-			"static/emu_archive.js", "static/file_uploader.js",
-			"static/input.js", "static/web_socket.js",
-			"static/jquery-2.1.3.min.js", "static/favicon.ico",
-			"db_dreamcast_official_eu.json",
-			"db_dreamcast_official_jp.json",
-			"db_dreamcast_official_us.json",
-			"db_dreamcast_unofficial.json",
-			"db_playstation2_official_as.json",
-			"db_playstation2_official_au.json",
-			"db_playstation2_official_eu.json",
-			"db_playstation2_official_jp.json",
-			"db_playstation2_official_ko.json",
-			"db_playstation2_official_us.json",
-			]
-
-	for file in files:
-		if ! helpers.IsFile(file):
-			with open(file, "wb") as f:
-				data = static_files.static_files[file]
-				data = base64.b64decode(data)
-				f.write(data)
-	*/
-
 	// Load the game database
 	consoles := []string{
 		"gamecube",
