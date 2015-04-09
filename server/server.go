@@ -29,7 +29,7 @@ package main
 import (
 	"fmt"
 	"strings"
-	"runtime"
+	//"runtime"
 	"io/ioutil"
 	"path/filepath"
 	"os"
@@ -997,31 +997,18 @@ func webSocketCB(ws *websocket.Conn) {
 	//ws.Close()
 }
 
-
-func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	// Initialize the globals
-	db = make(map[string]map[string]map[string]interface{})
-	file_modify_dates = map[string]map[string]int64{}
-	long_running_tasks = map[string]LongRunningTask{}
-
-	demul = helpers.NewDemul()
-
-	// Move to the main emu_archive directory no matter what path we are launched from
-	_, root, _, _ := runtime.Caller(0)
-	fmt.Printf("root: %v\r\n", root)
-	
-	//root = filepath.Dir(root)
+func useAppDataForStaticFiles() {
+	// Make the AppData/Local/emu_archive directory
 	app_data := filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Local", "emu_archive")
-	fmt.Printf("app_data: %v\r\n", app_data)
+	fmt.Printf("Storing static files in: %v\r\n", app_data)
 	if ! helpers.IsDir(app_data) {
 		os.Mkdir(app_data, os.ModeDir)
 	}
+
+	// Change to the AppData directory
 	os.Chdir(app_data)
 
-	// FIXME: If there are no directories, store the data in AppData
-	// Make the directories if they don't exists
+	// Make any directories if they don't exists
 	dirs := []string {
 		"cache",
 		"config",
@@ -1037,7 +1024,7 @@ func main() {
 		}
 	}
 
-	// Make the static files if they don't exists
+	// Make any static files if they don't exists
 	static_files := generated.GeneratedFiles()
     for file_name, b64_data := range static_files {
 		if ! helpers.IsFile(file_name) {
@@ -1047,6 +1034,28 @@ func main() {
 			f.Close()
 		}
     }
+}
+
+func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	// Initialize the globals
+	db = make(map[string]map[string]map[string]interface{})
+	file_modify_dates = map[string]map[string]int64{}
+	long_running_tasks = map[string]LongRunningTask{}
+
+	demul = helpers.NewDemul()
+
+	// Move to the main emu_archive directory no matter what path we are launched from
+	//_, root, _, _ := runtime.Caller(0)
+	//fmt.Printf("root: %v\r\n", root)
+	//root = filepath.Dir(root)
+
+	// If "local" use the static files in the current directory
+	// If not use the static files in AppData
+	if len(os.Args) < 2 || os.Args[1] != "local" {
+		useAppDataForStaticFiles()
+	}
 
 	// Load the game database
 	consoles := []string{
