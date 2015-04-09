@@ -1011,7 +1011,32 @@ func main() {
 	//_, root, _, _ := runtime.Caller(0)
 	//root = filepath.Dir(root)
 
-	generated.GenerateFiles()
+	// Make the directories if they don't exists
+	dirs := []string {
+		"cache",
+		"config",
+		"downloads",
+		"emulators",
+		"games",
+		"server",
+		"static",
+	}
+	for _, dir_name := range dirs {
+		if ! helpers.IsDir(dir_name) {
+			os.Mkdir(dir_name, os.ModeDir)
+		}
+	}
+
+	// Make the static files if they don't exists
+	static_files := generated.GeneratedFiles()
+    for file_name, b64_data := range static_files {
+		if ! helpers.IsFile(file_name) {
+			f, _ := os.Create(file_name)
+			data, _ := base64.StdEncoding.DecodeString(b64_data)
+			f.Write(data)
+			f.Close()
+		}
+    }
 
 	/*
 	// When running as an exe, generate the files
