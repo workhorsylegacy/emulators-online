@@ -24,30 +24,29 @@
 
 package main
 
+//go:generate go run server/generate/generate_included_files.go
+
 import (
 	"fmt"
 	"strings"
-	//"io"
 	"io/ioutil"
 	"path/filepath"
 	"os"
 	"errors"
-	"runtime"
 	"log"
 	"os/exec"
 	"compress/zlib"
-	//"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"bytes"
 	"strconv"
-	//"io"
 
 	"net/http"
 	"golang.org/x/net/websocket"
 
 	"emu_archive/server/helpers"
 	"emu_archive/server/win32"
+	"emu_archive/server/generated"
 	//from identify_playstation2_games import *
 )
 
@@ -1009,8 +1008,10 @@ func main() {
 	demul = helpers.NewDemul()
 
 	// Move to the main emu_archive directory no matter what path we are launched from
-	_, root, _, _ := runtime.Caller(0)
-	root = filepath.Dir(root)
+	//_, root, _, _ := runtime.Caller(0)
+	//root = filepath.Dir(root)
+
+	generated.GenerateFiles()
 
 	/*
 	// When running as an exe, generate the files
