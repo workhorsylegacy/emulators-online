@@ -422,7 +422,7 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 			cmd.Stdout = &out
 			err := cmd.Run()
 			if err != nil {
-				fmt.Printf("Failed to run command: %s\r\n", err)
+				fmt.Printf("Failed to get game info for file: %s\r\n", entry)
 				return nil
 			}
 			out_bytes := out.Bytes()
