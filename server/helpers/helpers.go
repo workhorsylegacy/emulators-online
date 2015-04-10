@@ -41,6 +41,7 @@ func RoundPlus(f float64, places int) (float64) {
 }
 
 func SanitizeFileName(name string) string {
+	// Replace all the chars with the safe equiv
 	sanitize_map := map[string]string {
 		"/" : "+",
 		"\\" : "+",
@@ -55,6 +56,9 @@ func SanitizeFileName(name string) string {
 	for before, after := range sanitize_map {
 		name = strings.Replace(name, before, after, -1)
 	}
+
+	// Remove any trailing periods
+	name = strings.Trim(name, ".")
 
 	return name
 }
