@@ -1067,9 +1067,7 @@ func main() {
 		"playstation2",
 	}
 	for _, console := range consoles {
-		//db[console] = map[string]make[string]interface{}
-
-		// Skip if not file
+		// Skip if not a file
 		cache_file := fmt.Sprintf("cache/game_db_%s.json", console)
 		if ! helpers.IsFile(cache_file) {
 			// Init the map for this console
@@ -1077,6 +1075,7 @@ func main() {
 			continue
 		}
 
+		// Read the file and load it into the db
 		file_data, err := ioutil.ReadFile(cache_file)
 		if err != nil {
 			log.Fatal(err)
@@ -1088,12 +1087,17 @@ func main() {
 		}
 		db[console] = console_games
 
-		// Remove any non existent files
-		keys := make([]string, len(db[console]))
+		// Get the names of all the games
+		keys := []string{}
+		for k := range db[console] {
+			keys = append(keys, k)
+		}
+
+		// Remove any games if there is no game file
 		for _, name := range keys {
 			data := db[console][name]
-			binary := data["binary"]
-			if binary != nil && helpers.IsFile(binary.(string)) {
+			binary := data["binary"].(string)
+			if ! helpers.IsFile(binary) {
 				delete(db[console], name)
 			}
 		}
@@ -1116,9 +1120,13 @@ func main() {
 			}
 
 			// Remove any non existent files from the modify db
-			keys := make([]string, len(file_modify_dates[console]))
+			keys := []string{}
+			for k := range file_modify_dates[console] {
+				keys = append(keys, k)
+			}
+
 			for _, entry := range keys {
-				if helpers.IsFile(entry) {
+				if ! helpers.IsFile(entry) {
 					delete(file_modify_dates[console], entry)
 				}
 			}
