@@ -301,12 +301,7 @@
 					<div id="playstation2_requirements_installed">
 						<h2>Install</h2>
 						<p>
-							<span style="color: red;">FIXME: Can't automate download from build server.</span>
 							<input id="btn_install_pcsx2" type="button" value="Loading ..." disabled />
-							<p>
-								Manually download from <a href="http://buildbot.orphis.net/pcsx2/index.php">http://buildbot.orphis.net/pcsx2/index.php</a>
-								and extract to the "emulators/pcsx2" folder.
-							</p>
 						</p>
 
 						<h2>Configure buttons</h2>
@@ -556,7 +551,7 @@ function on_data(data) {
 					$('#btn_install_pcsx2').val('Install');
 					$('#btn_ps2_folder').prop('disabled', true);
 				}
-				$('#btn_install_pcsx2').prop('disabled', true);
+				$('#btn_install_pcsx2').prop('disabled', false);
 				$('#playstation2_requirements_installed').show();
 				$('#playstation2_vcpp_2013_redist_not_installed').hide();
 			} else {
@@ -734,13 +729,14 @@ function action_uninstall(program_name) {
 	socket_send_data(message);
 }
 
-function action_download(file, url, name) {
+function action_download(file, url, name, referer) {
 	var message = {
 		'action' : 'download',
 		'file' : file,
 		'url' : url,
 		'dir' : 'downloads',
-		'name' : name
+		'name' : name,
+		'referer' : referer
 	};
 	socket_send_data(message);
 }
@@ -800,7 +796,7 @@ function setup_ui() {
 	var btn = $("#btn_install_7zip");
 	btn.on('click', function() {
 		// Download the exe
-		action_download('7z920.exe', 'http://www.7-zip.org/a/7z920.exe', '7-Zip');
+		action_download('7z920.exe', 'http://www.7-zip.org/a/7z920.exe', '7-Zip', '');
 
 		// Run the exe
 		action_install('7z920.exe');
@@ -812,7 +808,7 @@ function setup_ui() {
 	var btn = $("#btn_install_vcd");
 	btn.on('click', function() {
 		// Download the exe
-		action_download('SetupVirtualCloneDrive.exe', 'http://static.slysoft.com/SetupVirtualCloneDrive.exe', 'Virtual Clone Drive');
+		action_download('SetupVirtualCloneDrive.exe', 'http://static.slysoft.com/SetupVirtualCloneDrive.exe', 'Virtual Clone Drive', '');
 
 		// Run the exe
 		action_install('SetupVirtualCloneDrive.exe');
@@ -827,7 +823,7 @@ function setup_ui() {
 			action_uninstall('NullDC');
 		} else {
 			// Download the compressed program
-			action_download('nullDC_104_r136.7z', 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z', 'NullDC');
+			action_download('nullDC_104_r136.7z', 'https://nulldc.googlecode.com/files/nullDC_104_r136.7z', 'NullDC', '');
 
 			// Uncompress the program
 			action_install('nullDC_104_r136.7z');
@@ -843,7 +839,7 @@ function setup_ui() {
 			action_uninstall('Demul');
 		} else {
 			// Download the compressed program
-			action_download('demul0582.rar', 'http://demul.emulation64.com/files/demul0582.rar', 'Demul');
+			action_download('demul0582.rar', 'http://demul.emulation64.com/files/demul0582.rar', 'Demul', '');
 
 			// Uncompress the program
 			action_install('demul0582.rar');
@@ -859,7 +855,7 @@ function setup_ui() {
 			action_uninstall('SSF');
 		} else {
 			// Download the compressed program
-			action_download('SSF_012_beta_R4.zip', 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip', 'SSF');
+			action_download('SSF_012_beta_R4.zip', 'http://segaretro.org/images/5/5f/SSF_012_beta_R4.zip', 'SSF', '');
 
 			// Uncompress the program
 			action_install('SSF_012_beta_R4.zip');
@@ -875,7 +871,7 @@ function setup_ui() {
 			action_uninstall('Dolphin');
 		} else {
 			// Download the compressed program
-			action_download('dolphin-master-4.0-5363-x64.7z', 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z', 'Dolphin');
+			action_download('dolphin-master-4.0-5363-x64.7z', 'http://dl.dolphin-emu.org/builds/dolphin-master-4.0-5363-x64.7z', 'Dolphin', '');
 
 			// Uncompress the program
 			action_install('dolphin-master-4.0-5363-x64.7z');
@@ -891,7 +887,7 @@ function setup_ui() {
 			action_uninstall('PCSX-Reloaded');
 		} else {
 			// Download the compressed program
-			action_download('pcsxr-1.9.93-win32.zip', 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20983', 'PCSX Reloaded');
+			action_download('pcsxr-1.9.93-win32.zip', 'http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=pcsxr&DownloadId=722143&FileTime=130221145975400000&Build=20983', 'PCSX Reloaded', '');
 
 			// Uncompress the program
 			action_install('pcsxr-1.9.93-win32.zip');
@@ -907,10 +903,10 @@ function setup_ui() {
 			action_uninstall('PCSX2');
 		} else {
 			// Download the compressed program
-			action_download('pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z', 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-1-gdacadcd&platform=windows-x86', 'PCSX2');
+			action_download('pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z', 'http://buildbot.orphis.net/pcsx2/index.php?m=get&rev=v1.3.1-93-g1aebca3&platform=windows-x86', 'PCSX2', "http://buildbot.orphis.net/pcsx2/index.php?m=detail&rev=v1.3.1-93-g1aebca3&platform=windows-x86");
 
 			// Uncompress the program
-			action_install('pcsx2-v1.3.1-1-gdacadcd-windows-x86.7z');
+			action_install('pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z');
 		}
 
 		// Figure out if it is installed
@@ -923,7 +919,7 @@ function setup_ui() {
 			action_uninstall('Mupen64Plus');
 		} else {
 			// Download the compressed program
-			action_download('mupen64plus-bundle-win32-2.0.zip', 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip', 'Mupen 64 Plus');
+			action_download('mupen64plus-bundle-win32-2.0.zip', 'https://mupen64plus.googlecode.com/files/mupen64plus-bundle-win32-2.0.zip', 'Mupen 64 Plus', '');
 
 			// Uncompress the program
 			action_install('mupen64plus-bundle-win32-2.0.zip');

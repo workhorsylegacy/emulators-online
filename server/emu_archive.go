@@ -624,9 +624,14 @@ func downloadFile(ws *websocket.Conn, data map[string]interface{}) {
 	url := data["url"].(string)
 	directory := data["dir"].(string)
 	name := data["name"].(string)
+	referer := data["referer"].(string)
 
 	// Download the file header
-	resp, err := http.Get(url)
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("Referer", referer)
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36")
+	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("Download failed: %s\r\n", err)
 		return
@@ -744,10 +749,10 @@ func install(ws *websocket.Conn, data map[string]interface{}) {
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
 		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsxr-1.9.93-win32.zip"), "emulators")
-	case "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z":
+	case "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z":
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsx2-v1.3.1-8-gf88bea5-windows-x86.7z"), "emulators")
+		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z"), "emulators")
 	}
 
 	// End uncompressing
@@ -776,7 +781,7 @@ func uninstall(ws *websocket.Conn, data map[string]interface{}) {
 		case "PCSX-Reloaded":
 			os.RemoveAll("emulators/pcsxr")
 		case "PCSX2":
-			os.RemoveAll("emulators/pcsx2")
+			os.RemoveAll("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86")
 	}
 }
 
@@ -876,7 +881,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 		}
 		WebSocketSend(ws, &message)
 	case "PCSX2":
-		exist := helpers.PathExists("emulators/pcsx2/pcsx2.exe")
+		exist := helpers.PathExists("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/pcsx2.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,
