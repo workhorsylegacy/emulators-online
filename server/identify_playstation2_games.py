@@ -270,6 +270,36 @@ def get_playstation2_game_info(game_file):
 
 	raise Exception("Failed to find game in database.")
 
+def main():
+	# Just return if there are no args
+	if len(sys.argv) < 2:
+		return
+
+	# Just return if not a Playstation 2 file
+	game_file = sys.argv[1]
+	if not is_playstation2_file(game_file):
+		return
+
+	# Return 1 if fails to find game info
+	info = None
+	try:
+		info = get_playstation2_game_info(game_file)
+	except:
+		sys.exit(1)
+
+	# Convert any binary strings to normal strings to be JSON friendly
+	for key in info.keys():
+		#print(key)
+		value = info[key]
+		if type(value) is bytes:
+			#print('!!!!!!!!!!!!!!!!!!!!!!!!!!!', value, '??????????')
+			value = value.decode('cp1252', 'ignore').encode('utf-8').decode('utf-8')
+		info[key] = value
+
+	# If the game is found, return the info as JSON
+	print(json.dumps(info))
 
 
-		
+if __name__ == "__main__":
+	main()
+

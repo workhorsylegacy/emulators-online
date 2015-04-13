@@ -61,7 +61,6 @@ type LongRunningTask struct {
 //type SSF struct {}
 //type Mupen64Plus struct {}
 //type PCSXR struct {}
-//type PCSX2 struct {}
 
 var db map[string]map[string]map[string]interface{}
 var file_modify_dates map[string]map[string]int64
@@ -71,7 +70,7 @@ var demul *helpers.Demul
 //var ssf SSF
 //var mupen64plus Mupen64Plus
 //var pcsxr PCSXR
-//var pcsx2 PCSX2
+var pcsx2 *helpers.PCSX2
 
 
 func CleanPath(file_path string) string {
@@ -306,7 +305,7 @@ func setButtonMap(ws *websocket.Conn, data map[string]interface{})  {
 			//pcsxr.SetButtonMap(button_map)
 
 		case "playstation2":
-			//pcsx2.SetButtonMap(button_map)
+			pcsx2.SetButtonMap(button_map)
 	}
 }
 
@@ -331,7 +330,7 @@ func getButtonMap(ws *websocket.Conn, data map[string]interface{}) {
 			//value = pcsxr.GetButtonMap()
 
 		case "playstation2":
-			//value = pcsx2.GetButtonMap()
+			value = pcsx2.GetButtonMap()
 	}
 
 	message := map[string]interface{} {
@@ -415,30 +414,32 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 
 		// Get the game info
 		var info map[string]interface{}
+		var cmd *exec.Cmd
 		if console == "dreamcast" {
-			// Run the command and get the info for this game
-			cmd := exec.Command("python", "server/identify_dreamcast_games.py", entry)
-			var out bytes.Buffer
-			cmd.Stdout = &out
-			err := cmd.Run()
-			if err != nil {
-				fmt.Printf("Failed to get game info for file: %s\r\n", entry)
-				return nil
-			}
-			out_bytes := out.Bytes()
-			if len(out_bytes) > 0 {
-				err := json.Unmarshal(out_bytes, &info)
-				if err != nil {
-					fmt.Printf("Failed to convert json to map: %s\r\n%s\r\n", err, string(out_bytes))
-					return nil
-				}
-			} else {
-				return nil
-			}
-		//} else if console == "playstation2" {
-		//	info, err = get_playstation2_game_info(entry)
+			cmd = exec.Command("python", "server/identify_dreamcast_games.py", entry)
+		} else if console == "playstation2" {
+			cmd = exec.Command("python", "server/identify_playstation2_games.py", entry)
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
+		}
+
+		// Run the command and get the info for this game
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		err = cmd.Run()
+		if err != nil {
+			fmt.Printf("Failed to get game info for file: %s\r\n", entry)
+			return nil
+		}
+		out_bytes := out.Bytes()
+		if len(out_bytes) > 0 {
+			err := json.Unmarshal(out_bytes, &info)
+			if err != nil {
+				fmt.Printf("Failed to convert json to map: %s\r\n%s\r\n", err, string(out_bytes))
+				return nil
+			}
+		} else {
+			return nil
 		}
 		if err != nil {
 			fmt.Printf("Failed to find info for game \"%s\"\r\n%s\r\n", entry, err)
@@ -603,7 +604,7 @@ func playGame(ws *websocket.Conn, data map[string]interface{}) {
 			fmt.Printf("Running PCSX-Reloaded ...\r\n")
 
 		case "playstation2":
-			//pcsx2.Run(path, binary)
+			pcsx2.Run(path, binary)
 			//self.log("playing")
 			fmt.Printf("Running PCSX2 ...\r\n")
 	}
