@@ -164,13 +164,15 @@ KEYBOARD_JS_CODE_MAP = {
 var gamepad = null;
 
 // Find already connected pads
-$.each(navigator.getGamepads(), function(i, pad) {
-	if(pad && pad.id) {
-		gamepad = pad;
-		console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id + ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
-		return false;
-	}
-});
+if(navigator.getGamepads) {
+	$.each(navigator.getGamepads(), function(i, pad) {
+		if(pad && pad.id) {
+			gamepad = pad;
+			console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id + ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
+			return false;
+		}
+	});
+}
 
 // Handle connecting and disconnecting pads
 function gamepad_handler(e, connecting) {
