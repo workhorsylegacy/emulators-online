@@ -218,6 +218,8 @@ func setBios(data map[string]interface{}) (error) {
 	console := data["console"].(string)
 	type_name := data["type"].(string)
 	value := data["value"].(string)
+	is_default := data["is_default"].(bool)
+	data_type := data["type"].(string)
 
 	if console == "playstation2" {
 		// Make the BIOS dir if missing
@@ -226,7 +228,7 @@ func setBios(data map[string]interface{}) (error) {
 		}
 
 		// Convert the base64 data to BIOS and write to file
-		file_name := filepath.Join("emulators/pcsx2/bios/", data["type"].(string))
+		file_name := filepath.Join("emulators/pcsx2/bios/", data_type)
 		f, err := os.Create(file_name)
 		if err != nil {
 			fmt.Printf("Failed to save BIOS file: %s\r\n", err)
@@ -239,6 +241,14 @@ func setBios(data map[string]interface{}) (error) {
 		}
 		f.Write(b642_data)
 		f.Close()
+
+		// If the default BIOS, write the name to file
+		if is_default {
+			err := ioutil.WriteFile("emulators/pcsx2/bios/default_bios", []byte(data_type), 0644)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	} else if console == "dreamcast" {
 		// Make the BIOS dir if missing
 		if ! helpers.IsDir("emulators/Demul/roms") {

@@ -29,9 +29,9 @@ import(
 	"os"
 	//"strings"
 	//"fmt"
-	//"io/ioutil"
+	"io/ioutil"
 	//"path/filepath"
-	//"log"
+	"log"
 )
 
 type PCSX2 struct {
@@ -259,7 +259,7 @@ func (self *PCSX2) setupPCSX2_vm() {
 	WriteIniFile("emulators/pcsx2/inis/SPU2-X.ini", config)
 }
 
-func (self *PCSX2) setupPCSX2_ui() {
+func (self *PCSX2) setupPCSX2_ui(bios_file_name string) {
 	config := map[string]map[string]interface{} {
 		"" : {
 			"MainGuiPosition" : "0,0",
@@ -341,7 +341,7 @@ func (self *PCSX2) setupPCSX2_ui() {
 			"USB" : "USBnull.dll",
 			"FW" : "FWnull.dll",
 			"DEV9" : "DEV9null.dll",
-			"BIOS" : "SCPH39001.bin",
+			"BIOS" : bios_file_name,
 		},
 		"GSWindow" : {
 			"CloseOnEsc" : "enabled",
@@ -423,6 +423,16 @@ func (self *PCSX2) Run(path string, binary string) {
 		full_screen = false
 	}
 
+	// Find the default bios
+	var bios_file_name string
+	if IsFile("emulators/pcsx2/bios/default_bios") {
+		data, err := ioutil.ReadFile("emulators/pcsx2/bios/default_bios")
+		if err != nil {
+			log.Fatal(err)
+		}
+		bios_file_name = string(data)
+	}
+
 	// Setup ini files
 	if ! IsDir("emulators/pcsx2/inis") {
 		os.Mkdir("emulators/pcsx2/inis", os.ModeDir)
@@ -433,7 +443,7 @@ func (self *PCSX2) Run(path string, binary string) {
 	self.setupUSBnull()
 	self.setupPCSX2_vm()
 	self.setupSPU2_x()
-	self.setupPCSX2_ui()
+	self.setupPCSX2_ui(bios_file_name)
 
 	os.Chdir("emulators/pcsx2/")
 	command := CommandWithArgs {

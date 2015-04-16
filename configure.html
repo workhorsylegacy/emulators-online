@@ -778,11 +778,12 @@ function action_set_game_directory(console_name, directory_name) {
 	socket_send_data(message);
 }
 
-function action_set_bios(console_name, type_name, file_data) {
+function action_set_bios(console_name, type_name, file_data, is_default) {
 	var message = {
 		'action' : 'set_bios',
 		'console' : console_name,
 		'type' : type_name,
+		'is_default' : is_default,
 		'value' : btoa(file_data)
 	};
 	socket_send_data(message);
@@ -1034,43 +1035,43 @@ function setup_ui() {
 	});
 
 	FileUploader('btn_bios_pcsx2_us', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('playstation2', file_name, file_data);
+		action_set_bios('playstation2', file_name, file_data, true);
 	});
 
 	FileUploader('btn_bios_pcsx2_jp', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('playstation2', file_name, file_data);
+		action_set_bios('playstation2', file_name, file_data, false);
 	});
 
 	FileUploader('btn_bios_pcsx2_eu', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('playstation2', file_name, file_data);
+		action_set_bios('playstation2', file_name, file_data, false);
 	});
 
 	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('dreamcast', 'dc.zip', file_data);
+		action_set_bios('dreamcast', 'dc.zip', file_data, false);
 	});
 
 	FileUploader('btn_bios_demul_aw', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('dreamcast', 'awbios.zip', file_data);
+		action_set_bios('dreamcast', 'awbios.zip', file_data, false);
 	});
 
 	FileUploader('btn_bios_demul_naomi', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('dreamcast', 'naomi.zip', file_data);
+		action_set_bios('dreamcast', 'naomi.zip', file_data, false);
 	});
 
 	FileUploader('btn_bios_demul_naomi2', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('dreamcast', 'naomi2.zip', file_data);
+		action_set_bios('dreamcast', 'naomi2.zip', file_data, false);
 	});
 
 	FileUploader('btn_bios_ssf_usa', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('saturn', 'USA', file_data);
+		action_set_bios('saturn', 'USA', file_data, false);
 	});
 
 	FileUploader('btn_bios_ssf_eur', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('saturn', 'EUR', file_data);
+		action_set_bios('saturn', 'EUR', file_data, false);
 	});
 
 	FileUploader('btn_bios_ssf_jap', 'generic_progress', function(file_name, file_data) {
-		action_set_bios('saturn', 'JAP', file_data);
+		action_set_bios('saturn', 'JAP', file_data, false);
 	});
 }
 
