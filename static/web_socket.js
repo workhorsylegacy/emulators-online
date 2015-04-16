@@ -84,13 +84,17 @@ function setup_websocket(on_data, on_open_cb) {
 		};
 
 		socket.onclose = function() {
-			$("#error_header").show();
-			$("#search_header").hide();
-
-			// Re-connect again in 3 seconds
+			// Show the error page after 1 second, and start the reconnection loop
+			// This prevents the error page from flickering on when we move pages
 			setTimeout(function() {
-				setup_websocket(on_data);
-			}, 3000);
+				$("#error_header").show();
+				$("#search_header").hide();
+
+				// Re-connect again in 3 seconds
+				setTimeout(function() {
+					setup_websocket(on_data);
+				}, 3000);
+			}, 1000);
 		};
 
 		socket.onerror = function(err) {
