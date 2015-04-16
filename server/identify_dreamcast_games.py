@@ -286,6 +286,10 @@ def get_dreamcast_game_info(game_file):
 	maker = header[offset + 80 : offset + 80 + 16].strip()
 	sloppy_title = header[offset + 96 : ].strip()
 	title = None
+	developer = None
+	genre = None
+	publisher = None
+	release_date = None
 
 	# Remove trailing zeros
 	if serial_number.endswith(b' 00'):
@@ -305,17 +309,25 @@ def get_dreamcast_game_info(game_file):
 	# Check for different types of releases
 
 	# Unofficial
+	info = None
 	if serial_number in unofficial_db:
-		title = unofficial_db[serial_number]
+		info = unofficial_db[serial_number]
 	# US
 	elif serial_number in official_us_db:
-		title = official_us_db[serial_number]
+		info = official_us_db[serial_number]
 	# Europe
 	elif serial_number in official_eu_db:
-		title = official_eu_db[serial_number]
+		info = official_eu_db[serial_number]
 	# Japan
 	elif serial_number in official_jp_db:
-		title = official_jp_db[serial_number]
+		info = official_jp_db[serial_number]
+
+	if info:
+		title = info["title"]
+		developer = info["developer"]
+		genre = info["genre"]
+		publisher = info["publisher"]
+		release_date = info["release_date"]
 
 	# Check for games with the same serial number
 	title, serial_number = _fix_games_with_same_serial_number(f, title, serial_number)
@@ -338,6 +350,10 @@ def get_dreamcast_game_info(game_file):
 		'boot' : boot,
 		'maker' : maker,
 		'title' : title,
+		'developer' : developer,
+		'genre' : genre,
+		'publisher' : publisher,
+		'release_date' : release_date,
 		'sloppy_title' : sloppy_title,
 		'header_index' : index,
 	}

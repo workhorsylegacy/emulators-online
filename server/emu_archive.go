@@ -458,9 +458,23 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 				"binary" : AbsPath(info["file"].(string)),
 				"bios" : "",
 				"images" : []string{},
-				"developer" : "", //info["developer"],
-				"genre" : "", //info["genre"],
+				"developer" : "",
+				"publisher" : "",
+				"genre" : "",
 			}
+
+			if val, ok := info["developer"]; ok {
+				db[console][title]["developer"] = val
+			}
+
+			if val, ok := info["publisher"]; ok {
+				db[console][title]["publisher"] = val
+			}
+
+			if val, ok := info["genre"]; ok {
+				db[console][title]["genre"] = val
+			}
+
 			// Get the images
 			image_dir := fmt.Sprintf("%s/%s/", path_prefix, title)
 			expected_images := []string{"title_big.png", "title_small.png"}
