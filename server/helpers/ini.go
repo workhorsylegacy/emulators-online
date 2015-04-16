@@ -68,7 +68,23 @@ func WriteIniFile(file_name string, config map[string]map[string]interface{}) er
 		return err
 	}
 	defer f.Close()
+
+	// First add any fields with no master
+	if pairs, ok := config[""]; ok {
+		// Keys and values
+		for key, value := range pairs {
+			formatted_entry := fmt.Sprintf("%s = %v\r\n", key, value)
+			f.Write([]byte(formatted_entry))
+		}
+	}
+
+	// Add fields with a master
 	for header, pairs := range config {
+		// Skip if there is no master
+		if header == "" {
+			continue
+		}
+
 		// Header
 		formatted_header := fmt.Sprintf("[%s]\r\n", header)
 		f.Write([]byte(formatted_header))
