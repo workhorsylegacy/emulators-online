@@ -388,7 +388,7 @@ function show_navigation(tab_name) {
 jQuery(function($) {
 
 if(!("WebSocket" in window)) {
-	alert("Your browser does not support web sockets");
+	alert("Your browser does not support websockets");
 } else {
 	setup_websocket(on_data, function() {
 		setup_ui();

@@ -93,7 +93,7 @@ func WebSocketSend(thing interface{}) error {
 	// Convert the object to base64ed json
 	message, err := ToBase64Json(thing)
 	if err != nil {
-		fmt.Printf("Failed to encode web socket message: %s\r\n", err)
+		fmt.Printf("Failed to encode websocket message: %s\r\n", err)
 		return err
 	}
 	//fmt.Printf("message: %s\r\n", message)
@@ -107,11 +107,11 @@ func WebSocketSend(thing interface{}) error {
 	write_len, err := g_ws.Write(buffer)
 	if err != nil {
 		g_websocket_needs_restart = true
-		fmt.Printf("Failed to write web socket message: %s\r\n", err)
+		fmt.Printf("Failed to write websocket message: %s\r\n", err)
 		return err
 	}
 	if write_len != len(buffer) {
-		return errors.New("Whole buffer was not written to web socket\r\n")
+		return errors.New("Whole buffer was not written to websocket\r\n")
 	}
 	//fmt.Printf("write_len: %d\r\n", write_len)
 
@@ -125,7 +125,7 @@ func WebSocketRecieve() (map[string]interface{}, error) {
 	// Read the message header
 	read_len, err := g_ws.Read(buffer)
 	if err != nil {
-		fmt.Printf("Failed to read web socket message: %s\r\n", err)
+		fmt.Printf("Failed to read websocket message: %s\r\n", err)
 		return nil, err
 	}
 	//fmt.Printf("read_len: %d\r\n", read_len)
@@ -143,7 +143,7 @@ func WebSocketRecieve() (map[string]interface{}, error) {
 		buffer = make([]byte, message_length)
 		read_len, err = g_ws.Read(buffer)
 		if err != nil {
-			fmt.Printf("Failed to read web socket message: %s\r\n", err)
+			fmt.Printf("Failed to read websocket message: %s\r\n", err)
 			return nil, err
 		}
 		message += string(buffer[0 : read_len])
@@ -156,7 +156,7 @@ func WebSocketRecieve() (map[string]interface{}, error) {
 	// Convert the message from base64 and json
 	thing, err := FromBase64Json(message)
 	if err != nil {
-		fmt.Printf("Failed to decode web socket message: %s\r\n", err)
+		fmt.Printf("Failed to decode websocket message: %s\r\n", err)
 		//fmt.Printf("message: %s\r\n", message)
 		//decoded_message, err := base64.StdEncoding.DecodeString(message)
 		//fmt.Printf("decoded_message: %s\r\n", decoded_message)
@@ -596,7 +596,7 @@ func setGameDirectory(data map[string]interface{}) {
 					shit[name] = percentage
 				}
 
-				// Send the web socket the new map of long running tasks
+				// Send the websocket the new map of long running tasks
 				message := map[string]interface{} {
 					"action" : "long_running_tasks",
 					"value" : shit,
@@ -964,7 +964,7 @@ func webSocketCB(ws *websocket.Conn) {
 		// Read the message
 		message_map, err := WebSocketRecieve()
 		if err != nil {
-			fmt.Printf("Failed to get web socket message: %s\r\n", err)
+			fmt.Printf("Failed to get websocket message: %s\r\n", err)
 			return
 		}
 
