@@ -1,8 +1,8 @@
 {
     "51081": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
+        "developer": "Sega AM2",
+        "genre": "Flight simulator",
+        "publisher": "Sega",
         "release_date": "",
         "title": "Propeller Arena"
     },
@@ -10,12 +10,12 @@
         "developer": "Ubisoft Montpellier",
         "genre": "Platformer",
         "publisher": "Ubisoft",
-        "release_date": "",
+        "release_date": "02000-02-29-0000",
         "title": "Rayman 2: The Great Escape"
     },
     "DR001": {
         "developer": "Duranik",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "redspotgames",
         "release_date": "",
         "title": "Sturmwind"
@@ -45,7 +45,7 @@
         "developer": "Capcom",
         "genre": "Fighting",
         "publisher": "Capcom",
-        "release_date": "",
+        "release_date": "02000-05-31-0000",
         "title": "Street Fighter Alpha 3"
     },
     "GYPLIKSANG": {
@@ -59,12 +59,12 @@
         "developer": "Namco",
         "genre": "Fighting",
         "publisher": "Namco",
-        "release_date": "",
+        "release_date": "01999-09-09-0000",
         "title": "SoulCalibur"
     },
     "MK1014": {
-        "developer": "",
-        "genre": "",
+        "developer": "NG.DEV.TEAM",
+        "genre": "SHMUP",
         "publisher": "Success",
         "release_date": "",
         "title": "NEO XYX"
@@ -73,75 +73,75 @@
         "developer": "Argonaut Games",
         "genre": "Action",
         "publisher": "Crave",
-        "release_date": "",
+        "release_date": "02000-10-31-0000",
         "title": "Red Dog: Superior Firepower"
     },
     "MK5103850": {
         "developer": "Sega",
         "genre": "Beat 'em up",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "01999-12-31-0000",
         "title": "Zombie Revenge"
     },
     "MK5106450": {
         "developer": "Sega",
-        "genre": "Vehicle simulation/,/action",
+        "genre": "Vehicle simulation",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "02001-05-22-0000",
         "title": "18 Wheeler: American Pro Trucker"
     },
     "MK5108350": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Silicon Dreams",
+        "genre": "Soccer",
+        "publisher": "Sega",
+        "release_date": "02000-06-30-0000",
         "title": "Sega WorldWide Soccer 2000 Euro Edition"
     },
     "MK5112550": {
         "developer": "Sega",
-        "genre": "",
+        "genre": "Puzzle",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "02000-01-01-0000",
         "title": "Planet Ring"
     },
     "MK51162": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
+        "developer": "Sega AM2",
+        "genre": "Flight simulator",
+        "publisher": "Sega",
         "release_date": "",
         "title": "Propeller Arena"
     },
     "NGDT300P": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
+        "developer": "NG:DEV.TEAM",
+        "genre": "SHMUP",
+        "publisher": "NG:DEV.TEAM",
         "release_date": "",
-        "title": "Last Hope - Pink Bullets"
+        "title": "Last Hope: Pink Bullets"
     },
     "NGDT304DCCE": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "NEO XYX Collectors Edition"
     },
     "NGDT304DCLE": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "NEO XYX Limited Edition"
     },
     "NGDT304DCRE": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "Success",
         "release_date": "",
         "title": "NEO XYX"
     },
     "NGDTDC300": {
         "developer": "NG:DEV.TEAM",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "RedSpotGames",
         "release_date": "",
         "title": "Last Hope"
@@ -241,7 +241,7 @@
         "developer": "Capcom",
         "genre": "Fighting",
         "publisher": "Capcom",
-        "release_date": "",
+        "release_date": "02000-05-31-0000",
         "title": "Street Fighter Alpha 3"
     },
     "RDC0015": {
@@ -315,11 +315,11 @@
         "title": "Dreamcast VM Data Issue"
     },
     "RDC0025": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
-        "title": "Soul Blade (BLEEMED)"
+        "developer": "Project Soul",
+        "genre": "Fighting",
+        "publisher": "Namco",
+        "release_date": "01997-01-01-0000",
+        "title": "bleemcast! Soul Blade"
     },
     "RDC0026": {
         "developer": "",
@@ -346,7 +346,7 @@
         "developer": "Hitmaker",
         "genre": "Sports",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "02001-08-10-0000",
         "title": "Virtua Athlete 2000"
     },
     "RDC0030": {
@@ -421,7 +421,7 @@
     },
     "RDC0040": {
         "developer": "NG:DEV.TEAM",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "NG:DEV.TEAM",
         "release_date": "",
         "title": "Last Hope: Pink Bullets"
@@ -484,7 +484,7 @@
     },
     "RDC0049": {
         "developer": "Wow Entertainment",
-        "genre": "Sports",
+        "genre": "Fishing",
         "publisher": "Sega",
         "release_date": "",
         "title": "Sega Marine Fishing"
@@ -540,7 +540,7 @@
     },
     "RDC0057": {
         "developer": "Sega Rosso",
-        "genre": "Sports/(/Squash/)",
+        "genre": "Sports",
         "publisher": "Sega",
         "release_date": "",
         "title": "Cosmic Smash"
@@ -658,11 +658,11 @@
         "title": "Evolution 2: Far Off Promise"
     },
     "RDC0074": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
-        "title": "SoulCalibur (99 Minute CD-R Required)"
+        "developer": "Namco",
+        "genre": "Fighting",
+        "publisher": "Namco",
+        "release_date": "01999-09-09-0000",
+        "title": "SoulCalibur"
     },
     "RDC0075": {
         "developer": "UGA",
@@ -736,7 +736,7 @@
     },
     "RDC0085": {
         "developer": "SNK",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "SNK",
         "release_date": "",
         "title": "Twinkle Star Sprites"
@@ -799,16 +799,16 @@
     },
     "RDC0094": {
         "developer": "Sega",
-        "genre": "Vehicle simulation/,/action",
+        "genre": "Vehicle simulation",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "02001-05-22-0000",
         "title": "18 Wheeler: American Pro Trucker"
     },
     "RDC0095": {
         "developer": "Sega",
         "genre": "Beat 'em up",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "01999-12-31-0000",
         "title": "Zombie Revenge"
     },
     "RDC0096": {
@@ -941,7 +941,7 @@
         "developer": "Sega AM2",
         "genre": "First-person shooter",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "02001-06-04-0000",
         "title": "Outtrigger"
     },
     "RDC0115": {
@@ -987,11 +987,11 @@
         "title": "Bomberman Online"
     },
     "RDC0121": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
-        "title": "Red Dog Superior Firepower"
+        "developer": "Argonaut Games",
+        "genre": "Action",
+        "publisher": "Crave",
+        "release_date": "02000-10-31-0000",
+        "title": "Red Dog: Superior Firepower"
     },
     "RDC0122": {
         "developer": "",
@@ -1032,7 +1032,7 @@
         "developer": "UEP Systems",
         "genre": "Snowboarding",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "01999-11-10-0000",
         "title": "Rippin' Riders"
     },
     "RDC0128": {

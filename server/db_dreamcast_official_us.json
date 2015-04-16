@@ -14,9 +14,9 @@
         "title": "Virtua Tennis"
     },
     "AMRRE1": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
+        "developer": "Orion Games",
+        "genre": "Platformer",
+        "publisher": "Hucast Games",
         "release_date": "",
         "title": "Alice's Mom's Rescue"
     },
@@ -35,31 +35,31 @@
         "title": "Official Dreamcast Magazine Vol. 11"
     },
     "MK43011": {
-        "developer": "",
+        "developer": "Polyphony Digital",
         "genre": "Racing",
-        "publisher": "",
-        "release_date": "",
-        "title": "bleem! Gran Turismo 2"
+        "publisher": "Sony Computer Entertainment",
+        "release_date": "01999-12-23-0000",
+        "title": "bleemcast! Gran Turismo 2"
     },
     "MK43021": {
-        "developer": "",
+        "developer": "KCEJ",
         "genre": "Stealth",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Konami",
+        "release_date": "01998-09-03-0000",
         "title": "bleemcast! Metal Gear Solid"
     },
     "MK43031": {
-        "developer": "",
+        "developer": "Namco",
         "genre": "Fighting",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Namco",
+        "release_date": "01997-03-20-0000",
         "title": "bleemcast! Tekken 3"
     },
     "MK51000": {
         "developer": "Sonic Team",
         "genre": "Platformer",
         "publisher": "Sega",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "Sonic Adventure"
     },
     "MK51001": {
@@ -73,14 +73,14 @@
         "developer": "AM1",
         "genre": "Rail shooter",
         "publisher": "Sega",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "The House of the Dead 2"
     },
     "MK51003": {
         "developer": "Visual Concepts",
         "genre": "Football",
         "publisher": "Sega",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "NFL 2K"
     },
     "MK51004": {
@@ -98,10 +98,10 @@
         "title": "Sega Bass Fishing"
     },
     "MK51007": {
-        "developer": "",
+        "developer": "Zoom",
         "genre": "Racing",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Sega",
+        "release_date": "01999-09-09-0000",
         "title": "CART Flag to Flag"
     },
     "MK51010": {
@@ -304,7 +304,7 @@
         "developer": "Sega AM2",
         "genre": "Action-adventure",
         "publisher": "Sega",
-        "release_date": "",
+        "release_date": "02000-11-08-0000",
         "title": "Shenmue Limited Edition"
     },
     "MK51060": {
@@ -371,10 +371,10 @@
         "title": "Phantasy Star Online"
     },
     "MK51102": {
-        "developer": "",
+        "developer": "Sega AM2",
         "genre": "First-person shooter",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Sega",
+        "release_date": "02001-06-04-0000",
         "title": "OutTrigger: International Counter Terrorism Special Force"
     },
     "MK51114": {
@@ -570,7 +570,7 @@
         "developer": "Capcom",
         "genre": "Arena",
         "publisher": "Capcom",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "Power Stone"
     },
     "T1202N": {
@@ -602,10 +602,10 @@
         "title": "Resident Evil 2"
     },
     "T1206N": {
-        "developer": "",
+        "developer": "Capcom",
         "genre": "Fighting",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Capcom",
+        "release_date": "01999-10-31-0000",
         "title": "JoJo's Bizarre Adventure"
     },
     "T1207N": {
@@ -722,7 +722,7 @@
     },
     "T1223N": {
         "developer": "Capcom",
-        "genre": "Arena/Fighting",
+        "genre": "Arena",
         "publisher": "Capcom",
         "release_date": "02001-09-13-0000",
         "title": "Heavy Metal: Geomatrix"
@@ -764,23 +764,23 @@
     },
     "T13002D": {
         "developer": "Luxoflux, Inc.",
-        "genre": "Action/,/Vehicular combat",
+        "genre": "Vehicular combat",
         "publisher": "Activision",
         "release_date": "01999-11-30-0000",
         "title": "Vigilante 8: 2nd Offense"
     },
     "T13002N": {
         "developer": "Luxoflux, Inc.",
-        "genre": "Action/,/Vehicular combat",
+        "genre": "Vehicular combat",
         "publisher": "Activision",
         "release_date": "01999-11-30-0000",
         "title": "Vigilante 8: 2nd Offense"
     },
     "T13003N": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Traveller's Tales",
+        "genre": "Action",
+        "publisher": "Activision",
+        "release_date": "02000-06-30-0000",
         "title": "Disney/Pixar Toy Story 2: Buzz Lightyear to the Rescue!"
     },
     "T13004N": {
@@ -792,7 +792,7 @@
     },
     "T13005N": {
         "developer": "Runecraft",
-        "genre": "Sports",
+        "genre": "Extreme sports",
         "publisher": "Activision",
         "release_date": "02001-09-11-0000",
         "title": "Mat Hoffman's Pro BMX"
@@ -813,7 +813,7 @@
     },
     "T13008N": {
         "developer": "Treyarch",
-        "genre": "Action-adventure/,/beat 'em up",
+        "genre": "Beat 'em up",
         "publisher": "Activision",
         "release_date": "02001-04-19-0000",
         "title": "Spider-Man"
@@ -829,19 +829,19 @@
         "developer": "CRI",
         "genre": "Racing",
         "publisher": "ASC Games",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "TNN Motorsports HardCore Heat"
     },
     "T1401N": {
         "developer": "Namco",
         "genre": "Fighting",
         "publisher": "Namco",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "SoulCalibur"
     },
     "T1402N": {
         "developer": "Namco",
-        "genre": "",
+        "genre": "Puzzle",
         "publisher": "Namco",
         "release_date": "02000-06-25-0000",
         "title": "Mr. Driller"
@@ -883,7 +883,7 @@
     },
     "T15106D": {
         "developer": "Infogrames",
-        "genre": "",
+        "genre": "Racing",
         "publisher": "Infogrames",
         "release_date": "02000-06-26-0000",
         "title": "Wacky Races"
@@ -918,7 +918,7 @@
     },
     "T15111N": {
         "developer": "Rage Software",
-        "genre": "Traditional soccer/simulation",
+        "genre": "Soccer",
         "publisher": "Infogrames",
         "release_date": "02000-05-31-0000",
         "title": "Striker Pro 2000"
@@ -932,7 +932,7 @@
     },
     "T15113N": {
         "developer": "Infogrames",
-        "genre": "",
+        "genre": "Racing",
         "publisher": "Infogrames",
         "release_date": "02000-06-26-0000",
         "title": "Wacky Races"
@@ -981,7 +981,7 @@
     },
     "T15127N": {
         "developer": "Sims",
-        "genre": "",
+        "genre": "Rail shooter",
         "publisher": "Xicat Interactive",
         "release_date": "02001-02-07-0000",
         "title": "Charge 'N Blast"
@@ -1002,7 +1002,7 @@
     },
     "T15130N": {
         "developer": "Digital Eclipse",
-        "genre": "Classic",
+        "genre": "Collection",
         "publisher": "Infogrames",
         "release_date": "02001-07-02-0000",
         "title": "Atari Anniversary Edition"
@@ -1011,7 +1011,7 @@
         "developer": "Ubisoft",
         "genre": "Racing",
         "publisher": "Ubisoft",
-        "release_date": "01999-09-09-0000 September 9, 1999",
+        "release_date": "01999-09-09-0000",
         "title": "Monaco Grand Prix"
     },
     "T17702N": {
@@ -1037,16 +1037,16 @@
     },
     "T17705N": {
         "developer": "Criterion Games",
-        "genre": "",
+        "genre": "Shooter",
         "publisher": "Ubisoft",
         "release_date": "02000-08-22-0000",
         "title": "Deep Fighter"
     },
     "T17706N": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sting",
+        "genre": "Role playing game",
+        "publisher": "Ubisoft",
+        "release_date": "02000-01-01-0000",
         "title": "Evolution: The World of Sacred Device"
     },
     "T17708N": {
@@ -1065,7 +1065,7 @@
     },
     "T17713N": {
         "developer": "Capcom",
-        "genre": "",
+        "genre": "Racing",
         "publisher": "Capcom",
         "release_date": "02000-12-05-0000",
         "title": "POD: Speedzone"
@@ -1156,7 +1156,7 @@
     },
     "T23003N": {
         "developer": "Luxoflux, Inc.",
-        "genre": "Action/,/vehicular combat",
+        "genre": "Vehicular combat",
         "publisher": "LucasArts",
         "release_date": "02000-11-19-0000",
         "title": "Star Wars: Demolition"
@@ -1366,7 +1366,7 @@
     },
     "T40214N": {
         "developer": "Blue Planet Software",
-        "genre": "",
+        "genre": "Puzzle",
         "publisher": "Crave",
         "release_date": "02000-12-20-0000",
         "title": "The Next Tetris: On-line Edition"
@@ -1380,23 +1380,23 @@
     },
     "T40216N": {
         "developer": "CRI",
-        "genre": "Sports",
+        "genre": "Surfing",
         "publisher": "Crave",
         "release_date": "02001-02-28-0000",
         "title": "Surf Rocket Racers"
     },
     "T40217N": {
         "developer": "Treasure",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "Conspiracy Entertainment",
         "release_date": "02001-03-21-0000",
         "title": "Bangai-O"
     },
     "T40218N": {
-        "developer": "",
+        "developer": "Neverland",
         "genre": "Action role-playing game",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Conspiracy Entertainment",
+        "release_date": "02001-02-26-0000",
         "title": "Record of Lodoss War"
     },
     "T40219N": {
@@ -1492,7 +1492,7 @@
     },
     "T41403N": {
         "developer": "Krome Studios",
-        "genre": "Sports",
+        "genre": "Surfing",
         "publisher": "Mattel",
         "release_date": "02000-12-11-0000",
         "title": "Championship Surfer"
@@ -1568,10 +1568,10 @@
         "title": "Virtua Athlete 2000"
     },
     "T44302N": {
-        "developer": "",
+        "developer": "SNK",
         "genre": "Fighting",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Agetec Inc.",
+        "release_date": "02001-06-10-0000",
         "title": "The King of Fighters Evolution"
     },
     "T44303N": {
@@ -1744,7 +1744,7 @@
     },
     "T8120N": {
         "developer": "Z-Axis, Ltd.",
-        "genre": "Sports",
+        "genre": "Extreme Sports",
         "publisher": "Acclaim",
         "release_date": "02000-11-20-0000",
         "title": "Dave Mirra Freestyle BMX"
@@ -1842,7 +1842,7 @@
     },
     "T9709N": {
         "developer": "Eurocom",
-        "genre": "Sports",
+        "genre": "Basketball",
         "publisher": "Midway",
         "release_date": "02001-02-13-0000",
         "title": "NBA Hoopz"
@@ -1856,7 +1856,7 @@
     },
     "T9712N": {
         "developer": "Avalanche Software",
-        "genre": "Sports",
+        "genre": "Football",
         "publisher": "Midway",
         "release_date": "02000-09-14-0000",
         "title": "NFL Blitz 2001"

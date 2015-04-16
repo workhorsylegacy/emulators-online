@@ -1,8 +1,8 @@
 {
     "AMRRE1": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
+        "developer": "Orion Games",
+        "genre": "Platformer",
+        "publisher": "Hucast Games",
         "release_date": "",
         "title": "Alice's Mom's Rescue"
     },
@@ -10,21 +10,21 @@
         "developer": "Sonic Team",
         "genre": "Platformer",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Sonic Adventure"
     },
     "MK5100150": {
         "developer": "Genki",
         "genre": "Fighting",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Virtua Fighter 3tb"
     },
     "MK5100153": {
         "developer": "Genki",
         "genre": "Fighting",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Virtua Fighter 3tb"
     },
     "MK5100250": {
@@ -36,7 +36,7 @@
     },
     "MK5100453": {
         "developer": "Visual Concepts",
-        "genre": "",
+        "genre": "Basketball",
         "publisher": "Sega",
         "release_date": "01999-11-10-0000",
         "title": "NBA 2K"
@@ -45,14 +45,14 @@
         "developer": "Sims",
         "genre": "Fishing",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Sega Bass Fishing"
     },
     "MK5101050": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "UEP Systems",
+        "genre": "Sports",
+        "publisher": "Sega",
+        "release_date": "01999-11-10-0000",
         "title": "Snow Surfers"
     },
     "MK5101153": {
@@ -66,21 +66,21 @@
         "developer": "Sega",
         "genre": "Beat 'em up",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Dynamite Cop!"
     },
     "MK5101950": {
         "developer": "Sega AM3",
         "genre": "Racing",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Sega Rally Championship 2"
     },
     "MK5102050": {
         "developer": "No Cliche",
         "genre": "Action",
         "publisher": "Sega",
-        "release_date": "01999-10-14-0000 October 14, 1999",
+        "release_date": "01999-10-14-0000",
         "title": "Toy Commander"
     },
     "MK5102150": {
@@ -91,31 +91,31 @@
         "title": "Red Dog: Superior Firepower"
     },
     "MK5102250": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Bizarre Creations",
+        "genre": "Racing",
+        "publisher": "Interplay",
+        "release_date": "02000-11-03-0000",
         "title": "MSR: Metropolis Street Racer"
     },
     "MK5102589": {
         "developer": "Black Box",
-        "genre": "",
+        "genre": "Hockey",
         "publisher": "Sega",
         "release_date": "02000-07-07-0000",
         "title": "NHL 2K"
     },
     "MK5102850": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sega",
+        "genre": "Soccer",
+        "publisher": "Sega",
+        "release_date": "02000-02-29-0000",
         "title": "Virtua Striker 2 Ver. 2000.1"
     },
     "MK5103150": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sega",
+        "genre": "Soccer",
+        "publisher": "Sega",
+        "release_date": "01999-12-01-0000",
         "title": "Sega WorldWide Soccer 2000"
     },
     "MK5103350": {
@@ -133,24 +133,24 @@
         "title": "Crazy Taxi"
     },
     "MK5103750": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Amusement Vision",
+        "genre": "Racing",
+        "publisher": "Sega",
+        "release_date": "02001-05-11-0000",
         "title": "Daytona USA 2001"
     },
     "MK5103850": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Silicon Dreams",
+        "genre": "Soccer",
+        "publisher": "Sega",
+        "release_date": "02000-06-30-0000",
         "title": "Sega WorldWide Soccer 2000 Euro Edition"
     },
     "MK5104050": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "CRI",
+        "genre": "Racing",
+        "publisher": "ASC Games",
+        "release_date": "01999-09-09-0000",
         "title": "Buggy Heat"
     },
     "MK5104150": {
@@ -161,10 +161,10 @@
         "title": "Headhunter"
     },
     "MK5104550": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "AM1",
+        "genre": "Rail shooter",
+        "publisher": "Sega",
+        "release_date": "01999-01-01-0000",
         "title": "The House of the Dead 2 with Gun"
     },
     "MK5104950": {
@@ -204,21 +204,21 @@
     },
     "MK5105450": {
         "developer": "Hitmaker",
-        "genre": "Sports",
+        "genre": "Tennis",
         "publisher": "Sega",
         "release_date": "02000-09-08-0000",
         "title": "Virtua Tennis"
     },
     "MK5105850": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Smilebit",
+        "genre": "Platformer",
+        "publisher": "Sega",
+        "release_date": "02000-11-24-0000",
         "title": "Jet Set Radio"
     },
     "MK5105950": {
         "developer": "Sega AM2",
-        "genre": "Action-adventure/,/Adventure/,/Role-playing",
+        "genre": "Role-playing",
         "publisher": "Sega",
         "release_date": "02000-11-06-0000",
         "title": "Shenmue"
@@ -252,15 +252,15 @@
         "title": "Samba de Amigo"
     },
     "MK5109450": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Hitmaker",
+        "genre": "Sports",
+        "publisher": "Sega",
+        "release_date": "02000-01-01-0000",
         "title": "Virtua Athlete 2k"
     },
     "MK5109505": {
         "developer": "Silicon Dreams",
-        "genre": "",
+        "genre": "Soccer",
         "publisher": "Sega",
         "release_date": "02000-12-08-0000",
         "title": "UEFA Dream Soccer"
@@ -273,10 +273,10 @@
         "title": "Phantasy Star Online"
     },
     "MK5110250": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sega AM2",
+        "genre": "First-person shooter",
+        "publisher": "Sega",
+        "release_date": "02001-08-03-0000",
         "title": "OutTrigger: International Counter Terrorism Special Force"
     },
     "MK5111450": {
@@ -302,7 +302,7 @@
     },
     "MK5114864": {
         "developer": "Sega",
-        "genre": "",
+        "genre": "Puzzle",
         "publisher": "Sega",
         "release_date": "02000-01-01-0000",
         "title": "Planet Ring"
@@ -330,23 +330,23 @@
     },
     "MK5117850": {
         "developer": "Visual Concepts",
-        "genre": "Sports",
+        "genre": "Basketball",
         "publisher": "Sega",
         "release_date": "02002-03-08-0000",
         "title": "NBA 2K2"
     },
     "MK5118450": {
         "developer": "Sega AM2",
-        "genre": "FREE (Sandbox)/Action-adventure/Role-playing video game",
+        "genre": "Role-playing video game",
         "publisher": "Sega",
         "release_date": "02001-11-23-0000",
         "title": "Shenmue II"
     },
     "MK5118650": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Hitmaker",
+        "genre": "Tennis",
+        "publisher": "Sega",
+        "release_date": "02001-11-23-0000",
         "title": "Virtua Tennis 2"
     },
     "MK5119050": {
@@ -365,16 +365,16 @@
     },
     "MK5119350": {
         "developer": "Sonic Team",
-        "genre": "",
+        "genre": "MMORPG",
         "publisher": "Sega",
         "release_date": "02002-03-01-0000",
         "title": "Phantasy Star Online Ver. 2"
     },
     "MK5404050": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "CRI",
+        "genre": "Racing",
+        "publisher": "ASC Games",
+        "release_date": "01999-06-08-0000",
         "title": "Buggy Heat"
     },
     "MK820038605": {
@@ -406,17 +406,17 @@
         "title": "Metropolis Street Racer Opel Challenge"
     },
     "NGDT303DCCE": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "NG.DEV.TEAM",
+        "genre": "SHMUP",
+        "publisher": "NG.DEV.TEAM",
+        "release_date": "02012-06-21-0000",
         "title": "GunLord Collectors Edition"
     },
     "NGDT303DCLE": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "NG.DEV.TEAM",
+        "genre": "SHMUP",
+        "publisher": "NG.DEV.TEAM",
+        "release_date": "02012-06-21-0000",
         "title": "GunLord Limited Edition"
     },
     "NGDT303DCRE": {
@@ -428,16 +428,16 @@
     },
     "RDXLEJP": {
         "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "genre": "SHMUP",
+        "publisher": "KTX Software",
+        "release_date": "02014-01-27-0000",
         "title": "Redux: Dark Matters Limited Edition"
     },
     "RDXREJP": {
         "developer": "",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "KTX Software",
-        "release_date": "Unreleased",
+        "release_date": "",
         "title": "Redux: Dark Matters"
     },
     "RRRRDX": {
@@ -456,16 +456,16 @@
     },
     "STWDDC": {
         "developer": "Duranik",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "redspotgames",
         "release_date": "02013-04-24-0000",
         "title": "Sturmwind"
     },
     "T10001D50": {
-        "developer": "",
+        "developer": "Darkblack",
         "genre": "Extreme sports",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "THQ",
+        "release_date": "02000-09-24-0000",
         "title": "MTV Sports: Skateboarding featuring Andy MacDonald"
     },
     "T10003D50": {
@@ -484,7 +484,7 @@
     },
     "T12501D61": {
         "developer": "BioWare",
-        "genre": "Third-person shooter/,/action-adventure",
+        "genre": "Third-person shooter",
         "publisher": "Interplay",
         "release_date": "02000-01-01-0000",
         "title": "MDK 2"
@@ -497,10 +497,10 @@
         "title": "Caesars Palace 2000: Millennium Gold Edition"
     },
     "T12503D61": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Treyarch",
+        "genre": "Hack and slash",
+        "publisher": "Interplay",
+        "release_date": "02000-06-22-0000",
         "title": "Dragon's Blood"
     },
     "T13001D58": {
@@ -512,16 +512,16 @@
     },
     "T13002D71": {
         "developer": "Luxoflux, Inc.",
-        "genre": "Action/,/Vehicular combat",
+        "genre": "Vehicular combat",
         "publisher": "Activision",
         "release_date": "02000-02-18-0000",
         "title": "Vigilante 8: 2nd Offense"
     },
     "T13003D05": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Traveller's Tales",
+        "genre": "Action",
+        "publisher": "Activision",
+        "release_date": "02000-11-17-0000",
         "title": "Disney/Pixar Toy Story 2: Buzz Lightyear to the Rescue!"
     },
     "T13005D05": {
@@ -540,14 +540,14 @@
     },
     "T13010D05": {
         "developer": "Luxoflux, Inc.",
-        "genre": "Action/,/vehicular combat",
+        "genre": "Vehicular combat",
         "publisher": "LucasArts",
         "release_date": "02000-12-15-0000",
         "title": "Star Wars: Demolition"
     },
     "T13011D05": {
         "developer": "Treyarch",
-        "genre": "Action-adventure/,/beat 'em up",
+        "genre": "Beat 'em up",
         "publisher": "Activision",
         "release_date": "02001-06-29-0000",
         "title": "Spider-Man"
@@ -560,31 +560,31 @@
         "title": "SoulCalibur"
     },
     "T15101D05": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Rage Software",
+        "genre": "Action",
+        "publisher": "Infogrames",
+        "release_date": "01999-10-14-0000",
         "title": "Millenium Soldier: Expendable"
     },
     "T15101D50": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Rage Software",
+        "genre": "Action",
+        "publisher": "Infogrames",
+        "release_date": "01999-10-14-0000",
         "title": "Millenium Soldier: Expendable"
     },
     "T15102D50": {
         "developer": "",
-        "genre": "",
+        "genre": "Soccer",
         "publisher": "",
         "release_date": "",
         "title": "UEFA Striker"
     },
     "T15103D61": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "General Entertainment",
+        "genre": "Racing",
+        "publisher": "Infogrames",
+        "release_date": "01999-09-09-0000",
         "title": "Pen Pen"
     },
     "T15104D59": {
@@ -595,10 +595,10 @@
         "title": "Slave Zero"
     },
     "T15105D05": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Eden Studios",
+        "genre": "Racing",
+        "publisher": "Infogrames",
+        "release_date": "02000-05-01-0000",
         "title": "V-Rally 2: Expert Edition"
     },
     "T15106D05": {
@@ -659,14 +659,14 @@
     },
     "T17704D09": {
         "developer": "Criterion Games",
-        "genre": "",
+        "genre": "Shooter",
         "publisher": "Ubisoft",
         "release_date": "02000-09-22-0000",
         "title": "Deep Fighter"
     },
     "T17704D61": {
         "developer": "Criterion Games",
-        "genre": "",
+        "genre": "Shooter",
         "publisher": "Ubisoft",
         "release_date": "02000-09-22-0000",
         "title": "Deep Fighter"
@@ -700,15 +700,15 @@
         "title": "Taxi 2"
     },
     "T17710D50": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Capcom",
+        "genre": "Racing",
+        "publisher": "Capcom",
+        "release_date": "02000-12-15-0000",
         "title": "Pod 2 Multiplayer Online"
     },
     "T17711D71": {
         "developer": "Xilam",
-        "genre": "",
+        "genre": "Adventure",
         "publisher": "Ubisoft",
         "release_date": "02001-05-18-0000",
         "title": "Stupid Invaders"
@@ -750,7 +750,7 @@
     },
     "T17721D50": {
         "developer": "CRI",
-        "genre": "Sports",
+        "genre": "Surfing",
         "publisher": "Crave",
         "release_date": "02000-01-01-0000",
         "title": "Surf Rocket Racers"
@@ -770,10 +770,10 @@
         "title": "StarLancer"
     },
     "T17724D50": {
-        "developer": "",
+        "developer": "Genki",
         "genre": "Racing",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Crave",
+        "release_date": "02000-12-22-0000",
         "title": "Tokyo Highway Challenge 2"
     },
     "T17726D50": {
@@ -1093,7 +1093,7 @@
     },
     "T41402D50": {
         "developer": "Krome Studios",
-        "genre": "Sports",
+        "genre": "Surfing",
         "publisher": "Mattel",
         "release_date": "02001-08-10-0000",
         "title": "Championship Surfer"
@@ -1289,7 +1289,7 @@
     },
     "T7011D50": {
         "developer": "Treasure",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "Conspiracy Entertainment",
         "release_date": "02000-10-20-0000",
         "title": "Bangai-O"
@@ -1505,10 +1505,10 @@
         "title": "Dave Mirra Freestyle BMX"
     },
     "T8121D05": {
-        "developer": "",
+        "developer": "Attention to Detail",
         "genre": "Racing",
-        "publisher": "",
-        "release_date": "",
+        "publisher": "Acclaim",
+        "release_date": "02001-03-09-0000",
         "title": "Ducati World"
     },
     "T9501D76": {

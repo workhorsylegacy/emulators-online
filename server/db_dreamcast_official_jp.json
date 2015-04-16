@@ -1,35 +1,35 @@
 {
     "AMRRE1": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
+        "developer": "Orion Games",
+        "genre": "Platformer",
+        "publisher": "Hucast Games",
         "release_date": "",
         "title": "Alice's Mom's Rescue"
     },
     "DX15CEJP": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "DUX 1.5 Collectors Edition"
     },
     "DX15LEJP": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "DUX 1.5 Limited Edition"
     },
     "DX15REJP": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "DUX 1.5"
     },
     "DXJC1": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "DUX 1.5"
@@ -301,10 +301,10 @@
         "title": "Roommania #203"
     },
     "HDR0045": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sega",
+        "genre": "Soccer",
+        "publisher": "Sega",
+        "release_date": "01999-12-02-0000",
         "title": "Virtua Striker 2 Ver. 2000.1"
     },
     "HDR0046": {
@@ -497,10 +497,10 @@
         "title": "Eternal Arcadia"
     },
     "HDR0078": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Smilebit",
+        "genre": "Platformer",
+        "publisher": "Sega",
+        "release_date": "02000-06-29-0000",
         "title": "Jet Set Radio"
     },
     "HDR0079": {
@@ -617,7 +617,7 @@
     },
     "HDR0104": {
         "developer": "Wow Entertainment",
-        "genre": "Sports",
+        "genre": "Fishing",
         "publisher": "Sega",
         "release_date": "02000-12-17-0000",
         "title": "Sega Marine Fishing"
@@ -630,10 +630,10 @@
         "title": "Quiz Aammegami-Sama Tatakau Tsubasa to Tomoni"
     },
     "HDR0106": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Amusement Vision",
+        "genre": "Racing",
+        "publisher": "Sega",
+        "release_date": "02001-12-21-0000",
         "title": "Daytona USA 2001"
     },
     "HDR0108": {
@@ -686,10 +686,10 @@
         "title": "Magic: The Gathering"
     },
     "HDR0118": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sega AM2",
+        "genre": "First-person shooter",
+        "publisher": "Sega",
+        "release_date": "02001-08-02-0000",
         "title": "OutTrigger"
     },
     "HDR0119": {
@@ -834,7 +834,7 @@
     },
     "HDR0146": {
         "developer": "",
-        "genre": "",
+        "genre": "Sports",
         "publisher": "",
         "release_date": "",
         "title": "Sega Extreme Sports"
@@ -883,7 +883,7 @@
     },
     "HDR0153": {
         "developer": "Wow Entertainment",
-        "genre": "",
+        "genre": "Sports",
         "publisher": "Agetec, Inc.",
         "release_date": "Unreleased",
         "title": "Sports Jam"
@@ -904,7 +904,7 @@
     },
     "HDR0157": {
         "developer": "Visual Concepts",
-        "genre": "Sports",
+        "genre": "Baseball",
         "publisher": "Sega",
         "release_date": "02001-03-22-0000",
         "title": "World Series Baseball 2K1"
@@ -939,14 +939,14 @@
     },
     "HDR0163": {
         "developer": "Sonic Team",
-        "genre": "",
+        "genre": "MMORPG",
         "publisher": "Sega",
         "release_date": "02001-06-07-0000",
         "title": "Phantasy Star Online Ver. 2"
     },
     "HDR0164": {
         "developer": "Sega AM2",
-        "genre": "FREE (Sandbox)/Action-adventure/Role-playing video game",
+        "genre": "Role-playing video game",
         "publisher": "Sega",
         "release_date": "02001-09-26-0000",
         "title": "Shenmue II"
@@ -1016,7 +1016,7 @@
     },
     "HDR0176": {
         "developer": "Sega Rosso",
-        "genre": "Sports/(/Squash/)",
+        "genre": "Sports",
         "publisher": "Sega",
         "release_date": "02001-09-13-0000",
         "title": "Cosmic Smash"
@@ -1142,21 +1142,21 @@
     },
     "HDR0197": {
         "developer": "Visual Concepts",
-        "genre": "Sports",
+        "genre": "Basketball",
         "publisher": "Sega",
         "release_date": "02002-05-23-0000",
         "title": "NBA 2K2"
     },
     "HDR0198": {
         "developer": "Visual Concepts",
-        "genre": "Sports",
+        "genre": "Baseball",
         "publisher": "Sega",
         "release_date": "02002-04-18-0000",
         "title": "World Series Baseball 2K2"
     },
     "HDR0199": {
         "developer": "Treyarch",
-        "genre": "",
+        "genre": "Hockey",
         "publisher": "Sega",
         "release_date": "02002-07-11-0000",
         "title": "NHL 2K2"
@@ -1191,7 +1191,7 @@
     },
     "HDR0211": {
         "developer": "Sega AM2",
-        "genre": "FREE (Sandbox)/Action-adventure/Role-playing video game",
+        "genre": "Role-playing video game",
         "publisher": "Sega",
         "release_date": "02001-09-26-0000",
         "title": "Shenmue II"
@@ -1289,21 +1289,21 @@
     },
     "RDXLEJP": {
         "developer": "",
-        "genre": "",
+        "genre": "SHMUP",
         "publisher": "",
         "release_date": "",
         "title": "Redux: Dark Matters Limited Edition"
     },
     "RDXREJP": {
         "developer": "",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "KTX Software",
         "release_date": "Unreleased",
         "title": "Redux: Dark Matters"
     },
     "STWDDC": {
         "developer": "Duranik",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "redspotgames",
         "release_date": "02013-04-24-0000",
         "title": "Sturmwind"
@@ -1583,7 +1583,7 @@
     },
     "T1237M": {
         "developer": "Attention to Detail",
-        "genre": "Sports/(/Olympic/)",
+        "genre": "Sports",
         "publisher": "Eidos Interactive",
         "release_date": "02000-10-26-0000",
         "title": "Sydney 2000"
@@ -1625,7 +1625,7 @@
     },
     "T1246M": {
         "developer": "Capcom",
-        "genre": "Arena/Fighting",
+        "genre": "Arena",
         "publisher": "Capcom",
         "release_date": "02001-07-12-0000",
         "title": "Heavy Metal: Geomatrix"
@@ -1837,7 +1837,7 @@
         "developer": "General Entertainment",
         "genre": "Racing",
         "publisher": "Infogrames",
-        "release_date": "01998-11-27-0000 November 27, 1998",
+        "release_date": "01998-11-27-0000",
         "title": "Pen Pen TriIcelon"
     },
     "T17701M": {
@@ -2416,14 +2416,14 @@
     },
     "T20401M": {
         "developer": "Sega",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "Sega",
         "release_date": "02001-09-06-0000",
         "title": "Zero Gunner 2"
     },
     "T20401M1": {
         "developer": "Sega",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "Sega",
         "release_date": "02001-09-06-0000",
         "title": "Zero Gunner 2"
@@ -2794,7 +2794,7 @@
     },
     "T3103M": {
         "developer": "SNK",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "SNK",
         "release_date": "02000-03-23-0000",
         "title": "Twinkle Star Sprites"
@@ -2954,17 +2954,17 @@
         "title": "Missing Parts 3"
     },
     "T36901M": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "UEP Systems",
+        "genre": "Sports",
+        "publisher": "Sega",
+        "release_date": "01999-08-29-0000",
         "title": "Cool Boarders Burrrn"
     },
     "T36902M": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "UEP Systems",
+        "genre": "Sports",
+        "publisher": "Sega",
+        "release_date": "01999-08-29-0000",
         "title": "Cool Boarders Burrrn"
     },
     "T37001M": {
@@ -3514,10 +3514,10 @@
         "title": "Maboroshi Tsukiyo"
     },
     "T4402M": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "Sims",
+        "genre": "Rail shooter",
+        "publisher": "Xicat Interactive",
+        "release_date": "02000-12-07-0000",
         "title": "Charge 'n Blast"
     },
     "T44401M": {
@@ -4096,7 +4096,7 @@
     },
     "T47801M": {
         "developer": "MileStone Inc.",
-        "genre": "Shoot 'em up",
+        "genre": "SHMUP",
         "publisher": "MileStone Inc.",
         "release_date": "02004-12-16-0000",
         "title": "Chaos Field"
@@ -4214,10 +4214,10 @@
         "title": "Puyo Puyo Da!"
     },
     "T6801M": {
-        "developer": "",
-        "genre": "",
-        "publisher": "",
-        "release_date": "",
+        "developer": "CRI",
+        "genre": "Racing",
+        "publisher": "ASC Games",
+        "release_date": "01999-06-08-0000",
         "title": "Buggy Heat"
     },
     "T6802M": {
