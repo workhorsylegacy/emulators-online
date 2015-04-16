@@ -51,6 +51,9 @@ import (
 	//from identify_playstation2_games import *
 )
 
+var g_ws *websocket.Conn
+
+var g_websocket_needs_restart bool
 
 type LongRunningTask struct {
 	name string
@@ -84,14 +87,13 @@ func AbsPath(file_path string) string {
 	return file_path
 }
 
-func WebSocketSend(ws *websocket.Conn, thing interface{}) error {
+func WebSocketSend(thing interface{}) error {
 	//fmt.Printf("WebSocketSend ????????????????????????????????????????\r\n")
 
 	// Convert the object to base64ed json
 	message, err := ToBase64Json(thing)
 	if err != nil {
-		fmt.Printf("Failed to write web socket message: %s\r\n", err)
-		//ws.Close()
+		fmt.Printf("Failed to encode web socket message: %s\r\n", err)
 		return err
 	}
 	//fmt.Printf("message: %s\r\n", message)
@@ -102,10 +104,10 @@ func WebSocketSend(ws *websocket.Conn, thing interface{}) error {
 
 	// Write the message
 	buffer := []byte(whole_message)
-	write_len, err := ws.Write(buffer)
+	write_len, err := g_ws.Write(buffer)
 	if err != nil {
+		g_websocket_needs_restart = true
 		fmt.Printf("Failed to write web socket message: %s\r\n", err)
-		//ws.Close()
 		return err
 	}
 	if write_len != len(buffer) {
@@ -116,15 +118,14 @@ func WebSocketSend(ws *websocket.Conn, thing interface{}) error {
 	return nil
 }
 
-func WebSocketRecieve(ws *websocket.Conn) (map[string]interface{}, error) {
+func WebSocketRecieve() (map[string]interface{}, error) {
 	//fmt.Printf("WebSocketRecieve ???????????????????????????????????\r\n")
 	buffer := make([]byte, 20)
 
 	// Read the message header
-	read_len, err := ws.Read(buffer)
+	read_len, err := g_ws.Read(buffer)
 	if err != nil {
 		fmt.Printf("Failed to read web socket message: %s\r\n", err)
-		//ws.Close()
 		return nil, err
 	}
 	//fmt.Printf("read_len: %d\r\n", read_len)
@@ -140,10 +141,9 @@ func WebSocketRecieve(ws *websocket.Conn) (map[string]interface{}, error) {
 	// Read the rest of the message
 	for {
 		buffer = make([]byte, message_length)
-		read_len, err = ws.Read(buffer)
+		read_len, err = g_ws.Read(buffer)
 		if err != nil {
 			fmt.Printf("Failed to read web socket message: %s\r\n", err)
-			//ws.Close()
 			return nil, err
 		}
 		message += string(buffer[0 : read_len])
@@ -160,7 +160,6 @@ func WebSocketRecieve(ws *websocket.Conn) (map[string]interface{}, error) {
 		//fmt.Printf("message: %s\r\n", message)
 		//decoded_message, err := base64.StdEncoding.DecodeString(message)
 		//fmt.Printf("decoded_message: %s\r\n", decoded_message)
-		//ws.Close()
 		return nil, err
 	}
 
@@ -204,14 +203,14 @@ func ToBase64Json(thing interface{}) (string, error) {
 	return b64ed_and_jsoned_data, err
 }
 
-func getDB(ws *websocket.Conn) {
+func getDB() {
 	fmt.Printf("called getDB\r\n")
 
 	message := map[string]interface{} {
 		"action" : "get_db",
 		"value" : db,
 	}
-	WebSocketSend(ws, message)
+	WebSocketSend(message)
 }
 
 func setBios(data map[string]interface{}) (error) {
@@ -311,7 +310,7 @@ func setBios(data map[string]interface{}) (error) {
 	return nil
 }
 
-func setButtonMap(ws *websocket.Conn, data map[string]interface{})  {
+func setButtonMap(data map[string]interface{})  {
 	// Convert the map[string]interface to map[string]string
 	button_map := make(map[string]string)
 	value := data["value"].(map[string]interface{})
@@ -340,7 +339,7 @@ func setButtonMap(ws *websocket.Conn, data map[string]interface{})  {
 	}
 }
 
-func getButtonMap(ws *websocket.Conn, data map[string]interface{}) {
+func getButtonMap(data map[string]interface{}) {
 	var value map[string]string
 	console := data["console"].(string)
 
@@ -369,7 +368,7 @@ func getButtonMap(ws *websocket.Conn, data map[string]interface{}) {
 		"value" : value,
 		"console" : console,
 	}
-	WebSocketSend(ws, &message)
+	WebSocketSend(&message)
 }
 
 
@@ -561,7 +560,7 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 	return nil
 }
 
-func setGameDirectory(ws *websocket.Conn, data map[string]interface{}) {
+func setGameDirectory(data map[string]interface{}) {
 	// Just return if there is already a long running "Searching for dreamcast games" task
 	name := fmt.Sprintf("Searching for %s games", data["console"].(string))
 	if _, ok := long_running_tasks[name]; ok {
@@ -602,7 +601,7 @@ func setGameDirectory(ws *websocket.Conn, data map[string]interface{}) {
 					"action" : "long_running_tasks",
 					"value" : shit,
 				}
-				WebSocketSend(ws, &message)
+				WebSocketSend(&message)
 		}
 	}
 }
@@ -616,12 +615,12 @@ func saveMemoryCardCB(memory_card []byte) {
 	fmt.Printf("FIXME: Memory card needs saving. length %v\r\n", out_buffer.Len())
 }
 
-func playGame(ws *websocket.Conn, data map[string]interface{}) {
+func playGame(data map[string]interface{}) {
 	console := data["console"].(string)
 	path := data["path"].(string)
 	binary := data["binary"].(string)
 	//bios := data["bios"].(string)
-	
+
 	switch console {
 		case "gamecube":
 			//dolphin.Run(path, binary)
@@ -655,16 +654,16 @@ func playGame(ws *websocket.Conn, data map[string]interface{}) {
 	}
 }
 
-func progressCB(name string, ws *websocket.Conn, progress float64) {
+func progressCB(name string, progress float64) {
 	message := map[string]interface{} {
 		"action" : "progress",
 		"value" : progress,
 		"name" : name,
 	}
-	WebSocketSend(ws, &message)
+	WebSocketSend(&message)
 }
 
-func downloadFile(ws *websocket.Conn, data map[string]interface{}) {
+func downloadFile(data map[string]interface{}) {
 	// Get all the info we need
 	file_name := data["file"].(string)
 	url := data["url"].(string)
@@ -731,7 +730,7 @@ func downloadFile(ws *websocket.Conn, data map[string]interface{}) {
 		// Fire the progress callback
 		total_length += float64(read_len)
 		progress := helpers.RoundPlus((total_length / content_length) * 100.0, 2)
-		progressCB(name, ws, progress)
+		progressCB(name, progress)
 
 		// Exit the loop if the file is done
 		if EOF || total_length == content_length {
@@ -740,7 +739,7 @@ func downloadFile(ws *websocket.Conn, data map[string]interface{}) {
 	}
 }
 
-func install(ws *websocket.Conn, data map[string]interface{}) {
+func install(data map[string]interface{}) {
 	dir := data["dir"].(string)
 	file := data["file"].(string)
 
@@ -750,7 +749,7 @@ func install(ws *websocket.Conn, data map[string]interface{}) {
 		"is_start" : true,
 		"name" : file,
 	}
-	WebSocketSend(ws, &message)
+	WebSocketSend(&message)
 
 	switch file {
 	case "SetupVirtualCloneDrive.exe":
@@ -811,11 +810,11 @@ func install(ws *websocket.Conn, data map[string]interface{}) {
 		"is_start" : false,
 		"name" : file,
 	}
-	WebSocketSend(ws, &message)
+	WebSocketSend(&message)
 }
 
 // FIXME: Update to kill the process first
-func uninstall(ws *websocket.Conn, data map[string]interface{}) {
+func uninstall(data map[string]interface{}) {
 	switch data["program"].(string) {
 		case "VirtualCloneDrive":
 			// nothing ...
@@ -836,7 +835,7 @@ func uninstall(ws *websocket.Conn, data map[string]interface{}) {
 	}
 }
 
-func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
+func isInstalled(data map[string]interface{}) {
 	program := data["program"].(string)
 
 	switch program {
@@ -853,7 +852,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "DirectX End User Runtime",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "Visual C++ 2010 redist": // msvcr100.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
 		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
@@ -863,7 +862,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "Visual C++ 2010 redist",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "Visual C++ 2013 redist": // msvcr120.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
 		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
@@ -873,7 +872,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "Visual C++ 2013 redist",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "7-Zip":
 		exist := helpers.PathExists("C:/Program Files/7-Zip/7z.exe") || 
 				helpers.PathExists("C:/Program Files (x86)/7-Zip/7z.exe")
@@ -882,7 +881,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "7-Zip",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "VirtualCloneDrive":
 		exist := helpers.PathExists("C:/Program Files (x86)/Elaborate Bytes/VirtualCloneDrive/VCDMount.exe")
 		message := map[string]interface{} {
@@ -890,7 +889,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "VirtualCloneDrive",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "NullDC":
 		exist := helpers.PathExists("emulators/NullDC/nullDC_Win32_Release-NoTrace.exe")
 		message := map[string]interface{} {
@@ -898,7 +897,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "NullDC",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "Demul":
 		exist := helpers.PathExists("emulators/Demul/demul.exe")
 		message := map[string]interface{} {
@@ -906,7 +905,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "Demul",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "SSF":
 		exist := helpers.PathExists("emulators/SSF_012_beta_R4/SSF.exe")
 		message := map[string]interface{} {
@@ -914,7 +913,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "SSF",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "Dolphin":
 		exist := helpers.PathExists("emulators/Dolphin-x64/Dolphin.exe")
 		message := map[string]interface{} {
@@ -922,7 +921,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "Dolphin",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "PCSX-Reloaded":
 		exist := helpers.PathExists("emulators/pcsxr/pcsxr.exe")
 		message := map[string]interface{} {
@@ -930,7 +929,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "PCSX-Reloaded",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "PCSX2":
 		exist := helpers.PathExists("emulators/pcsx2/pcsx2.exe")
 		message := map[string]interface{} {
@@ -938,7 +937,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "PCSX2",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	case "Mupen 64 Plus":
 		exist := helpers.PathExists("emulators/Mupen64Plus/mupen64plus.exe")
 		message := map[string]interface{} {
@@ -946,7 +945,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 			"value" : exist,
 			"name" : "Mupen 64 Plus",
 		}
-		WebSocketSend(ws, &message)
+		WebSocketSend(&message)
 	default:
 		fmt.Printf("Unknown program to check if installed: %s\r\n", program)
 	}
@@ -957,14 +956,15 @@ func httpCB(w http.ResponseWriter, r *http.Request) {
 }
 
 func webSocketCB(ws *websocket.Conn) {
-	//fmt.Printf("webSocketCB !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\r\n")
+	//fmt.Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!webSocketCB\r\n")
+	g_websocket_needs_restart = false
+	g_ws = ws
 
-	for {
+	for ! g_websocket_needs_restart {
 		// Read the message
-		message_map, err := WebSocketRecieve(ws)
+		message_map, err := WebSocketRecieve()
 		if err != nil {
 			fmt.Printf("Failed to get web socket message: %s\r\n", err)
-			//ws.Close()
 			return
 		}
 
@@ -972,34 +972,34 @@ func webSocketCB(ws *websocket.Conn) {
 
 		// Client wants to play a game
 		if message_map["action"] == "play" {
-			playGame(ws, message_map)
+			playGame(message_map)
 
 		// Client wants to download a file
 		} else if message_map["action"] == "download" {
-			downloadFile(ws, message_map)
+			downloadFile(message_map)
 
 		// Client wants to know if a file is installed
 		} else if message_map["action"] == "is_installed" {
-			isInstalled(ws, message_map)
+			isInstalled(message_map)
 
 		// Client wants to install a program
 		} else if message_map["action"] == "install" {
-			install(ws, message_map)
+			install(message_map)
 
 		} else if message_map["action"] == "uninstall" {
-			uninstall(ws, message_map)
+			uninstall(message_map)
 
 		} else if message_map["action"] == "set_button_map" {
-			setButtonMap(ws, message_map)
+			setButtonMap(message_map)
 
 		} else if message_map["action"] == "get_button_map" {
-			getButtonMap(ws, message_map)
+			getButtonMap(message_map)
 
 		} else if message_map["action"] == "set_bios" {
 			setBios(message_map)
 
 		} else if message_map["action"] == "get_db" {
-			getDB(ws)
+			getDB()
 
 		} else if message_map["action"] == "set_game_directory" {
 			// First try checking if Firefox or Chrome is the foreground window
@@ -1042,7 +1042,7 @@ func webSocketCB(ws *websocket.Conn) {
 			pidl := win32.SHBrowseForFolder(&browse_info)
 			if pidl > 0 {
 				message_map["directory_name"] = win32.SHGetPathFromIDList(pidl)
-				setGameDirectory(ws, message_map)
+				setGameDirectory(message_map)
 			}
 
 		// Unknown message from the client
@@ -1050,7 +1050,8 @@ func webSocketCB(ws *websocket.Conn) {
 			log.Fatal(fmt.Sprintf("Unknown action from client: %s\r\n", message_map["action"]))
 		}
 	}
-	//ws.Close()
+	g_websocket_needs_restart = false
+	http.Handle("/ws", websocket.Handler(webSocketCB))
 }
 
 func useAppDataForStaticFiles() {
