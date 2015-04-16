@@ -25,6 +25,7 @@
 
 var FileUploader = function(file_id, progress_percent_id, doneCB) {
 	file_reader = null;
+	file_name = null;
 	progress_percent = document.getElementById(progress_percent_id);
 
 	function on_error(evt) {
@@ -61,7 +62,7 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 		// Set the progress bar to 100%
 		progress_percent.textContent = '100%';
 
-		doneCB(evt.target.result);
+		doneCB(file_name, evt.target.result);
 	}
 
 	function handle_file_select(evt) {
@@ -76,6 +77,7 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 		file_reader.onabort = on_abort;
 
 		// Read the file content
+		file_name = evt.target.files[0].name;
 		file_reader.readAsBinaryString(evt.target.files[0]);
 	}
 

@@ -28,7 +28,7 @@ package helpers
 import(
 	"os"
 	//"strings"
-	"fmt"
+	//"fmt"
 	//"io/ioutil"
 	//"path/filepath"
 	//"log"
@@ -44,7 +44,7 @@ func (self *PCSX2) setupPortable() {
 			"RunWizard" : "0",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/portable.ini", config)
+	WriteIniFile("emulators/pcsx2/portable.ini", config)
 }
 
 func (self *PCSX2) setupDev9null() {
@@ -53,7 +53,7 @@ func (self *PCSX2) setupDev9null() {
 			"logging" : "0",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/inis/Dev9null.ini", config)
+	WriteIniFile("emulators/pcsx2/inis/Dev9null.ini", config)
 }
 
 func (self *PCSX2) setupFWnull() {
@@ -62,7 +62,7 @@ func (self *PCSX2) setupFWnull() {
 			"logging" : "0",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/inis/FWnull.ini", config)
+	WriteIniFile("emulators/pcsx2/inis/FWnull.ini", config)
 }
 
 func (self *PCSX2) setupUSBnull() {
@@ -71,7 +71,7 @@ func (self *PCSX2) setupUSBnull() {
 			"logging" : "0",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/inis/USBnull.ini", config)
+	WriteIniFile("emulators/pcsx2/inis/USBnull.ini", config)
 }
 
 func (self *PCSX2) setupSPU2_x() {
@@ -176,7 +176,7 @@ func (self *PCSX2) setupSPU2_x() {
 			"IOP.bitset" : "0",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/inis/PCSX2_vm.ini", config)
+	WriteIniFile("emulators/pcsx2/inis/PCSX2_vm.ini", config)
 }
 
 func (self *PCSX2) setupPCSX2_vm() {
@@ -256,7 +256,7 @@ func (self *PCSX2) setupPCSX2_vm() {
 			"Reg_Dump_Filename" : "SPU2regs.dat",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/inis/SPU2-X.ini", config)
+	WriteIniFile("emulators/pcsx2/inis/SPU2-X.ini", config)
 }
 
 func (self *PCSX2) setupPCSX2_ui() {
@@ -410,7 +410,7 @@ func (self *PCSX2) setupPCSX2_ui() {
 			"GPU" : "disabled",
 		},
 	}
-	WriteIniFile("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/inis/PCSX2_ui.ini", config)
+	WriteIniFile("emulators/pcsx2/inis/PCSX2_ui.ini", config)
 }
 
 
@@ -424,6 +424,9 @@ func (self *PCSX2) Run(path string, binary string) {
 	}
 
 	// Setup ini files
+	if ! IsDir("emulators/pcsx2/inis") {
+		os.Mkdir("emulators/pcsx2/inis", os.ModeDir)
+	}
 	self.setupPortable()
 	self.setupDev9null()
 	self.setupFWnull()
@@ -432,8 +435,7 @@ func (self *PCSX2) Run(path string, binary string) {
 	self.setupSPU2_x()
 	self.setupPCSX2_ui()
 
-	os.Chdir("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/")
-	fmt.Printf("binary: %v\r\n", binary)
+	os.Chdir("emulators/pcsx2/")
 	command := CommandWithArgs {
 		"pcsx2.exe",
 		[]string {"--nogui", binary},

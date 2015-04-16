@@ -219,7 +219,27 @@ func setBios(data map[string]interface{}) (error) {
 	type_name := data["type"].(string)
 	value := data["value"].(string)
 
-	if console == "dreamcast" {
+	if console == "playstation2" {
+		// Make the BIOS dir if missing
+		if ! helpers.IsDir("emulators/pcsx2/bios") {
+			os.Mkdir("emulators/pcsx2/bios", os.ModeDir)
+		}
+
+		// Convert the base64 data to BIOS and write to file
+		file_name := filepath.Join("emulators/pcsx2/bios/", data["type"].(string))
+		f, err := os.Create(file_name)
+		if err != nil {
+			fmt.Printf("Failed to save BIOS file: %s\r\n", err)
+			return err
+		}
+		b642_data, err := base64.StdEncoding.DecodeString(value)
+		if err != nil {
+			fmt.Printf("Failed to un base64 BIOS file: %s\r\n", err)
+			return err
+		}
+		f.Write(b642_data)
+		f.Close()
+	} else if console == "dreamcast" {
 		// Make the BIOS dir if missing
 		if ! helpers.IsDir("emulators/Demul/roms") {
 			os.Mkdir("emulators/Demul/roms", os.ModeDir)
@@ -250,7 +270,7 @@ func setBios(data map[string]interface{}) (error) {
 			return err
 		}
 		f.Write(b642_data)
-
+		f.Close()
 	} else if console == "saturn" {
 		// Make the BIOS dir if missing
 		if ! helpers.IsDir("emulators/SSF_012_beta_R4/bios") {
@@ -275,6 +295,7 @@ func setBios(data map[string]interface{}) (error) {
 		}
 		b642_data, _ := base64.StdEncoding.DecodeString(value)
 		f.Write(b642_data)
+		f.Close()
 	}
 
 	return nil
@@ -768,6 +789,10 @@ func install(ws *websocket.Conn, data map[string]interface{}) {
 		wrap := helpers.Wrap7zip{}
 		helpers.Setup(&wrap)
 		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z"), "emulators")
+		err := os.Rename("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86", "emulators/pcsx2")
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// End uncompressing
@@ -779,6 +804,7 @@ func install(ws *websocket.Conn, data map[string]interface{}) {
 	WebSocketSend(ws, &message)
 }
 
+// FIXME: Update to kill the process first
 func uninstall(ws *websocket.Conn, data map[string]interface{}) {
 	switch data["program"].(string) {
 		case "VirtualCloneDrive":
@@ -796,7 +822,7 @@ func uninstall(ws *websocket.Conn, data map[string]interface{}) {
 		case "PCSX-Reloaded":
 			os.RemoveAll("emulators/pcsxr")
 		case "PCSX2":
-			os.RemoveAll("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86")
+			os.RemoveAll("emulators/pcsx2")
 	}
 }
 
@@ -896,7 +922,7 @@ func isInstalled(ws *websocket.Conn, data map[string]interface{}) {
 		}
 		WebSocketSend(ws, &message)
 	case "PCSX2":
-		exist := helpers.PathExists("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86/pcsx2.exe")
+		exist := helpers.PathExists("emulators/pcsx2/pcsx2.exe")
 		message := map[string]interface{} {
 			"action" : "is_installed",
 			"value" : exist,

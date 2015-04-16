@@ -316,7 +316,11 @@
 
 						<h2>BIOS</h2>
 						<p>
-							<span style="color: red;">FIXME: Add BIOS configuration.</span>
+							<input type="file" id="btn_bios_pcsx2_us" name="btn_bios_pcsx2_us" disabled>PS2 BIOS USA (SCPH10000.bin)</input>
+							<br />
+							<input type="file" id="btn_bios_pcsx2_jp" name="btn_bios_pcsx2_jp" disabled>PS2 BIOS Japan (SCPH3004R.bin)</input>
+							<br />
+							<input type="file" id="btn_bios_pcsx2_eu" name="btn_bios_pcsx2_eu" disabled>PS2 BIOS Europe (SCPH39001.bin)</input>
 						</p>
 					</div>
 					<p id="playstation2_vcpp_2013_redist_not_installed">
@@ -547,9 +551,15 @@ function on_data(data) {
 				if(is_pcsx2_installed) {
 					$('#btn_install_pcsx2').val('Uninstall');
 					$('#btn_ps2_folder').prop('disabled', false);
+					$('#btn_bios_pcsx2_us').prop('disabled', false);
+					$('#btn_bios_pcsx2_jp').prop('disabled', false);
+					$('#btn_bios_pcsx2_eu').prop('disabled', false);
 				} else {
 					$('#btn_install_pcsx2').val('Install');
 					$('#btn_ps2_folder').prop('disabled', true);
+					$('#btn_bios_pcsx2_us').prop('disabled', true);
+					$('#btn_bios_pcsx2_jp').prop('disabled', true);
+					$('#btn_bios_pcsx2_eu').prop('disabled', true);
 				}
 				$('#btn_install_pcsx2').prop('disabled', false);
 				$('#playstation2_requirements_installed').show();
@@ -1023,31 +1033,43 @@ function setup_ui() {
 		action_set_button_map('saturn', button_map_ssf);
 	});
 
-	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_pcsx2_us', 'generic_progress', function(file_name, file_data) {
+		action_set_bios('playstation2', file_name, file_data);
+	});
+
+	FileUploader('btn_bios_pcsx2_jp', 'generic_progress', function(file_name, file_data) {
+		action_set_bios('playstation2', file_name, file_data);
+	});
+
+	FileUploader('btn_bios_pcsx2_eu', 'generic_progress', function(file_name, file_data) {
+		action_set_bios('playstation2', file_name, file_data);
+	});
+
+	FileUploader('btn_bios_demul_dc', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('dreamcast', 'dc.zip', file_data);
 	});
 
-	FileUploader('btn_bios_demul_aw', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_demul_aw', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('dreamcast', 'awbios.zip', file_data);
 	});
 
-	FileUploader('btn_bios_demul_naomi', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_demul_naomi', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('dreamcast', 'naomi.zip', file_data);
 	});
 
-	FileUploader('btn_bios_demul_naomi2', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_demul_naomi2', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('dreamcast', 'naomi2.zip', file_data);
 	});
 
-	FileUploader('btn_bios_ssf_usa', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_ssf_usa', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('saturn', 'USA', file_data);
 	});
 
-	FileUploader('btn_bios_ssf_eur', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_ssf_eur', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('saturn', 'EUR', file_data);
 	});
 
-	FileUploader('btn_bios_ssf_jap', 'generic_progress', function(file_data) {
+	FileUploader('btn_bios_ssf_jap', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('saturn', 'JAP', file_data);
 	});
 }

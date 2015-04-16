@@ -30,6 +30,7 @@ import (
 	"strings"
 	"os"
 	"fmt"
+	"log"
 )
 
 
@@ -65,6 +66,7 @@ func ReadIniFile(file_path string) (map[string]map[string]interface{}, error) {
 func WriteIniFile(file_name string, config map[string]map[string]interface{}) error {
 	f, err := os.Create(file_name)
 	if err != nil {
+		log.Fatal(err)
 		return err
 	}
 	defer f.Close()
