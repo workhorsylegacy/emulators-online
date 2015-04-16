@@ -104,6 +104,16 @@ function on_search(evt) {
 	// Clear the old icons
 	document.getElementById('game_selector').innerHTML = "";
 
+	// If there are no games, tell the user to add some
+	var total_games = 0;
+	$.each(db, function(console_name, console_data) {
+		total_games += Object.keys(console_data).length;
+	});
+	if(total_games == 0) {
+		document.getElementById('game_selector').innerHTML = "<h2>There are no games. You can add games on the configure page.</h2>";
+		return;
+	}
+
 	// Get the words to search for
 	var search_raw = search_text.val();
 ///*
@@ -113,8 +123,13 @@ function on_search(evt) {
 		var console_names = Object.keys(db);
 		console_names.sort();
 		$.each(console_names, function(i, console_name) {
-			// Add console name as header
+			// Skip empty consoles
 			var console_data = db[console_name];
+			if(Object.keys(console_data).length == 0) {
+				return false;
+			}
+
+			// Add console name as header
 			var d = document.createElement('h1');
 			d.innerHTML = console_name;
 			d.style.clear = "both";
@@ -140,7 +155,12 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
+
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
 		$.each(names, function(j, name) {
@@ -159,7 +179,12 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
+
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
 		$.each(names, function(j, name) {
@@ -177,7 +202,12 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
+
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
 		$.each(names, function(j, name) {
@@ -196,7 +226,11 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
@@ -216,7 +250,11 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
@@ -253,7 +291,12 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
+
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
 		$.each(names, function(j, name) {
@@ -287,7 +330,12 @@ function on_search(evt) {
 	var console_names = Object.keys(db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
+		// Skip empty consoles
 		var console_data = db[console_name];
+		if(Object.keys(console_data).length == 0) {
+			return false;
+		}
+
 		var names = $.map(console_data, function(key, value) {return value;});
 		names.sort();
 
