@@ -1115,11 +1115,11 @@ func main() {
 
 	// Load the game database
 	consoles := []string{
-		"gamecube",
-		"nintendo64",
-		"saturn",
+		//"gamecube",
+		//"nintendo64",
+		//"saturn",
 		"dreamcast",
-		"playstation1",
+		//"playstation1",
 		"playstation2",
 	}
 	for _, console := range consoles {
