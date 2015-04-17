@@ -27,6 +27,7 @@ package main
 //go:generate go run server/generate/generate_included_files.go
 
 import (
+	"io"
 	"fmt"
 	"strings"
 	//"runtime"
@@ -39,6 +40,7 @@ import (
 	"compress/zlib"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/gob"
 	"bytes"
 	"strconv"
 
@@ -1083,14 +1085,39 @@ func useAppDataForStaticFiles() {
 		}
 	}
 
-	// Make any static files if they don't exists
-	static_files := generated.GeneratedFiles()
-    for file_name, b64_data := range static_files {
+	// Get a blob of all the static files
+	blob := generated.GeneratedFiles()
+
+	// Un Base64 the compressed binary map
+	zlibed_data, err := base64.StdEncoding.DecodeString(blob)
+	if err != nil {
+		log.Fatal(err)
+	}
+	zlibed_buffer := bytes.NewBuffer([]byte(zlibed_data))
+
+	// Un compress the binary map
+	var gob_buffer bytes.Buffer
+	reader, err := zlib.NewReader(zlibed_buffer)
+	if err != nil {
+		log.Fatal(err)
+	}
+	io.Copy(&gob_buffer, reader)
+
+	// Convert the binary to the file map
+	var file_map map[string][]byte
+	decoder := gob.NewDecoder(&gob_buffer)
+	err = decoder.Decode(&file_map)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Copy the file_map to files
+    for file_name, data := range file_map {
 		if ! helpers.IsFile(file_name) {
-			f, _ := os.Create(file_name)
-			data, _ := base64.StdEncoding.DecodeString(b64_data)
-			f.Write(data)
-			f.Close()
+			err := ioutil.WriteFile(file_name, data, 0644)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
     }
 }

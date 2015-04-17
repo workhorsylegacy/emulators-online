@@ -1,15 +1,21 @@
 package main
 
 import (
+	"log"
 	//"io"
 	"io/ioutil"
 	"os"
 	//"strings"
+	"bytes"
+	"compress/zlib"
 	"encoding/base64"
+	"encoding/gob"
+	"fmt"
 )
 
-// FIXME: Update to compress the files before base64ing them
+
 func main() {
+	// Get a list of all the files to store
 	file_names := []string {
 		"configure.html",
 		"index.html",
@@ -32,18 +38,49 @@ func main() {
 		"server/identify_playstation2_games/db_playstation2_official_ko.json",
 		"server/identify_playstation2_games/identify_playstation2_games.exe",
 	}
+
+	// Read the files into a map
+	file_map := make(map[string][]byte)
+	for _, file_name := range file_names {
+		// Read the file to a string
+		data, err := ioutil.ReadFile(file_name)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Put the file string into the map
+		file_map[file_name] = data
+	}
+
+	// Convert the map to binary
+	var gob_buffer bytes.Buffer
+	encoder := gob.NewEncoder(&gob_buffer)
+	err := encoder.Encode(file_map)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Compress the binary map
+	var zlib_buffer bytes.Buffer
+	writer, err := zlib.NewWriterLevel(&zlib_buffer, zlib.BestCompression)
+	if err != nil {
+		log.Fatal(err)
+	}
+	writer.Write(gob_buffer.Bytes())
+	writer.Close()
+
+	// Base64 the compressed binary map
+	z := zlib_buffer.Bytes()
+	base64ed_data := base64.StdEncoding.EncodeToString(z)
+	fmt.Printf("bytes.lenght: %v, base64ed.length: %v\r\n", len(z), len(base64ed_data))
+
+	// Generate a file that will store everything
 	out, _ := os.Create("server/generated/generated_files.go")
 	out.Write([]byte("package generated\r\n\r\n"))
-	out.Write([]byte("func GeneratedFiles() map[string]string {\r\n"))
-	out.Write([]byte("    return map[string]string {\r\n"))
-	for _, file_name := range file_names {
-		data, _ := ioutil.ReadFile(file_name)
-		b64_data := base64.StdEncoding.EncodeToString(data)
-		out.Write([]byte("        \"" + file_name + "\" : "))
-		out.Write([]byte("\"" + b64_data + "\",\r\n"))
-	}
-	out.Write([]byte("    }\r\n"))
-	out.Write([]byte("\r\n"))
+	out.Write([]byte("func GeneratedFiles() string {\r\n"))
+	out.Write([]byte("    return \""))
+	out.Write([]byte(base64ed_data))
+	out.Write([]byte("\"\r\n"))
 	out.Write([]byte("}\r\n"))
 	out.Close()
 }
