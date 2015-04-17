@@ -70,9 +70,7 @@ func main() {
 	writer.Close()
 
 	// Base64 the compressed binary map
-	z := zlib_buffer.Bytes()
-	base64ed_data := base64.StdEncoding.EncodeToString(z)
-	fmt.Printf("bytes.lenght: %v, base64ed.length: %v\r\n", len(z), len(base64ed_data))
+	base64ed_data := base64.StdEncoding.EncodeToString(zlib_buffer.Bytes())
 
 	// Generate a file that will store everything
 	out, _ := os.Create("server/generated/generated_files.go")
