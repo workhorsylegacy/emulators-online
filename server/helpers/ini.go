@@ -48,14 +48,11 @@ func ReadIniFile(file_path string) (map[string]map[string]interface{}, error) {
 		// Line is a header
 		if strings.Contains(line, "[") && strings.Contains(line, "]") {
 			header = Between(line, "[", "]")
-//			config[header] = map[string]interface{}
-			//fmt.Printf("%\r\n", header)
 		// Line is a key value pair
 		} else if strings.Contains(line, " = ") {
 			pair := strings.Split(line, " = ")
 			key, value := pair[0], pair[1]
 			config[header][key] = value
-			//fmt.Printf("    %s = %s", key, value)
 		}
 	}
 

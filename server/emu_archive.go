@@ -50,7 +50,6 @@ import (
 	"emu_archive/server/helpers"
 	"emu_archive/server/win32"
 	"emu_archive/server/generated"
-	//from identify_playstation2_games import *
 )
 
 var g_ws *websocket.Conn
@@ -205,7 +204,6 @@ func ToBase64Json(thing interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	//stringed_data := string(jsoned_data)
 
 	// Convert the jsoned object to base64
 	b64ed_data := base64.StdEncoding.EncodeToString(jsoned_data)
@@ -443,7 +441,7 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		// Skip if the game file has not been modified
 		var old_modify_date int64 = 0
 		if val, ok := file_modify_dates[console][entry]; ok {
-			old_modify_date = val // file_modify_dates[console][entry]
+			old_modify_date = val
 		}
 		finfo, err := os.Stat(entry)
 		if err != nil {
@@ -586,7 +584,6 @@ func setGameDirectory(data map[string]interface{}) {
 	channel_is_done := make(chan bool)
 	go taskGetGameInfo(channel_task_progress, channel_is_done, data)
 
-	// FIXME: This will block the user from doing anything else in the web ui
 	// Wait for the goroutine to send its info and exit
 	for {
 		select {
@@ -768,8 +765,6 @@ func install(data map[string]interface{}) {
 	switch file {
 	case "SetupVirtualCloneDrive.exe":
 		os.Chdir(dir)
-		//proc = subprocess.Popen([file, "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
-		//proc.communicate()
 		cmd := exec.Command(file, "/S")
 		var out bytes.Buffer
 		cmd.Stdout = &out
@@ -777,8 +772,6 @@ func install(data map[string]interface{}) {
 		os.Chdir("..")
 	case "7z920.exe":
 		os.Chdir(dir)
-		//proc = subprocess.Popen([file, "/S"], stdout=subprocess.PIPE, shell=true) // Silent install
-		//proc.communicate()
 		cmd := exec.Command(file, "/S")
 		var out bytes.Buffer
 		cmd.Stdout = &out
@@ -1143,11 +1136,6 @@ func main() {
 	long_running_tasks = map[string]LongRunningTask{}
 
 	demul = helpers.NewDemul()
-
-	// Move to the main emu_archive directory no matter what path we are launched from
-	//_, root, _, _ := runtime.Caller(0)
-	//fmt.Printf("root: %v\r\n", root)
-	//root = filepath.Dir(root)
 
 	// If "local" use the static files in the current directory
 	// If not use the static files in AppData
