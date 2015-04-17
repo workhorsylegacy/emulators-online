@@ -126,7 +126,7 @@ function on_search(evt) {
 			// Skip empty consoles
 			var console_data = db[console_name];
 			if(Object.keys(console_data).length == 0) {
-				return false;
+				return true;
 			}
 
 			// Add console name as header
@@ -158,7 +158,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -182,7 +182,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -205,7 +205,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -229,7 +229,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -253,7 +253,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -294,7 +294,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});
@@ -333,7 +333,7 @@ function on_search(evt) {
 		// Skip empty consoles
 		var console_data = db[console_name];
 		if(Object.keys(console_data).length == 0) {
-			return false;
+			return true;
 		}
 
 		var names = $.map(console_data, function(key, value) {return value;});

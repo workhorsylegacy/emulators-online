@@ -79,7 +79,19 @@ var pcsx2 *helpers.PCSX2
 
 
 func CleanPath(file_path string) string {
+	// Fix the backward slashes from Windows
 	new_path := strings.Replace(file_path, "\\", "/", -1)
+
+	// Strip off the Disc number
+	if strings.Contains(new_path, " [Disc") {
+		new_path = strings.Split(new_path, " [Disc")[0]
+	}
+
+	// Make sure it ends with a slash
+	if ! strings.HasSuffix(new_path, "/") {
+		new_path += "/"
+	}
+
 	return new_path
 }
 
