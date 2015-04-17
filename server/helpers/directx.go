@@ -80,7 +80,7 @@ func GetDirectXVersion() int {
 	return g_directx_version
 }
 
-func init() {
+func StartBackgroundSearchForDirectXVersion() {
 	// Start the goroutine that looks up the DirectX version
 	g_version_channel = make(chan int)
 	go findDirectxVersion(g_version_channel)

@@ -44,7 +44,7 @@ def _strip_comments(data):
 
 	return b"\r\n".join(data)
 
-root = os.path.dirname(os.path.realpath(__file__))
+root = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 # Fix bug in py2exe that makes the exe name the dirname
 if root.endswith('.exe'):

@@ -446,9 +446,9 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		var info map[string]interface{}
 		var cmd *exec.Cmd
 		if console == "dreamcast" {
-			cmd = exec.Command("python", "server/identify_dreamcast_games.py", entry)
+			cmd = exec.Command("server/identify_dreamcast_games/identify_dreamcast_games.exe", entry)
 		} else if console == "playstation2" {
-			cmd = exec.Command("python", "server/identify_playstation2_games.py", entry)
+			cmd = exec.Command("server/identify_playstation2_games/identify_playstation2_games.exe", entry)
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
 		}
@@ -1074,6 +1074,8 @@ func useAppDataForStaticFiles() {
 		"games",
 		"server",
 		"static",
+		"server/identify_dreamcast_games",
+		"server/identify_playstation2_games",
 	}
 	for _, dir_name := range dirs {
 		if ! helpers.IsDir(dir_name) {
@@ -1113,6 +1115,9 @@ func main() {
 	if len(os.Args) < 2 || os.Args[1] != "local" {
 		useAppDataForStaticFiles()
 	}
+
+	// Get the DirectX Version
+	helpers.StartBackgroundSearchForDirectXVersion()
 
 	// Load the game database
 	consoles := []string{

@@ -10,6 +10,8 @@ run some of the sub modules.
 Install python 3.X
 -----
 http://www.python.org
+python -m pip install -U py2exe
+python -m pip install -U pyreadline
 
 Install 32 bit MinGW
 -----
