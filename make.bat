@@ -14,7 +14,10 @@ rm -rf dist
 cd ../..
 
 # Put everything inside the generated Go file
+echo "Generating files"
 go run server/generate/generate_included_files.go
 
 # Build the Go exe
+echo "Building emu_archive.exe"
 go build server/emu_archive.go
+emu_archive.exe local
