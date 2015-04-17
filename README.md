@@ -4,14 +4,16 @@ HTML based front end for video game console emulators
 It uses WebSockets to connect the HTML front-end, to a Go back-end. The 
 back-end manages the emulators and game files. The project was written in 
 Python, but is slowly being converted to Go. For now, Python is required to 
-run some of the sub modules.
+to build the Go exe, but is not required at runtime.
 
 
 Install python 3.X
 -----
 http://www.python.org
+~~~bash
 python -m pip install -U py2exe
 python -m pip install -U pyreadline
+~~~
 
 Install 32 bit MinGW
 -----
