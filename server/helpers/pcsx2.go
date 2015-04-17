@@ -38,6 +38,43 @@ type PCSX2 struct {
 	*BaseConsole
 }
 
+func NewPCSX2() *PCSX2 {
+	self := &PCSX2{}
+	self.BaseConsole = NewBaseConsole("config/pcsx2.json")
+
+	// Setup the initial map, if there is none
+	if self.button_map == nil {
+		self.button_map = map[string]string {
+			"btn_up_pcsx2" : "",
+			"btn_down_pcsx2" : "",
+			"btn_left_pcsx2" : "",
+			"btn_right_pcsx2" : "",
+			"btn_start_pcsx2" : "",
+			"btn_select_pcsx2" : "",
+			"btn_x_pcsx2" : "",
+			"btn_square_pcsx2" : "",
+			"btn_circle_pcsx2" : "",
+			"btn_triangle_pcsx2" : "",
+			"btn_l1_pcsx2" : "",
+			"btn_l2_pcsx2" : "",
+			"btn_l3_pcsx2" : "",
+			"btn_r1_pcsx2" : "",
+			"btn_r2_pcsx2" : "",
+			"btn_r3_pcsx2" : "",
+			"btn_left_stick_up_pcsx2" : "",
+			"btn_left_stick_down_pcsx2" : "",
+			"btn_left_stick_left_pcsx2" : "",
+			"btn_left_stick_right_pcsx2" : "",
+			"btn_right_stick_up_pcsx2" : "",
+			"btn_right_stick_down_pcsx2" : "",
+			"btn_right_stick_left_pcsx2" : "",
+			"btn_right_stick_right_pcsx2" : "",
+		}
+	}
+
+	return self
+}
+
 func (self *PCSX2) setupPortable() {
 	config := map[string]map[string]interface{} {
 		"" : {

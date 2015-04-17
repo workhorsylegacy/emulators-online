@@ -1136,6 +1136,7 @@ func main() {
 	long_running_tasks = map[string]LongRunningTask{}
 
 	demul = helpers.NewDemul()
+	pcsx2 = helpers.NewPCSX2()
 
 	// If "local" use the static files in the current directory
 	// If not use the static files in AppData
