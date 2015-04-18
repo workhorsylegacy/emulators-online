@@ -216,8 +216,6 @@ func ToBase64Json(thing interface{}) (string, error) {
 }
 
 func getDB() {
-	fmt.Printf("called getDB\r\n")
-
 	message := map[string]interface{} {
 		"action" : "get_db",
 		"value" : db,
