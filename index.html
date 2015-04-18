@@ -46,7 +46,6 @@ function on_data(data) {
 	if(data['action'] == 'log') {
 		console.log('Log: ' + data['value']);
 	} else if(data['action'] == 'get_db') {
-		console.log("called get_db");
 		db = data['value'];
 		$('#search_text').on('input propertychange paste', on_search);
 
