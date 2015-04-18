@@ -51,7 +51,7 @@ func NewPCSX2() *PCSX2 {
 			"btn_right_pcsx2" : "",
 			"btn_start_pcsx2" : "",
 			"btn_select_pcsx2" : "",
-			"btn_x_pcsx2" : "",
+			"btn_cross_pcsx2" : "",
 			"btn_square_pcsx2" : "",
 			"btn_circle_pcsx2" : "",
 			"btn_triangle_pcsx2" : "",
