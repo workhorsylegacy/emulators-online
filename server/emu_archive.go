@@ -1060,13 +1060,15 @@ func webSocketCB(ws *websocket.Conn) {
 				message_map["directory_name"] = win32.SHGetPathFromIDList(pidl)
 				setGameDirectory(message_map)
 			}
-		} else if message_map["action"] == "local_get_file" {
+		} else if message_map["action"] == "request_get_file" {
+			fmt.Printf("websocket request_get_file");
 			file_name := message_map["file_name"].(string)
 			peerid := message_map["peerid"].(string)
+			chunk := "FIXME: Replace with actual file content"
 			message := map[string]interface{} {
-				"action" : "local_get_file",
+				"action" : "response_get_file",
 				"file_name" : file_name,
-				"chunk" : "ass ass ass",
+				"chunk" : chunk,
 				"peerid" : peerid,
 			}
 			WebSocketSend(message)
@@ -1076,7 +1078,7 @@ func webSocketCB(ws *websocket.Conn) {
 			file_name := message_map["file_name"].(string)
 			peerid := message_map["peerid"].(string)
 			message := map[string]interface{} {
-				"action" : "request_has_file",
+				"action" : "response_has_file",
 				"file_name" : file_name,
 				"value" : true,
 				"peerid" : peerid,

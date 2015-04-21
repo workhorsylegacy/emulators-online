@@ -46,22 +46,12 @@
 jQuery(function($) {
 
 function on_websocket_data(data) {
-	if(data['action'] == 'log') {
+	var action = data['action'];
+
+	if (action == 'log') {
 		console.log('Log: ' + data['value']);
-	} else if(data['action'] == 'local_get_file') {
-		// Pass the file chunk from the local file system to the other client over the network
-		var peerid = data['peerid'];
-		var chunk = data['chunk'];
-		var message = {
-			'action' : 'send_file',
-			'chunk' : chunk
-		};
-		var conns = peer.connections[peerid];
-		$.each(conns, function(n, conn) {
-			conn.send();
-		});
-	} else if(data['action'] == 'request_has_file') {
-		console.log("websocket request_has_file");
+	} else if (action == 'response_has_file') {
+		console.log("websocket response_has_file");
 		// Tell the remote client if we have the file or not
 		var peerid = data['peerid'];
 		var value = data['value'];
@@ -72,19 +62,25 @@ function on_websocket_data(data) {
 			'value' : value,
 			'file_name' : file_name
 		};
-		message = JSON.stringify(message);
-		message = btoa(message);
-		var conns = peer.connections[peerid];
-		$.each(conns, function(n, conn) {
-			conn.send(message);
-		});
-	} else if(data['action'] == 'get_db') {
+		webrtc_send_data(peerid, message);
+	} else if (action == 'response_get_file') {
+		var peerid = data['peerid'];
+		var file_name = data['file_name'];
+		var chunk = data['chunk'];
+		var message = {
+			'action' : 'response_get_file',
+			'peerid' : peerid,
+			'file_name' : file_name,
+			'chunk' : chunk
+		};
+		webrtc_send_data(peerid, message);
+	} else if (action == 'get_db') {
 		db = data['value'];
 		$('#search_text').on('input propertychange paste', on_search);
 
 		// Show the default search
 		on_search();
-	} else if(data['action'] == 'long_running_tasks') {
+	} else if (action == 'long_running_tasks') {
 		var notification_footer = $('#notification_footer');
 		notification_footer.empty();
 		var long_running_tasks = data['value'];
@@ -144,17 +140,37 @@ peer.on('error', function(err) {
 
 peer.on('connection', on_webrtc_data);
 
+function webrtc_send_data(peerid, message) {
+	message = webrtc_encode_data(message);
+	console.log("peerid: " + peerid);
+	var conns = peer.connections[peerid];
+	$.each(conns, function(n, conn) {
+		conn.send(message);
+	});
+}
+
+function webrtc_encode_data(data) {
+	var message = JSON.stringify(data);
+	message = btoa(message);
+	return message;
+}
+
+function webrtc_decode_data(data) {
+	var message = atob(data);
+	message = JSON.parse(message);
+	return message;
+}
+
 function on_webrtc_data(conn) {
 	if (conn.label === 'share') {
 		conn.on('data', function(data) {
 			//console.log("data.length: " + data.length);
 			//console.log("data from peer: " + data);
-			var in_message = atob(data);
-			in_message = JSON.parse(in_message);
+			var in_message = webrtc_decode_data(data);
 			var action = in_message['action'];
 			console.log(action);
-			if (action == "request_has_file") {
-				console.log("webrtc request_has_file");
+			if (action == 'request_has_file') {
+				console.log("webrtc request_has_file: " + conn.peer);
 				// Get if the local file system has the file
 				var file_name = in_message['file_name'];
 				var message = {
@@ -164,42 +180,32 @@ function on_webrtc_data(conn) {
 				};
 				socket_send_data(message);
 			} else if (action == 'response_has_file') {
-				var peerid = in_message['peerid'];
+				var peerid = conn.peer;
 				var value = in_message['value'];
 				var file_name = in_message['file_name'];
+
+				// If the peer has the file, request that it be sent here
 				if (value == true) {
 					console.log("Peer " + peerid + " has file " + file_name);
+					var message = {
+						'action' : 'request_get_file',
+						'file_name' : file_name,
+						'peerid' : peerid
+					};
+					webrtc_send_data(peerid, message);
 				}
-			} else if (action == 'get_file') {
+			} else if (action == 'request_get_file') {
 				// Get the file from the local file system
 				var file_name = in_message['file_name'];
 				var message = {
-					'action' : 'local_get_file',
+					'action' : 'request_get_file',
 					'file_name' : file_name,
-					'peerid' : c.peer
+					'peerid' : conn.peer
 				};
 				socket_send_data(message);
-/*
-				var chunk_count = 2000;
-				var file_data = Array(10 * 1024).join("a");
-				while(chunk_count > 0) {
-					var out_message = {'action' : 'send_file', 'value' : file_data, "chunk" : chunk_count};
-					out_message = JSON.stringify(out_message);
-					out_message = btoa(out_message);
-					if (out_message.length > 16 * 1024) {
-						console.log("Message too big! 16KB is is the max size in Firefox.");
-					}
-					conn.send(out_message);
-					chunk_count--;
-					console.log("chunk_count: " + chunk_count);
-				}
-				console.log("sent whole file");
-*/
-			} else if (action == 'send_file') {
-				console.log("chunk_count: " + in_message["chunk"]);
-				if(in_message["chunk"] == 1) {
-					console.log("got whole file");
-				}
+			} else if (action == 'response_get_file') {
+				var chunk = in_message['chunk'];
+				console.log("Got file chunk: " + chunk);
 			}
 		});
 		conn.on('close', function() {
@@ -248,16 +254,11 @@ $('#connect_to_peers').click(function() {
 $('#download_file').click(function() {
     // Ask each peer if it has the file we want to download
     var message = {'action' : 'request_has_file', 'file_name' : 'blah.cdi'};
+	message = webrtc_encode_data(message);
 
-	// Convert message to json
-	message = JSON.stringify(message);
-
-	// Convert json to base64
-	message = btoa(message);
-
-	eachActiveConnection(function(c) {
-		if (c.label === 'share') {
-			c.send(message);
+	eachActiveConnection(function(conn) {
+		if (conn.label === 'share') {
+			conn.send(message);
 		}
 	});
 });
