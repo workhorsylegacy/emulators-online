@@ -223,6 +223,14 @@ func getDB() {
 	WebSocketSend(message)
 }
 
+func getDirectXVersion() {
+	message := map[string]interface{} {
+		"action" : "get_directx_version",
+		"value" : helpers.GetDirectXVersion(),
+	}
+	WebSocketSend(message)
+}
+
 func setBios(data map[string]interface{}) (error) {
 	console := data["console"].(string)
 	type_name := data["type"].(string)
@@ -1006,6 +1014,9 @@ func webSocketCB(ws *websocket.Conn) {
 		} else if message_map["action"] == "get_db" {
 			getDB()
 
+		} else if message_map["action"] == "get_directx_version" {
+			getDirectXVersion()
+
 		} else if message_map["action"] == "set_game_directory" {
 			// First try checking if Firefox or Chrome is the foreground window
 			hwnd := win32.GetForegroundWindow()
@@ -1049,6 +1060,28 @@ func webSocketCB(ws *websocket.Conn) {
 				message_map["directory_name"] = win32.SHGetPathFromIDList(pidl)
 				setGameDirectory(message_map)
 			}
+		} else if message_map["action"] == "local_get_file" {
+			file_name := message_map["file_name"].(string)
+			peerid := message_map["peerid"].(string)
+			message := map[string]interface{} {
+				"action" : "local_get_file",
+				"file_name" : file_name,
+				"chunk" : "ass ass ass",
+				"peerid" : peerid,
+			}
+			WebSocketSend(message)
+
+		} else if message_map["action"] == "request_has_file" {
+			fmt.Printf("websocket request_has_file");
+			file_name := message_map["file_name"].(string)
+			peerid := message_map["peerid"].(string)
+			message := map[string]interface{} {
+				"action" : "request_has_file",
+				"file_name" : file_name,
+				"value" : true,
+				"peerid" : peerid,
+			}
+			WebSocketSend(message)
 
 		// Unknown message from the client
 		} else {
@@ -1136,9 +1169,19 @@ func main() {
 	demul = helpers.NewDemul()
 	pcsx2 = helpers.NewPCSX2()
 
+	// Get the websocket port from the args
+	var ws_port int64 = 9090
+	var err error
+	if len(os.Args) >= 2 {
+		ws_port, err = strconv.ParseInt(os.Args[1], 10, 0)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	
 	// If "local" use the static files in the current directory
 	// If not use the static files in AppData
-	if len(os.Args) < 2 || os.Args[1] != "local" {
+	if len(os.Args) < 3 || os.Args[2] != "local" {
 		useAppDataForStaticFiles()
 	}
 
@@ -1225,7 +1268,6 @@ func main() {
 	//hover_text := "Emu Archive"
 	//server = nil
 	//port := 8080
-	ws_port := 9090
 	//server_thread = nil
 
 	server_address := fmt.Sprintf("127.0.0.1:%v", ws_port)

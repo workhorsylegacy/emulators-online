@@ -224,6 +224,14 @@
 							<input id="btn_install_demul" type="button" value="Loading ..." disabled />
 						</p>
 
+						<h2>DirectX Version</h2>
+						<p>
+							<select id="select_directx_version" disabled>
+							  <option value="10">10</option>
+							  <option value="11">11</option>
+							</select>
+						</p>
+
 						<h2>Configure buttons</h2>
 						<p>
 							<input id="btn_controls_demul" type="button" value="Buttons" disabled />
@@ -445,6 +453,7 @@ var is_dolphin_installed = false;
 var is_pcsxr_installed = false;
 var is_pcsx2_installed = false;
 var is_mupen_installed = false;
+var directx_version = 10;
 
 function on_data(data) {
 	console.log('called on_data: ' + data['action']);
@@ -470,6 +479,9 @@ function on_data(data) {
 			$('#generic_progress').hide();
 			$('#config_programs').show();
 		}
+	} else if(data['action'] == 'get_directx_version') {
+		directx_version = data['value'];
+		$('#select_directx_version').val(directx_version);
 	} else if(data['action'] == 'is_installed') {
 		if (data['name'] == 'DirectX End User Runtime') {
 			is_directx_end_user_runtime_installed = data['value'];
@@ -508,6 +520,7 @@ function on_data(data) {
 				if(is_demul_installed) {
 					$('#btn_install_demul').val('Uninstall');
 
+					$('#select_directx_version').prop('disabled', false);
 					$('#btn_controls_demul').prop('disabled', false);
 					$('#btn_dc_folder').prop('disabled', false);
 					$('#btn_bios_demul_dc').prop('disabled', false);
@@ -517,6 +530,7 @@ function on_data(data) {
 				} else {
 					$('#btn_install_demul').val('Install');
 
+					$('#select_directx_version').prop('disabled', true);
 					$('#btn_controls_demul').prop('disabled', true);
 					$('#btn_dc_folder').prop('disabled', true);
 					$('#btn_bios_demul_dc').prop('disabled', true);
@@ -747,6 +761,13 @@ function on_data(data) {
 	}
 }
 
+function action_get_directx_version() {
+	var message = {
+		'action' : 'get_directx_version'
+	};
+	socket_send_data(message);
+}
+
 function action_is_installed(program_name) {
 	var message = {
 		'action' : 'is_installed',
@@ -836,6 +857,7 @@ function setup_ui() {
 	action_is_installed('PCSX-Reloaded');
 	action_is_installed('PCSX2');
 	action_is_installed('Mupen 64 Plus');
+	action_get_directx_version();
 
 	var btn = $("#btn_install_7zip");
 	btn.on('click', function() {

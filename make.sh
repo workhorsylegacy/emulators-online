@@ -20,4 +20,5 @@ go run server/generate/generate_included_files.go
 # Build the Go exe
 echo "Building emu_archive.exe"
 go build server/emu_archive.go
-emu_archive.exe local
+mv emu_archive.exe emu_archive_$1.exe
+emu_archive_$1.exe $1 local

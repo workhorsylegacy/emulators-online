@@ -48,7 +48,7 @@ Build and run the exe
 -----
 ~~~bash
 cd C:/GO_WORKSPACE/src/emu_archive
-make.bat
+make.sh 9090
 ~~~
 
 Visit this url

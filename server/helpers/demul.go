@@ -69,6 +69,7 @@ func NewDemul() *Demul {
 			"btn_right_stick_down_demul" : "",
 			"btn_right_stick_left_demul" : "",
 			"btn_right_stick_right_demul" : "",
+			"select_directx_version" : "",
 		}
 	}
 

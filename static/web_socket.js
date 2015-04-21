@@ -40,8 +40,8 @@ function socket_send_data(message) {
 	socket.send(message);
 }
 
-function setup_websocket(on_data, on_open_cb) {
-	var host = "ws://localhost:9090/ws";
+function setup_websocket(port, on_data, on_open_cb) {
+	var host = "ws://localhost:" + port.toString() + "/ws";
 	socket = null;
 
 	try {
