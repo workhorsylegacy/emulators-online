@@ -67,11 +67,15 @@ function on_websocket_data(data) {
 		var peerid = data['peerid'];
 		var file_name = data['file_name'];
 		var chunk = data['chunk'];
+		var pos = data['pos'];
+		var file_length = data['file_length'];
 		var message = {
 			'action' : 'response_get_file',
 			'peerid' : peerid,
 			'file_name' : file_name,
-			'chunk' : chunk
+			'chunk' : chunk,
+			'pos' : pos,
+			'file_length' : file_length
 		};
 		webrtc_send_data(peerid, message);
 	} else if (action == 'get_db') {
@@ -190,6 +194,7 @@ function on_webrtc_data(conn) {
 					var message = {
 						'action' : 'request_get_file',
 						'file_name' : file_name,
+						'pos' : 0,
 						'peerid' : peerid
 					};
 					webrtc_send_data(peerid, message);
@@ -197,15 +202,35 @@ function on_webrtc_data(conn) {
 			} else if (action == 'request_get_file') {
 				// Get the file from the local file system
 				var file_name = in_message['file_name'];
+				var pos = in_message['pos'];
 				var message = {
 					'action' : 'request_get_file',
 					'file_name' : file_name,
+					'pos' : pos,
 					'peerid' : conn.peer
 				};
 				socket_send_data(message);
 			} else if (action == 'response_get_file') {
+				// Get the chunk
+				var peerid = conn.peer;
 				var chunk = in_message['chunk'];
-				console.log("Got file chunk: " + chunk);
+				var pos = in_message['pos'];
+				var file_length = in_message['file_length'];
+				var file_name = in_message['file_name'];
+				console.log("Got file pos: " + pos);
+
+				// Request the next chunk
+				pos += 1024 * 14; // The next 14 KB Chunk
+				console.log("file_length: " + file_length + ", pos: " + pos);
+				if (pos < file_length) {
+					var message = {
+						'action' : 'request_get_file',
+						'file_name' : file_name,
+						'pos' : pos,
+						'peerid' : peerid
+					};
+					webrtc_send_data(peerid, message);
+				}
 			}
 		});
 		conn.on('close', function() {

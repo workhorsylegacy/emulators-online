@@ -972,6 +972,8 @@ func webSocketCB(ws *websocket.Conn) {
 	//fmt.Printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!webSocketCB\r\n")
 	g_websocket_needs_restart = false
 	g_ws = ws
+	open_files := make(map[string]*os.File)
+	buffer := make([]byte, 1024 * 14) // 14 KB buffer
 
 	for ! g_websocket_needs_restart {
 		// Read the message
@@ -1062,13 +1064,50 @@ func webSocketCB(ws *websocket.Conn) {
 			}
 		} else if message_map["action"] == "request_get_file" {
 			fmt.Printf("websocket request_get_file");
+			// Get the file info
 			file_name := message_map["file_name"].(string)
 			peerid := message_map["peerid"].(string)
-			chunk := "FIXME: Replace with actual file content"
+			float_pos := message_map["pos"].(float64)
+			pos := int64(float_pos)
+
+			// Open the file for reading or get it if already open
+			var f *os.File
+			if value, ok := open_files[file_name]; ok {
+				f = value
+			} else {
+				f, err = os.Open(file_name)
+				if err != nil {
+					log.Fatal(err)
+				}
+				open_files[file_name] = f
+			}
+
+			// Get the file size
+			fi, err := f.Stat()
+			if err != nil {
+				log.Fatal(err)
+			}
+			file_length := fi.Size()
+
+			// Read the next chunk and get the length
+			fmt.Printf("pos: %v\r\n", pos)
+			_, err = f.Seek(pos, 0)
+			if err != nil {
+				log.Fatal(err)
+			}
+			read_len, err := f.Read(buffer)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Send the message
+			chunk := buffer[0 : read_len]
 			message := map[string]interface{} {
 				"action" : "response_get_file",
 				"file_name" : file_name,
 				"chunk" : chunk,
+				"pos" : pos,
+				"file_length" : file_length,
 				"peerid" : peerid,
 			}
 			WebSocketSend(message)
