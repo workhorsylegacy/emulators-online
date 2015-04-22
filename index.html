@@ -131,6 +131,7 @@ peer.on('open', function(id) {
 	// Send the peer id to the server
 	$.ajax({
 		url: "http://workhorsy.org/test_webrtc/index.php",
+		dataType: 'jsonp',
 		data: { action: "set_peer", peerid: our_peerid }
 	})
 	.done(function( msg ) {
@@ -245,6 +246,7 @@ $('#connect_to_peers').click(function() {
 	var peerids = [];
 	$.ajax({
 		url: "http://workhorsy.org/test_webrtc/index.php",
+		dataType: 'jsonp',
 		data: { action: "get_peers" }
 	})
 	.done(function( msg ) {
@@ -301,6 +303,7 @@ window.onunload = window.onbeforeunload = function(e) {
 	// Tell the server to delete our peer id
 	$.ajax({
 		url: "http://workhorsy.org/test_webrtc/index.php",
+		dataType: 'jsonp',
 		data: { action: "remove_peer", peerid: our_peerid }
 	})
 	.done(function( msg ) {
