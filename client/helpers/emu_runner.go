@@ -30,7 +30,7 @@ import (
 	"fmt"
 	"time"
 	"log"
-	"emu_archive/server/win32"
+	"emu_archive/client/win32"
 )
 
 type CommandWithArgs struct {

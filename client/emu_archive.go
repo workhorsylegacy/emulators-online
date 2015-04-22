@@ -24,7 +24,7 @@
 
 package main
 
-//go:generate go run server/generate/generate_included_files.go
+//go:generate go run client/generate/generate_included_files.go
 
 import (
 	"io"
@@ -47,9 +47,9 @@ import (
 	"net/http"
 	"golang.org/x/net/websocket"
 
-	"emu_archive/server/helpers"
-	"emu_archive/server/win32"
-	"emu_archive/server/generated"
+	"emu_archive/client/helpers"
+	"emu_archive/client/win32"
+	"emu_archive/client/generated"
 )
 
 var g_ws *websocket.Conn
@@ -464,9 +464,9 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		var info map[string]interface{}
 		var cmd *exec.Cmd
 		if console == "dreamcast" {
-			cmd = exec.Command("server/identify_dreamcast_games/identify_dreamcast_games.exe", entry)
+			cmd = exec.Command("client/identify_dreamcast_games/identify_dreamcast_games.exe", entry)
 		} else if console == "playstation2" {
-			cmd = exec.Command("server/identify_playstation2_games/identify_playstation2_games.exe", entry)
+			cmd = exec.Command("client/identify_playstation2_games/identify_playstation2_games.exe", entry)
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
 		}
@@ -1151,10 +1151,10 @@ func useAppDataForStaticFiles() {
 		"downloads",
 		"emulators",
 		"games",
-		"server",
+		"client",
 		"static",
-		"server/identify_dreamcast_games",
-		"server/identify_playstation2_games",
+		"client/identify_dreamcast_games",
+		"client/identify_playstation2_games",
 	}
 	for _, dir_name := range dirs {
 		if ! helpers.IsDir(dir_name) {

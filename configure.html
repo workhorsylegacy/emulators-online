@@ -431,7 +431,7 @@ jQuery(function($) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {
-	setup_websocket(on_data, function() {
+	setup_websocket(location.port, on_data, function() {
 		setup_ui();
 	});
 }

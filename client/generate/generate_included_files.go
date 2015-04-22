@@ -25,17 +25,17 @@ func main() {
 		"static/input.js",
 		"static/jquery-2.1.3.min.js",
 		"static/web_socket.js",
-		"server/identify_dreamcast_games/db_dreamcast_official_eu.json",
-		"server/identify_dreamcast_games/db_dreamcast_official_jp.json",
-		"server/identify_dreamcast_games/db_dreamcast_official_us.json",
-		"server/identify_dreamcast_games/db_dreamcast_unofficial.json",
-		"server/identify_dreamcast_games/identify_dreamcast_games.exe",
-		"server/identify_playstation2_games/db_playstation2_official_as.json",
-		"server/identify_playstation2_games/db_playstation2_official_au.json",
-		"server/identify_playstation2_games/db_playstation2_official_eu.json",
-		"server/identify_playstation2_games/db_playstation2_official_jp.json",
-		"server/identify_playstation2_games/db_playstation2_official_ko.json",
-		"server/identify_playstation2_games/identify_playstation2_games.exe",
+		"client/identify_dreamcast_games/db_dreamcast_official_eu.json",
+		"client/identify_dreamcast_games/db_dreamcast_official_jp.json",
+		"client/identify_dreamcast_games/db_dreamcast_official_us.json",
+		"client/identify_dreamcast_games/db_dreamcast_unofficial.json",
+		"client/identify_dreamcast_games/identify_dreamcast_games.exe",
+		"client/identify_playstation2_games/db_playstation2_official_as.json",
+		"client/identify_playstation2_games/db_playstation2_official_au.json",
+		"client/identify_playstation2_games/db_playstation2_official_eu.json",
+		"client/identify_playstation2_games/db_playstation2_official_jp.json",
+		"client/identify_playstation2_games/db_playstation2_official_ko.json",
+		"client/identify_playstation2_games/identify_playstation2_games.exe",
 	}
 
 	// Read the files into a map
@@ -72,7 +72,7 @@ func main() {
 	base64ed_data := base64.StdEncoding.EncodeToString(zlib_buffer.Bytes())
 
 	// Generate a file that will store everything
-	out, _ := os.Create("server/generated/generated_files.go")
+	out, _ := os.Create("client/generated/generated_files.go")
 	out.Write([]byte("package generated\r\n\r\n"))
 	out.Write([]byte("func GeneratedFiles() string {\r\n"))
 	out.Write([]byte("    return \""))
