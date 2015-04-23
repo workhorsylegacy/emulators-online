@@ -1,4 +1,4 @@
-# emu_archive
+# emulators-online
 HTML based front end for video game console emulators
 
 It uses WebSockets to connect the HTML front-end, to a Go back-end. The 
@@ -26,7 +26,7 @@ https://storage.googleapis.com/golang/go1.4.2.windows-386.msi
 
 Set GOPATH environmental variable
 -----
-C:/GO_WORKSPACE/
+C:/WORKSPACE_GO/
 
 Install WebSockets Module
 -----
@@ -37,9 +37,9 @@ go get golang.org/x/net/websocket
 Checkout the code
 -----
 ~~~bash
-cd C:/GO_WORKSPACE/src
-git clone http://github.com/workhorsy/emu_archive
-cd emu_archive
+cd C:/WORKSPACE_GO/src
+git clone http://github.com/workhorsy/emulators-online
+cd emulators-online
 git clone http://github.com/workhorsy/emu_archive_meta_data games
 ~~~
 
@@ -47,7 +47,7 @@ git clone http://github.com/workhorsy/emu_archive_meta_data games
 Build and run the exe
 -----
 ~~~bash
-cd C:/GO_WORKSPACE/src/emu_archive
+cd C:/WORKSPACE_GO/src/emulators-online
 make.sh 9090
 ~~~
 

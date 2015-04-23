@@ -1,7 +1,7 @@
 // Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-// emu_archive is a HTML based front end for video game console emulators
+// emulators-online is a HTML based front end for video game console emulators
 // It uses a MIT style license
-// It is hosted at: https://github.com/workhorsy/emu_archive
+// It is hosted at: https://github.com/workhorsy/emulators-online
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the

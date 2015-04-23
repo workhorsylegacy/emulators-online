@@ -18,7 +18,7 @@ echo "Generating files"
 go run client/generate/generate_included_files.go
 
 # Build the Go exe
-echo "Building emu_archive.exe"
-go build client/emu_archive.go
-mv emu_archive.exe emu_archive_$1.exe
-emu_archive_$1.exe $1 local
+echo "Building emulators_online.exe"
+go build client/emulators_online.go
+mv emulators_online.exe emulators_online_$1.exe
+emulators_online_$1.exe $1 local

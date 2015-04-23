@@ -1,7 +1,7 @@
 // Copyright (c) 2015, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-// emu_archive is a HTML based front end for video game console emulators
+// emulators-online is a HTML based front end for video game console emulators
 // It uses a MIT style license
-// It is hosted at: https://github.com/workhorsy/emu_archive
+// It is hosted at: https://github.com/workhorsy/emulators-online
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -47,9 +47,9 @@ import (
 	"net/http"
 	"golang.org/x/net/websocket"
 
-	"emu_archive/client/helpers"
-	"emu_archive/client/win32"
-	"emu_archive/client/generated"
+	"emulators-online/client/helpers"
+	"emulators-online/client/win32"
+	"emulators-online/client/generated"
 )
 
 var g_ws *websocket.Conn
@@ -1134,8 +1134,8 @@ func webSocketCB(ws *websocket.Conn) {
 }
 
 func useAppDataForStaticFiles() {
-	// Make the AppData/Local/emu_archive directory
-	app_data := filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Local", "emu_archive")
+	// Make the AppData/Local/emulators-online directory
+	app_data := filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Local", "emulators-online")
 	fmt.Printf("Storing static files in: %v\r\n", app_data)
 	if ! helpers.IsDir(app_data) {
 		os.Mkdir(app_data, os.ModeDir)

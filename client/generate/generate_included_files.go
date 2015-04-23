@@ -19,7 +19,7 @@ func main() {
 		"configure.html",
 		"index.html",
 		"static/default.css",
-		"static/emu_archive.js",
+		"static/emulators_online.js",
 		"static/favicon.ico",
 		"static/file_uploader.js",
 		"static/input.js",
