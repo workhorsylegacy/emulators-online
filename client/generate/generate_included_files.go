@@ -35,6 +35,7 @@ func main() {
 		"client/identify_playstation2_games/db_playstation2_official_eu.json",
 		"client/identify_playstation2_games/db_playstation2_official_jp.json",
 		"client/identify_playstation2_games/db_playstation2_official_ko.json",
+		"client/identify_playstation2_games/db_playstation2_official_us.json",
 		"client/identify_playstation2_games/identify_playstation2_games.exe",
 	}
 

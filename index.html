@@ -18,13 +18,15 @@
 
 		<div id="error_header" class="header" style="display: none">
 			Run
-			<a href="emu_archive.exe">emu_archive.exe</a>
+			<a href="https://github.com/workhorsy/emu_archive/releases/download/Alpha/emu_archive.exe">emu_archive.exe</a>
 			to begin.
 		</div>
 
-		<div id="content">		
+		<div id="content">
+			<!--
 			<input id="connect_to_peers" type="button" value="Connect to peers" />
 			<input id="download_file" type="button" value="Download file" />
+			-->
 			<div id="game_dialogs"></div>
 
 			<div id="game_selector" style="overflow: auto;"></div>
@@ -105,7 +107,8 @@ function on_websocket_data(data) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {
-	setup_websocket(location.port, on_websocket_data, function() {
+	var port = location.port | 9090;
+	setup_websocket(port, on_websocket_data, function() {
 		message = {
 			'action' : 'get_db',
 			'value' : ""
@@ -113,7 +116,7 @@ if(!("WebSocket" in window)) {
 		socket_send_data(message);
 	});
 }
-
+/*
 var connectedPeers = {};
 var our_peerid = -1;
 var peer = new Peer({
@@ -315,7 +318,8 @@ window.onunload = window.onbeforeunload = function(e) {
 		peer.destroy();
 	}
 };
-
+*/
 });
+
 	</script>
 </html>
