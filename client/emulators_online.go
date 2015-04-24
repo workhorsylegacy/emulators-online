@@ -1317,7 +1317,10 @@ func main() {
 	//http.HandleFunc("/configure.html", httpCB)
 	//http.Handle("/(.*)", http.FileServer(http.Dir(".")))
 	fmt.Printf("Server running at: http://%s\r\n",  server_address)
-	http.ListenAndServe(server_address, nil)
+	err = http.ListenAndServe(server_address, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 
