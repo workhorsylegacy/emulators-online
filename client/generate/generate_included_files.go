@@ -23,6 +23,7 @@ func main() {
 		"static/favicon.ico",
 		"static/file_uploader.js",
 		"static/input.js",
+		"static/peer.js",
 		"static/jquery-2.1.3.min.js",
 		"static/web_socket.js",
 		"client/identify_dreamcast_games/db_dreamcast_official_eu.json",
