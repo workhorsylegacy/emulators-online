@@ -1,4 +1,12 @@
 
+# If there are no arguments, print the correct usage and exit
+if [ "$#" -ne 1 ]; then
+	echo "Build and run emulators_online.exe" >&2
+	echo "Usage: make.sh port" >&2
+	echo "Example: make.sh 9090" >&2
+	exit 1
+fi
+
 # Build the Dreamcast Identifier
 cd client/identify_dreamcast_games
 python setup.py py2exe
