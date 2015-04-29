@@ -54,7 +54,7 @@ function setup_websocket(port, on_data, on_open_cb) {
 	if(socket) {
 		socket.onopen = function() {
 			$("#error_header").hide();
-			$("#search_header").show();
+			//$("#search_header").show();
 
 			if(on_open_cb) {
 				on_open_cb();
@@ -88,7 +88,7 @@ function setup_websocket(port, on_data, on_open_cb) {
 			// This prevents the error page from flickering on when we move pages
 			setTimeout(function() {
 				$("#error_header").show();
-				$("#search_header").hide();
+				//$("#search_header").hide();
 
 				// Re-connect again in 3 seconds
 				setTimeout(function() {

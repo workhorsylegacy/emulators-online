@@ -431,9 +431,31 @@ jQuery(function($) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {
-	var port = location.port | 9090;
-	setup_websocket(port, on_data, function() {
+	var port = location.port || 9090;
+	setup_websocket(port, on_websocket_data, function() {
 		setup_ui();
+
+		// Get the game database from the internet
+		// and save it in the database
+		$.ajax({
+			url: "http://workhorsy.org/test_webrtc/index.php",
+			dataType: 'json',
+			data: {
+				action: "get_value",
+				id: 1,
+				key: "game_db_playstation2"
+			}
+		})
+		.done(function(value) {
+			if (value) {
+				message = {
+					'action' : 'set_db',
+					'console' : 'playstation2',
+					'value' : value
+				};
+				socket_send_data(message);
+			}
+		});
 	});
 }
 
@@ -456,8 +478,8 @@ var is_pcsx2_installed = false;
 var is_mupen_installed = false;
 var directx_version = 10;
 
-function on_data(data) {
-	console.log('called on_data: ' + data['action']);
+function on_websocket_data(data) {
+	console.log('called on_websocket_data: ' + data['action']);
 	if(data['action'] == 'log') {
 		console.log('Log: ' + data['value']);
 	} else if(data['action'] == 'progress') {
@@ -745,6 +767,23 @@ function on_data(data) {
 				});
 			});
 		}
+	} else if (data['action'] == 'set_db') {
+		var value = data['value'];
+		var game_console = data['console'];
+
+		$.ajax({
+			url: "http://workhorsy.org/test_webrtc/index.php",
+			dataType: 'json',
+			data: {
+				action: "set_value",
+				id: 1,
+				key: "game_db_playstation2",
+				value: value
+			}
+		})
+		.done(function( msg ) {
+			console.log("sent ps2 game db to web server.");
+		});
 	} else if(data['action'] == 'long_running_tasks') {
 		var notification_footer = $('#notification_footer');
 		notification_footer.empty();

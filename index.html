@@ -14,12 +14,12 @@
 			Search: <input id="search_text" type="text" />
 			<br />
 			<a href="configure.html">Configure</a>
-		</div>
 
-		<div id="error_header" class="header" style="display: none">
-			Run
-			<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online.exe">emulators_online.exe</a>
-			to begin.
+			<span id="error_header" class="header" style="display: none;">
+				Run
+				<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online.exe">emulators_online.exe</a>
+				to begin.
+			</span>
 		</div>
 
 		<div id="content">
@@ -103,17 +103,32 @@ function on_websocket_data(data) {
 	}
 }
 
-
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {
-	var port = location.port | 9090;
+	var port = location.port || 9090;
 	setup_websocket(port, on_websocket_data, function() {
-		message = {
-			'action' : 'get_db',
-			'value' : ""
-		};
-		socket_send_data(message);
+		// Get the game database from the internet
+		// and save it in the database
+		$.ajax({
+			url: "http://workhorsy.org/test_webrtc/index.php",
+			dataType: 'json',
+			data: {
+				action: "get_value",
+				id: 1,
+				key: "game_db_playstation2"
+			}
+		})
+		.done(function(value) {
+			if (value) {
+				message = {
+					'action' : 'set_db',
+					'console' : 'playstation2',
+					'value' : value
+				};
+				socket_send_data(message);
+			}
+		});
 	});
 }
 /*

@@ -43,6 +43,7 @@ import (
 	"encoding/gob"
 	"bytes"
 	"strconv"
+	//"net/url"
 
 	"net/http"
 	"golang.org/x/net/websocket"
@@ -76,6 +77,7 @@ var demul *helpers.Demul
 //var pcsxr PCSXR
 var pcsx2 *helpers.PCSX2
 
+var consoles []string
 
 func CleanPath(file_path string) string {
 	// Fix the backward slashes from Windows
@@ -215,12 +217,82 @@ func ToBase64Json(thing interface{}) (string, error) {
 	return b64ed_and_jsoned_data, err
 }
 
+func FromCompressedBase64Json(message string) (map[string]map[string]interface{}, error) {
+	var retval map[string]map[string]interface{}
+
+	// Unbase64 the message
+	unbase64ed_message, err := base64.StdEncoding.DecodeString(message)
+	if err != nil {
+		return nil, err
+	}
+
+	// Uncompress the message
+	zlibed_buffer := bytes.NewBuffer([]byte(unbase64ed_message))
+	var uncompressed_buffer bytes.Buffer
+	reader, err := zlib.NewReader(zlibed_buffer)
+	if err != nil {
+		log.Fatal(err)
+	}
+	io.Copy(&uncompressed_buffer, reader)
+
+	// Unjson the message
+	err = json.Unmarshal(uncompressed_buffer.Bytes(), &retval)
+	if err != nil {
+		return nil, err
+	}
+
+	return retval, nil
+}
+
+func ToCompressedBase64Json(thing interface{}) (string, error) {
+	// Convert the object to json
+	jsoned_data, err := json.MarshalIndent(thing, "", "\t")
+	if err != nil {
+		return "", err
+	}
+
+	// Compress the jsoned object
+	var out_buffer bytes.Buffer
+	writer := zlib.NewWriter(&out_buffer)
+	writer.Write([]byte(jsoned_data))
+	writer.Close()
+
+	// Convert the compressed object to base64
+	b64ed_data := base64.StdEncoding.EncodeToString(out_buffer.Bytes())
+	if err != nil {
+		return "", err
+	}
+	b64ed_and_jsoned_data := string(b64ed_data)
+
+	return b64ed_and_jsoned_data, err
+}
+
 func getDB() {
 	message := map[string]interface{} {
 		"action" : "get_db",
 		"value" : db,
 	}
 	WebSocketSend(message)
+}
+
+func setDB(console string, console_data map[string]map[string]interface{}) {
+	// Load the game database
+	db[console] = console_data
+
+	// Get the names of all the games
+	keys := []string{}
+	for k := range db[console] {
+		keys = append(keys, k)
+	}
+
+	// Remove any games if there is no game file
+	for _, name := range keys {
+		data := db[console][name]
+		binary := data["binary"].(string)
+		if ! helpers.IsFile(binary) {
+			delete(db[console], name)
+		}
+	}
 }
 
 func getDirectXVersion() {
@@ -540,6 +612,19 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		return nil
 	})
 
+	// Send the updated game db to the browser
+	value, err := ToCompressedBase64Json(db[console])
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	message := map[string]interface{} {
+		"action" : "set_db",
+		"console" : console,
+		"value" : value,
+	}
+	WebSocketSend(&message)
+/*
 	// Write the db cache file
 	f, err := os.Create(fmt.Sprintf("cache/game_db_%s.json", console))
 	defer f.Close()
@@ -553,15 +638,16 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		return err
 	}
 	f.Write(jsoned_data)
+*/
 
 	// Write the modify dates cache file
-	f, err = os.Create(fmt.Sprintf("cache/file_modify_dates_%s.json", console))
+	f, err := os.Create(fmt.Sprintf("cache/file_modify_dates_%s.json", console))
 	defer f.Close()
 	if err != nil {
 		fmt.Printf("Failed to open file modify dates file: %s\r\n", err)
 		return err
 	}
-	jsoned_data, err = json.MarshalIndent(file_modify_dates[console], "", "\t")
+	jsoned_data, err := json.MarshalIndent(file_modify_dates[console], "", "\t")
 	if err != nil {
 		fmt.Printf("Failed to convert file_modify_dates to json: %s\r\n", err)
 		return err
@@ -1016,6 +1102,17 @@ func webSocketCB(ws *websocket.Conn) {
 		} else if message_map["action"] == "get_db" {
 			getDB()
 
+		} else if message_map["action"] == "set_db" {
+			console := message_map["console"].(string)
+			str_value :=  message_map["value"].(string)
+			value, err := FromCompressedBase64Json(str_value)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			setDB(console, value)
+			getDB()
+
 		} else if message_map["action"] == "get_directx_version" {
 			getDirectXVersion()
 
@@ -1199,82 +1296,7 @@ func useAppDataForStaticFiles() {
     }
 }
 
-func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
-	// Initialize the globals
-	db = make(map[string]map[string]map[string]interface{})
-	file_modify_dates = map[string]map[string]int64{}
-	long_running_tasks = map[string]LongRunningTask{}
-
-	demul = helpers.NewDemul()
-	pcsx2 = helpers.NewPCSX2()
-
-	// Get the websocket port from the args
-	var ws_port int64 = 9090
-	var err error
-	if len(os.Args) >= 2 {
-		ws_port, err = strconv.ParseInt(os.Args[1], 10, 0)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	
-	// If "local" use the static files in the current directory
-	// If not use the static files in AppData
-	if len(os.Args) < 3 || os.Args[2] != "local" {
-		useAppDataForStaticFiles()
-	}
-
-	// Get the DirectX Version
-	helpers.StartBackgroundSearchForDirectXVersion()
-
-	// Load the game database
-	consoles := []string{
-		//"gamecube",
-		//"nintendo64",
-		//"saturn",
-		"dreamcast",
-		//"playstation1",
-		"playstation2",
-	}
-	for _, console := range consoles {
-		// Skip if not a file
-		cache_file := fmt.Sprintf("cache/game_db_%s.json", console)
-		if ! helpers.IsFile(cache_file) {
-			// Init the map for this console
-			db[console] = make(map[string]map[string]interface{})
-			continue
-		}
-
-		// Read the file and load it into the db
-		file_data, err := ioutil.ReadFile(cache_file)
-		if err != nil {
-			log.Fatal(err)
-		}
-		var console_games map[string]map[string]interface{}
-		err = json.Unmarshal(file_data, &console_games)
-		if err != nil {
-			log.Fatal(err)
-		}
-		db[console] = console_games
-
-		// Get the names of all the games
-		keys := []string{}
-		for k := range db[console] {
-			keys = append(keys, k)
-		}
-
-		// Remove any games if there is no game file
-		for _, name := range keys {
-			data := db[console][name]
-			binary := data["binary"].(string)
-			if ! helpers.IsFile(binary) {
-				delete(db[console], name)
-			}
-		}
-	}
-
+func loadFileModifyDates() {
 	// Load the file modify dates
 	for _, console := range consoles {
 		file_modify_dates[console] = map[string]int64{}
@@ -1304,6 +1326,71 @@ func main() {
 			}
 		}
 	}
+}
+
+func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	// Set what game consoles to support
+	consoles = []string{
+		//"gamecube",
+		//"nintendo64",
+		//"saturn",
+		"dreamcast",
+		//"playstation1",
+		"playstation2",
+	}
+/*
+	// Compress the string
+	example_data := "aaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbb"
+	fmt.Printf("example_data: %v, %v\r\n", example_data, len(example_data))
+
+	var out_buffer bytes.Buffer
+	writer := zlib.NewWriter(&out_buffer)
+	writer.Write([]byte(example_data))
+	writer.Close()
+	zlibed_data := out_buffer.Bytes()
+	fmt.Printf("zlibed_data: %v, %v\r\n", string(zlibed_data), len(zlibed_data))
+
+	// base64 the compressed string
+	b64ed_data := base64.StdEncoding.EncodeToString(zlibed_data)
+	fmt.Printf("b64ed_data: %v, %v\r\n", b64ed_data, len(b64ed_data))
+
+	// Escape the data to be safe in a url
+	escaped_data := url.QueryEscape(b64ed_data)
+	fmt.Printf("escaped_data: %v, %v\r\n", escaped_data, len(escaped_data))
+*/
+	// Initialize the globals
+	db = make(map[string]map[string]map[string]interface{})
+	file_modify_dates = map[string]map[string]int64{}
+	long_running_tasks = map[string]LongRunningTask{}
+
+	for _, console := range consoles {
+		db[console] = make(map[string]map[string]interface{})
+		file_modify_dates[console] = map[string]int64{}
+	}
+
+	demul = helpers.NewDemul()
+	pcsx2 = helpers.NewPCSX2()
+
+	// Get the websocket port from the args
+	var ws_port int64 = 9090
+	var err error
+	if len(os.Args) >= 2 {
+		ws_port, err = strconv.ParseInt(os.Args[1], 10, 0)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	
+	// If "local" use the static files in the current directory
+	// If not use the static files in AppData
+	if len(os.Args) < 3 || os.Args[2] != "local" {
+		useAppDataForStaticFiles()
+	}
+
+	// Get the DirectX Version
+	helpers.StartBackgroundSearchForDirectXVersion()
 
 	//icon := "static/favicon.ico"
 	//hover_text := "Emu Archive"
