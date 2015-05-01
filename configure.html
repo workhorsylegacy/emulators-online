@@ -7,6 +7,7 @@
 		<script src="static/file_uploader.js"></script>
 		<script src="static/input.js"></script>
 		<script src="static/web_socket.js"></script>
+		<script src="static/pako.min.js"></script>
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 		<link rel="shortcut icon" href="static/favicon.ico" />
 	</head>
@@ -438,6 +439,7 @@ if(!("WebSocket" in window)) {
 		// Get the game database from the internet
 		// and save it in the database
 		$.ajax({
+			type: "POST",
 			url: "http://workhorsy.org/test_webrtc/index.php",
 			dataType: 'json',
 			data: {
@@ -772,6 +774,7 @@ function on_websocket_data(data) {
 		var game_console = data['console'];
 
 		$.ajax({
+			type: "POST",
 			url: "http://workhorsy.org/test_webrtc/index.php",
 			dataType: 'json',
 			data: {

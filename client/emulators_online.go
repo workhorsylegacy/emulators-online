@@ -1111,7 +1111,6 @@ func webSocketCB(ws *websocket.Conn) {
 			}
 
 			setDB(console, value)
-			getDB()
 
 		} else if message_map["action"] == "get_directx_version" {
 			getDirectXVersion()

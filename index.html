@@ -5,6 +5,7 @@
 		<script src="static/jquery-2.1.3.min.js"></script>
 		<script src="static/emulators_online.js"></script>
 		<script src="static/web_socket.js"></script>
+		<script src="static/pako.min.js"></script>
 		<script src="static/peer.js"></script>
 		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
 		<link rel="shortcut icon" href="static/favicon.ico" />
@@ -106,30 +107,62 @@ function on_websocket_data(data) {
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {
+	var is_web_socket_setup = false;
+	var is_game_db_downloaded = false;
+	var game_db = null;
+
+	// Connect to the client on the web socket
 	var port = location.port || 9090;
 	setup_websocket(port, on_websocket_data, function() {
-		// Get the game database from the internet
-		// and save it in the database
-		$.ajax({
-			url: "http://workhorsy.org/test_webrtc/index.php",
-			dataType: 'json',
-			data: {
-				action: "get_value",
-				id: 1,
-				key: "game_db_playstation2"
-			}
-		})
-		.done(function(value) {
-			if (value) {
-				message = {
-					'action' : 'set_db',
-					'console' : 'playstation2',
-					'value' : value
-				};
-				socket_send_data(message);
-			}
-		});
+		is_web_socket_setup = true;
 	});
+
+	// Get the game database from the emulators-online.com
+	$.ajax({
+		type: "POST",
+		url: "http://workhorsy.org/test_webrtc/index.php",
+		dataType: 'json',
+		data: {
+			action: "get_value",
+			id: 1,
+			key: "game_db_playstation2"
+		}
+	})
+	.done(function(value) {
+		game_db = value;
+
+		// Un base64, Un compress, Un array, and Un json the db
+		value = atob(value);
+		value = pako.inflate(value);
+		value = String.fromCharCode.apply(null, value);
+		value = JSON.parse(value);
+
+		db['playstation2'] = value;
+		$('#search_text').on('input propertychange paste', on_search);
+
+		// Show the default search
+		on_search();
+
+		is_game_db_downloaded = true;
+	});
+
+	// Wait for the game database to be downloaded, and the web socket connection to the client
+	var setDbInterval = setInterval(function() {
+		// Just return if not ready
+		if (!is_web_socket_setup || !is_game_db_downloaded) {
+			return;
+		}
+
+		clearInterval(setDbInterval);
+		
+		// Send the game database to the client
+		message = {
+			'action' : 'set_db',
+			'console' : 'playstation2',
+			'value' : game_db
+		};
+		socket_send_data(message);
+	}, 300);
 }
 /*
 var connectedPeers = {};
