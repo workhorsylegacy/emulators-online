@@ -445,14 +445,13 @@ if(!("WebSocket" in window)) {
 			data: {
 				action: "get_value",
 				id: 1,
-				key: "game_db_playstation2"
+				key: "game_db"
 			}
 		})
 		.done(function(value) {
 			if (value) {
 				message = {
 					'action' : 'set_db',
-					'console' : 'playstation2',
 					'value' : value
 				};
 				socket_send_data(message);
@@ -771,7 +770,6 @@ function on_websocket_data(data) {
 		}
 	} else if (data['action'] == 'set_db') {
 		var value = data['value'];
-		var game_console = data['console'];
 
 		$.ajax({
 			type: "POST",
@@ -780,12 +778,12 @@ function on_websocket_data(data) {
 			data: {
 				action: "set_value",
 				id: 1,
-				key: "game_db_playstation2",
+				key: "game_db",
 				value: value
 			}
 		})
 		.done(function( msg ) {
-			console.log("sent ps2 game db to web server.");
+			console.log("sent game db to web server.");
 		});
 	} else if(data['action'] == 'long_running_tasks') {
 		var notification_footer = $('#notification_footer');

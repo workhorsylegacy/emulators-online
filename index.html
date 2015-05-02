@@ -125,7 +125,7 @@ if(!("WebSocket" in window)) {
 		data: {
 			action: "get_value",
 			id: 1,
-			key: "game_db_playstation2"
+			key: "game_db"
 		}
 	})
 	.done(function(value) {
@@ -138,7 +138,7 @@ if(!("WebSocket" in window)) {
 			value = String.fromCharCode.apply(null, value);
 			value = JSON.parse(value);
 
-			db['playstation2'] = value;
+			db = value;
 			$('#search_text').on('input propertychange paste', on_search);
 
 			// Show the default search
@@ -162,7 +162,6 @@ if(!("WebSocket" in window)) {
 		// Send the game database to the client
 		message = {
 			'action' : 'set_db',
-			'console' : 'playstation2',
 			'value' : game_db
 		};
 		socket_send_data(message);

@@ -218,8 +218,8 @@ func ToBase64Json(thing interface{}) (string, error) {
 	return b64ed_and_jsoned_data, err
 }
 
-func FromCompressedBase64Json(message string) (map[string]map[string]interface{}, error) {
-	var retval map[string]map[string]interface{}
+func FromCompressedBase64Json(message string) (map[string]map[string]map[string]interface{}, error) {
+	var retval map[string]map[string]map[string]interface{}
 
 	// Unbase64 the message
 	unbase64ed_message, err := base64.StdEncoding.DecodeString(message)
@@ -276,22 +276,24 @@ func getDB() {
 	WebSocketSend(message)
 }
 
-func setDB(console string, console_data map[string]map[string]interface{}) {
+func setDB(console_data map[string]map[string]map[string]interface{}) {
 	// Load the game database
-	db[console] = console_data
+	db = console_data
 
-	// Get the names of all the games
-	keys := []string{}
-	for k := range db[console] {
-		keys = append(keys, k)
-	}
+	for _, console := range consoles {
+		// Get the names of all the games
+		keys := []string{}
+		for k := range db[console] {
+			keys = append(keys, k)
+		}
 
-	// Remove any games if there is no game file
-	for _, name := range keys {
-		data := db[console][name]
-		binary := data["binary"].(string)
-		if ! helpers.IsFile(binary) {
-			delete(db[console], name)
+		// Remove any games if there is no game file
+		for _, name := range keys {
+			data := db[console][name]
+			binary := data["binary"].(string)
+			if ! helpers.IsFile(binary) {
+				delete(db[console], name)
+			}
 		}
 	}
 }
@@ -614,14 +616,13 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 	})
 
 	// Send the updated game db to the browser
-	value, err := ToCompressedBase64Json(db[console])
+	value, err := ToCompressedBase64Json(db)
 	if err != nil {
 		log.Fatal(err)
 	}
 	
 	message := map[string]interface{} {
 		"action" : "set_db",
-		"console" : console,
 		"value" : value,
 	}
 	WebSocketSend(&message)
@@ -1104,8 +1105,7 @@ func webSocketCB(ws *websocket.Conn) {
 			getDB()
 
 		} else if message_map["action"] == "set_db" {
-			console := message_map["console"].(string)
-			var value map[string]map[string]interface{} = nil
+			var value map[string]map[string]map[string]interface{} = nil
 			var err error = nil
 
 			if message_map["value"] != nil {
@@ -1115,10 +1115,10 @@ func webSocketCB(ws *websocket.Conn) {
 					log.Fatal(err)
 				}
 
-				setDB(console, value)
+				setDB(value)
 			} else {
-				value = make(map[string]map[string]interface{})
-				setDB(console, value)
+				value = make(map[string]map[string]map[string]interface{})
+				setDB(value)
 			}
 
 		} else if message_map["action"] == "get_directx_version" {
