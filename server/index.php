@@ -10,13 +10,13 @@ if (!array_key_exists("files", $_SESSION)) { $_SESSION["files"] = []; }
 if (!array_key_exists("peers", $_SESSION)) { $_SESSION["peers"] = []; }
 if (!array_key_exists("values", $_SESSION)) { $_SESSION["values"] = []; }
 
-$action = $_GET["action"];
+$action = $_REQUEST["action"];
 
 if ($action == "set_value") {
 	// Get the arguments
-	$id = $_GET["id"];
-	$key = $_GET["key"];
-	$value = $_GET["value"];
+	$id = $_REQUEST["id"];
+	$key = $_REQUEST["key"];
+	$value = $_REQUEST["value"];
 
 	// Un url encode, un base64, and un gzip the value
 	//$value = urldecode($value);
@@ -33,8 +33,8 @@ if ($action == "set_value") {
 	echo json_encode($value);
 } else if ($action == "get_value") {
 	// Get the arguments
-	$id = $_GET["id"];
-	$key = $_GET["key"];
+	$id = $_REQUEST["id"];
+	$key = $_REQUEST["key"];
 
 	$value = null;
 	if (array_key_exists($id, $_SESSION["values"])) {
@@ -44,18 +44,18 @@ if ($action == "set_value") {
 	}
 	echo json_encode($value);
 } else if ($action == "set_peer") {
-	$peerid = $_GET["peerid"];
+	$peerid = $_REQUEST["peerid"];
 	$_SESSION["peers"][$peerid] = 1;
 } else if ($action == "remove_peer") {
-	$peerid = $_GET["peerid"];
+	$peerid = $_REQUEST["peerid"];
 	unset($_SESSION["peers"][$peerid]);
 } else if ($action == "get_peers") {
 	$keys = array_keys($_SESSION["peers"]);
 	echo json_encode($keys);
 } else if ($action == "get_file") {
 	// Get the peerid and file
-	$peerid = $_GET["peerid"];
-	$file = $_GET["file"];
+	$peerid = $_REQUEST["peerid"];
+	$file = $_REQUEST["file"];
 
 	// Save it in the session
 	$_SESSION["files"][$peerid] = $file;

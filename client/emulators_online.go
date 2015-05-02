@@ -67,6 +67,7 @@ type LongRunningTask struct {
 //type Mupen64Plus struct {}
 //type PCSXR struct {}
 
+// db is accessed like db[console][game][binary_name]
 var db map[string]map[string]map[string]interface{}
 var file_modify_dates map[string]map[string]int64
 var long_running_tasks map[string]LongRunningTask
@@ -1104,13 +1105,21 @@ func webSocketCB(ws *websocket.Conn) {
 
 		} else if message_map["action"] == "set_db" {
 			console := message_map["console"].(string)
-			str_value :=  message_map["value"].(string)
-			value, err := FromCompressedBase64Json(str_value)
-			if err != nil {
-				log.Fatal(err)
-			}
+			var value map[string]map[string]interface{} = nil
+			var err error = nil
 
-			setDB(console, value)
+			if message_map["value"] != nil {
+				str_value :=  message_map["value"].(string)
+				value, err = FromCompressedBase64Json(str_value)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				setDB(console, value)
+			} else {
+				value = make(map[string]map[string]interface{})
+				setDB(console, value)
+			}
 
 		} else if message_map["action"] == "get_directx_version" {
 			getDirectXVersion()

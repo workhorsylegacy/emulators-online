@@ -120,7 +120,7 @@ if(!("WebSocket" in window)) {
 	// Get the game database from the emulators-online.com
 	$.ajax({
 		type: "POST",
-		url: "http://workhorsy.org/test_webrtc/index.php",
+		url: "http://emulators-online.com/data/index.php",
 		dataType: 'json',
 		data: {
 			action: "get_value",
@@ -129,19 +129,23 @@ if(!("WebSocket" in window)) {
 		}
 	})
 	.done(function(value) {
-		game_db = value;
+		if (value) {
+			game_db = value;
 
-		// Un base64, Un compress, Un array, and Un json the db
-		value = atob(value);
-		value = pako.inflate(value);
-		value = String.fromCharCode.apply(null, value);
-		value = JSON.parse(value);
+			// Un base64, Un compress, Un array, and Un json the db
+			value = atob(value);
+			value = pako.inflate(value);
+			value = String.fromCharCode.apply(null, value);
+			value = JSON.parse(value);
 
-		db['playstation2'] = value;
-		$('#search_text').on('input propertychange paste', on_search);
+			db['playstation2'] = value;
+			$('#search_text').on('input propertychange paste', on_search);
 
-		// Show the default search
-		on_search();
+			// Show the default search
+			on_search();
+		} else {
+			game_db = null;
+		}
 
 		is_game_db_downloaded = true;
 	});
@@ -181,7 +185,7 @@ peer.on('open', function(id) {
 
 	// Send the peer id to the server
 	$.ajax({
-		url: "http://workhorsy.org/test_webrtc/index.php",
+		url: "http://emulators-online.com/data/index.php",
 		dataType: 'jsonp',
 		data: { action: "set_peer", peerid: our_peerid }
 	})
@@ -296,7 +300,7 @@ $('#connect_to_peers').click(function() {
 	// Get a list of all the peers from the server
 	var peerids = [];
 	$.ajax({
-		url: "http://workhorsy.org/test_webrtc/index.php",
+		url: "http://emulators-online.com/data/index.php",
 		dataType: 'jsonp',
 		data: { action: "get_peers" }
 	})
@@ -353,7 +357,7 @@ function eachActiveConnection(fn) {
 window.onunload = window.onbeforeunload = function(e) {
 	// Tell the server to delete our peer id
 	$.ajax({
-		url: "http://workhorsy.org/test_webrtc/index.php",
+		url: "http://emulators-online.com/data/index.php",
 		dataType: 'jsonp',
 		data: { action: "remove_peer", peerid: our_peerid }
 	})
