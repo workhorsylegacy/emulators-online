@@ -32,6 +32,12 @@
 
 			<div id="game_selector" style="overflow: auto;"></div>
 
+			<div id="empty_game_db" style="display: none;">
+				<p>
+				There are no games. You can load them on the configure page.
+				</p>
+			</div>
+
 			<br style="clear: both"/>
 
 			<div id="output"></div>
@@ -136,6 +142,7 @@ if(!("WebSocket" in window)) {
 	.done(function(value) {
 		if (value) {
 			game_db = value;
+			$('#empty_game_db').hide();
 
 			// Un base64, Un compress, Un array, and Un json the db
 			value = atob(value);
@@ -150,6 +157,7 @@ if(!("WebSocket" in window)) {
 			on_search();
 		} else {
 			game_db = null;
+			$('#empty_game_db').show();
 		}
 
 		is_game_db_downloaded = true;
