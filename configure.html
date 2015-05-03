@@ -16,12 +16,6 @@
 			<a href="index.html">Main</a>
 		</div>
 
-		<div id="error_header" class="header" style="display: none">
-			Run
-			<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online.exe">emulators_online.exe</a>
-			to begin.
-		</div>
-
 		<div id="content">
 			<h1 style="color: red;">FIXME: Gamepad only works in Firefox and Chrome!</h1>
 			<div id="not_connected" style="display: none">
@@ -171,7 +165,23 @@
 				<input type="button" value="Done" id="btn_done_button_config_ssf" />
 			</div>
 
-			<div id="config_programs">
+			<div id="install_client" class="config_table">
+				<h1>Run client to configure emulators</h1>
+				<p>
+					The client will allow the website to install and run emulators, as well as search your game collection.
+				</p>
+				<p>
+					Run
+					<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online.exe">emulators_online.exe</a>
+					to begin.
+				</p>
+				<p>
+					The client is fully open source. You can build it yourself if desired. 
+					Fore more details see <a href="https://github.com/workhorsy/emulators-online">https://github.com/workhorsy/emulators-online</a>.
+				</p>
+			</div>
+
+			<div id="config_programs" style="display: none;">
 				<h1>Install and Configure Programs</h1>
 
 				<div id="navigation">
@@ -457,6 +467,9 @@ if(!("WebSocket" in window)) {
 				socket_send_data(message);
 			}
 		});
+	}, function() {
+		$('#config_programs').hide();
+		$('#install_client').show();
 	});
 }
 
@@ -1169,6 +1182,10 @@ function setup_ui() {
 	FileUploader('btn_bios_ssf_jap', 'generic_progress', function(file_name, file_data) {
 		action_set_bios('saturn', 'JAP', file_data, false);
 	});
+
+	// Show the config, and hide the message to run the client
+	$('#install_client').hide();
+	$('#config_programs').show();
 }
 
 });

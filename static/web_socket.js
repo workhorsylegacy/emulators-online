@@ -40,7 +40,7 @@ function socket_send_data(message) {
 	socket.send(message);
 }
 
-function setup_websocket(port, on_data, on_open_cb) {
+function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 	var host = "ws://localhost:" + port.toString() + "/ws";
 	socket = null;
 
@@ -53,12 +53,8 @@ function setup_websocket(port, on_data, on_open_cb) {
 	// event handlers for websocket
 	if(socket) {
 		socket.onopen = function() {
-			$("#error_header").hide();
-			//$("#search_header").show();
-
 			if(on_open_cb) {
 				on_open_cb();
-				on_open_cb = null;
 			}
 		};
 
@@ -87,8 +83,9 @@ function setup_websocket(port, on_data, on_open_cb) {
 			// Show the error page after 1 second, and start the reconnection loop
 			// This prevents the error page from flickering on when we move pages
 			setTimeout(function() {
-				$("#error_header").show();
-				//$("#search_header").hide();
+				if(on_close_cb) {
+					on_close_cb();
+				}
 
 				// Re-connect again in 3 seconds
 				setTimeout(function() {

@@ -114,7 +114,10 @@ if(!("WebSocket" in window)) {
 	// Connect to the client on the web socket
 	var port = location.port || 9090;
 	setup_websocket(port, on_websocket_data, function() {
+		$("#error_header").hide();
 		is_web_socket_setup = true;
+	}, function() {
+		$("#error_header").show();
 	});
 
 	// Get the game database from the emulators-online.com

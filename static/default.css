@@ -30,7 +30,7 @@
 #error_header {
 	float: right;
 	background-color: red;
-	font-size: 250%;
+	padding-right: 150px;
 }
 
 a {
