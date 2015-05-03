@@ -24,6 +24,20 @@
 
 var db = {};
 
+function assert_os_and_browser() {
+	// Get the user agent
+	var agent = navigator.userAgent.toLowerCase();
+
+	// Show an alert if not on Windows
+	if (agent.indexOf('windows') == -1) {
+		alert('This application only runs correctly on Windows.');
+	}
+
+	// Show an alert if not on a good browser
+	if (agent.indexOf('firefox') == -1 && agent.indexOf('chrome') == -1) {
+		alert('This application only runs correctly in Firefox, Chrome, or Opera browsers.');
+	}
+}
 
 // FIXME: The way we construct these divs dynamically is terrible. Replace with templates.
 function make_game_icon(console_name, name, data, i) {

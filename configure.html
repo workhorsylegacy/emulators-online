@@ -434,6 +434,8 @@ function show_navigation(tab_name) {
 
 jQuery(function($) {
 
+assert_os_and_browser();
+
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {

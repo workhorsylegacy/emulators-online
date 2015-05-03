@@ -48,6 +48,8 @@
 	<script>
 jQuery(function($) {
 
+assert_os_and_browser();
+
 function on_websocket_data(data) {
 	var action = data['action'];
 
