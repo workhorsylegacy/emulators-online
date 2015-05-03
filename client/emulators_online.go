@@ -576,6 +576,11 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 			title := info["title"].(string)
 			clean_title := helpers.SanitizeFileName(title)
 
+			// Initialize the db for this console if needed
+			if _, ok := db[console]; !ok {
+				db[console] = make(map[string]map[string]interface{})
+			}
+
 			db[console][title] = map[string]interface{} {
 				"path" : CleanPath(fmt.Sprintf("%s/%s/", path_prefix, clean_title)),
 				"binary" : AbsPath(info["file"].(string)),
