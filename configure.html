@@ -434,7 +434,9 @@ function show_navigation(tab_name) {
 
 jQuery(function($) {
 
-assert_os_and_browser();
+assert_os_and_browser_requirements();
+setup_user_id();
+
 
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
@@ -451,7 +453,7 @@ if(!("WebSocket" in window)) {
 			dataType: 'json',
 			data: {
 				action: "get_value",
-				id: 1,
+				id: g_user_id,
 				key: "game_db"
 			}
 		})
@@ -787,7 +789,7 @@ function on_websocket_data(data) {
 			dataType: 'json',
 			data: {
 				action: "set_value",
-				id: 1,
+				id: g_user_id,
 				key: "game_db",
 				value: value
 			}

@@ -23,8 +23,9 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 var db = {};
+var g_user_id = null;
 
-function assert_os_and_browser() {
+function assert_os_and_browser_requirements() {
 	// Get the user agent
 	var agent = navigator.userAgent.toLowerCase();
 
@@ -37,6 +38,38 @@ function assert_os_and_browser() {
 	if (agent.indexOf('firefox') == -1 && agent.indexOf('chrome') == -1) {
 		alert('This application only runs correctly in Firefox, Chrome, or Opera browsers.');
 	}
+
+	// Make sure localStorage is supported
+	if(!("localStorage" in window)) {
+		alert("Your browser does not support localStorage!");
+	}
+}
+
+function setup_user_id() {
+	// Generate a random user id and store it in localStorage
+	if (localStorage.getItem("g_user_id") == null) {
+		g_user_id = generate_random_user_id();
+		localStorage.setItem("g_user_id", g_user_id);
+	// Or return the user id if already there
+	} else {
+		g_user_id = localStorage.getItem("g_user_id");
+	}
+	console.log("g_user_id: " + g_user_id);
+}
+
+function generate_random_user_id() {
+	// Get a 20 character user id
+	var code_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var user_id = "";
+	for (i = 0; i < 20; i++) {
+		// Get a random number between 0 and 35
+		var num = Math.floor((Math.random() * 36));
+
+		// Get the character that corresponds to the number
+		user_id += code_table[num];
+	}
+
+	return user_id;
 }
 
 // FIXME: The way we construct these divs dynamically is terrible. Replace with templates.
