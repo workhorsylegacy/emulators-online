@@ -57,62 +57,6 @@ jQuery(function($) {
 assert_os_and_browser_requirements();
 setup_user_id();
 
-function on_websocket_data(data) {
-	var action = data['action'];
-
-	if (action == 'log') {
-		console.log('Log: ' + data['value']);
-	} else if (action == 'response_has_file') {
-		console.log("websocket response_has_file");
-		// Tell the remote client if we have the file or not
-		var peerid = data['peerid'];
-		var value = data['value'];
-		var file_name = data['file_name'];
-		var message = {
-			'action' : 'response_has_file',
-			'peerid' : peerid,
-			'value' : value,
-			'file_name' : file_name
-		};
-		webrtc_send_data(peerid, message);
-	} else if (action == 'response_get_file') {
-		var peerid = data['peerid'];
-		var file_name = data['file_name'];
-		var chunk = data['chunk'];
-		var pos = data['pos'];
-		var file_length = data['file_length'];
-		var message = {
-			'action' : 'response_get_file',
-			'peerid' : peerid,
-			'file_name' : file_name,
-			'chunk' : chunk,
-			'pos' : pos,
-			'file_length' : file_length
-		};
-		webrtc_send_data(peerid, message);
-	} else if (action == 'get_db') {
-		db = data['value'];
-		$('#search_text').on('input propertychange paste', on_search);
-
-		// Show the default search
-		on_search();
-	} else if (action == 'long_running_tasks') {
-		var notification_footer = $('#notification_footer');
-		notification_footer.empty();
-		var long_running_tasks = data['value'];
-		if(!$.isEmptyObject(long_running_tasks)) {
-			$.each(long_running_tasks, function(task_name, percentage) {
-				notification_footer.append("<p>" + task_name + " " + percentage.toFixed(2) + "%</p>");
-			});
-			notification_footer.css("display", "block");
-		} else {
-			notification_footer.css("display", "none");
-		}
-	} else {
-		console.log('Data: ' + data);
-	}
-}
-
 if(!("WebSocket" in window)) {
 	alert("Your browser does not support websockets");
 } else {
@@ -180,6 +124,62 @@ if(!("WebSocket" in window)) {
 		};
 		socket_send_data(message);
 	}, 300);
+}
+
+function on_websocket_data(data) {
+	var action = data['action'];
+
+	if (action == 'log') {
+		console.log('Log: ' + data['value']);
+	} else if (action == 'response_has_file') {
+		console.log("websocket response_has_file");
+		// Tell the remote client if we have the file or not
+		var peerid = data['peerid'];
+		var value = data['value'];
+		var file_name = data['file_name'];
+		var message = {
+			'action' : 'response_has_file',
+			'peerid' : peerid,
+			'value' : value,
+			'file_name' : file_name
+		};
+		webrtc_send_data(peerid, message);
+	} else if (action == 'response_get_file') {
+		var peerid = data['peerid'];
+		var file_name = data['file_name'];
+		var chunk = data['chunk'];
+		var pos = data['pos'];
+		var file_length = data['file_length'];
+		var message = {
+			'action' : 'response_get_file',
+			'peerid' : peerid,
+			'file_name' : file_name,
+			'chunk' : chunk,
+			'pos' : pos,
+			'file_length' : file_length
+		};
+		webrtc_send_data(peerid, message);
+	} else if (action == 'get_db') {
+		db = data['value'];
+		$('#search_text').on('input propertychange paste', on_search);
+
+		// Show the default search
+		on_search();
+	} else if (action == 'long_running_tasks') {
+		var notification_footer = $('#notification_footer');
+		notification_footer.empty();
+		var long_running_tasks = data['value'];
+		if(!$.isEmptyObject(long_running_tasks)) {
+			$.each(long_running_tasks, function(task_name, percentage) {
+				notification_footer.append("<p>" + task_name + " " + percentage.toFixed(2) + "%</p>");
+			});
+			notification_footer.css("display", "block");
+		} else {
+			notification_footer.css("display", "none");
+		}
+	} else {
+		console.log('Data: ' + data);
+	}
 }
 /*
 var connectedPeers = {};
