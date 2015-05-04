@@ -57,74 +57,70 @@ jQuery(function($) {
 assert_os_and_browser_requirements();
 setup_user_id();
 
-if(!("WebSocket" in window)) {
-	alert("Your browser does not support websockets");
-} else {
-	var is_web_socket_setup = false;
-	var is_game_db_downloaded = false;
-	var game_db = null;
+var is_web_socket_setup = false;
+var is_game_db_downloaded = false;
+var game_db = null;
 
-	// Connect to the client on the web socket
-	var port = location.port || 9090;
-	setup_websocket(port, on_websocket_data, function() {
-		$("#error_header").hide();
-		is_web_socket_setup = true;
-	}, function() {
-		$("#error_header").show();
-	});
+// Connect to the client on the web socket
+var port = location.port || 9090;
+setup_websocket(port, on_websocket_data, function() {
+	$("#error_header").hide();
+	is_web_socket_setup = true;
+}, function() {
+	$("#error_header").show();
+});
 
-	// Get the game database from the emulators-online.com
-	$.ajax({
-		type: "POST",
-		url: "http://emulators-online.com/data/index.php",
-		dataType: 'json',
-		data: {
-			action: "get_value",
-			id: g_user_id,
-			key: "game_db"
-		}
-	})
-	.done(function(value) {
-		if (value) {
-			game_db = value;
-			$('#empty_game_db').hide();
+// Get the game database from the emulators-online.com
+$.ajax({
+	type: "POST",
+	url: "http://emulators-online.com/data/index.php",
+	dataType: 'json',
+	data: {
+		action: "get_value",
+		id: g_user_id,
+		key: "game_db"
+	}
+})
+.done(function(value) {
+	if (value) {
+		game_db = value;
+		$('#empty_game_db').hide();
 
-			// Un base64, Un compress, Un array, and Un json the db
-			value = atob(value);
-			value = pako.inflate(value);
-			value = String.fromCharCode.apply(null, value);
-			value = JSON.parse(value);
+		// Un base64, Un compress, Un array, and Un json the db
+		value = atob(value);
+		value = pako.inflate(value);
+		value = String.fromCharCode.apply(null, value);
+		value = JSON.parse(value);
 
-			db = value;
-			$('#search_text').on('input propertychange paste', on_search);
+		db = value;
+		$('#search_text').on('input propertychange paste', on_search);
 
-			// Show the default search
-			on_search();
-		} else {
-			game_db = null;
-			$('#empty_game_db').show();
-		}
+		// Show the default search
+		on_search();
+	} else {
+		game_db = null;
+		$('#empty_game_db').show();
+	}
 
-		is_game_db_downloaded = true;
-	});
+	is_game_db_downloaded = true;
+});
 
-	// Wait for the game database to be downloaded, and the web socket connection to the client
-	var setDbInterval = setInterval(function() {
-		// Just return if not ready
-		if (!is_web_socket_setup || !is_game_db_downloaded) {
-			return;
-		}
+// Wait for the game database to be downloaded, and the web socket connection to the client
+var setDbInterval = setInterval(function() {
+	// Just return if not ready
+	if (!is_web_socket_setup || !is_game_db_downloaded) {
+		return;
+	}
 
-		clearInterval(setDbInterval);
+	clearInterval(setDbInterval);
 		
-		// Send the game database to the client
-		message = {
-			'action' : 'set_db',
-			'value' : game_db
-		};
-		socket_send_data(message);
-	}, 300);
-}
+	// Send the game database to the client
+	message = {
+		'action' : 'set_db',
+		'value' : game_db
+	};
+	socket_send_data(message);
+}, 300);
 
 function on_websocket_data(data) {
 	var action = data['action'];

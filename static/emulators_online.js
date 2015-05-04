@@ -26,22 +26,44 @@ var db = {};
 var g_user_id = null;
 
 function assert_os_and_browser_requirements() {
+	var errors = [];
+
 	// Get the user agent
 	var agent = navigator.userAgent.toLowerCase();
 
 	// Show an alert if not on Windows
 	if (agent.indexOf('windows') == -1) {
-		alert('This application only runs correctly on Windows.');
+		errors.push('It only works on Windows.');
 	}
 
 	// Show an alert if not on a good browser
 	if (agent.indexOf('firefox') == -1 && agent.indexOf('chrome') == -1) {
-		alert('This application only runs correctly in Firefox, Chrome, or Opera browsers.');
+		errors.push('It only works in Firefox, Chrome, or Opera browsers.');
 	}
 
-	// Make sure localStorage is supported
-	if(!("localStorage" in window)) {
-		alert("Your browser does not support localStorage!");
+	// Check for localStorage
+	if (!("localStorage" in window)) {
+		errors.push("Your browser does not support localStorage.");
+	}
+
+	// Check for WebSockets
+	// NOTE: IE 11 says it supports WebSockets, but it does not follow the specification
+	if (!("WebSocket" in window) || agent.indexOf('trident') != -1) {
+		errors.push("Your browser does not support websockets.");
+	}
+
+	// Check for Gamepads
+	if (!("getGamepads" in navigator)) {
+		errors.push("Your browser does not support gamepads.");
+	}
+
+	// Show an error message it features are missing
+	if (errors.length) {
+		var error_message = "This application will not run correctly!\r\n";
+		for(var i=0; i<errors.length; ++i) {
+			error_message += i+1 + ". " + errors[i] + "\r\n";
+		}
+		alert(error_message);
 	}
 }
 

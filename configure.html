@@ -438,39 +438,35 @@ assert_os_and_browser_requirements();
 setup_user_id();
 
 
-if(!("WebSocket" in window)) {
-	alert("Your browser does not support websockets");
-} else {
-	var port = location.port || 9090;
-	setup_websocket(port, on_websocket_data, function() {
-		setup_ui();
+var port = location.port || 9090;
+setup_websocket(port, on_websocket_data, function() {
+	setup_ui();
 
-		// Get the game database from the internet
-		// and save it in the database
-		$.ajax({
-			type: "POST",
-			url: "http://emulators-online.com/data/index.php",
-			dataType: 'json',
-			data: {
-				action: "get_value",
-				id: g_user_id,
-				key: "game_db"
-			}
-		})
-		.done(function(value) {
-			if (value) {
-				message = {
-					'action' : 'set_db',
-					'value' : value
-				};
-				socket_send_data(message);
-			}
-		});
-	}, function() {
-		$('#config_programs').hide();
-		$('#install_client').show();
+	// Get the game database from the internet
+	// and save it in the database
+	$.ajax({
+		type: "POST",
+		url: "http://emulators-online.com/data/index.php",
+		dataType: 'json',
+		data: {
+			action: "get_value",
+			id: g_user_id,
+			key: "game_db"
+		}
+	})
+	.done(function(value) {
+		if (value) {
+			message = {
+				'action' : 'set_db',
+				'value' : value
+			};
+			socket_send_data(message);
+		}
 	});
-}
+}, function() {
+	$('#config_programs').hide();
+	$('#install_client').show();
+});
 
 var button_map_demul = {};
 var button_map_dolphin = {};
