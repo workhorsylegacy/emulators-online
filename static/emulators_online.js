@@ -49,12 +49,12 @@ function assert_os_and_browser_requirements() {
 	// Check for WebSockets
 	// NOTE: IE 11 says it supports WebSockets, but it does not follow the specification
 	if (!("WebSocket" in window) || agent.indexOf('trident') != -1) {
-		errors.push("Your browser does not support websockets.");
+		errors.push("Your browser does not support WebSockets.");
 	}
 
 	// Check for Gamepads
 	if (!("getGamepads" in navigator)) {
-		errors.push("Your browser does not support gamepads.");
+		errors.push("Your browser does not support Gamepads.");
 	}
 
 	// Check for WebRTC
@@ -88,7 +88,7 @@ function generate_random_user_id() {
 	// Get a 20 character user id
 	var code_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	var user_id = "";
-	for (i = 0; i < 20; i++) {
+	for (var i = 0; i < 20; ++i) {
 		// Get a random number between 0 and 35
 		var num = Math.floor((Math.random() * 36));
 
