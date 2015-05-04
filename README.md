@@ -19,8 +19,11 @@ python -m pip install -U pyreadline
 
 Install 32 bit MinGW
 -----
-http://sourceforge.net/projects/mingw/?source=typ_redirect
+http://sourceforge.net/projects/mingw
+
 Install base and gcc-c++ packages
+
+Add C:\MinGW\bin to your path
 
 Install 32 bit Go
 -----
