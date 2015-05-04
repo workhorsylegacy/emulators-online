@@ -1134,26 +1134,34 @@ func webSocketCB(ws *websocket.Conn) {
 			hwnd := win32.GetForegroundWindow()
 			text := win32.GetWindowText(hwnd)
 
-			// If the focused window is not Chrome or Firefox, find them manually
-			if len(text)==0 || ! strings.Contains(text, " - Mozilla Firefox") && ! strings.Contains(text, " - Google Chrome") && ! strings.Contains(text, " - Internet Explorer") {
+			// If the focused window is not a known browser, find them manually
+			if len(text)==0 || 
+				! strings.Contains(text, " - Mozilla Firefox") && 
+				! strings.Contains(text, " - Google Chrome") && 
+				! strings.Contains(text, " - Opera") && 
+				! strings.Contains(text, " - Internet Explorer") {
 				// If not, find any Firefox window
 				hwnd, text = win32.FindWindowWithTitleText(" - Mozilla Firefox")
 				if hwnd < 1 || len(text)==0 {
 					// If not, find any Chrome window
 					hwnd, text = win32.FindWindowWithTitleText(" - Google Chrome")
 					if hwnd < 1 || len(text)==0 {
-						// If not, find any Internet Explorer window
-						hwnd, text = win32.FindWindowWithTitleText(" - Internet Explorer")
+						// If not, find any Opera window
+						hwnd, text = win32.FindWindowWithTitleText(" - Opera")
 						if hwnd < 1 || len(text)==0 {
-							// If not, find the Desktop window
-							hwnd = win32.GetDesktopWindow()
-							text = "Desktop"
+							// If not, find any Internet Explorer window
+							hwnd, text = win32.FindWindowWithTitleText(" - Internet Explorer")
+							if hwnd < 1 || len(text)==0 {
+								// If not, find the Desktop window
+								hwnd = win32.GetDesktopWindow()
+								text = "Desktop"
+							}
 						}
 					}
 				}
 			}
 			if hwnd < 1 || len(text)==0 {
-				log.Fatal("Failed to find any Firefox, Chrome, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
+				log.Fatal("Failed to find any Firefox, Chrome, Opera, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
 			}
 
 			// FIXME: How do we pass the string to display?
