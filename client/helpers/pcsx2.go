@@ -238,7 +238,7 @@ func (self *PCSX2) setupPCSX2_vm() {
 			"SpeakerConfiguration" : "0",
 			"DplDecodingLevel" : "0",
 			"Latency" : "100",
-			"Output_Module" : "portaudio",
+			"Output_Module" : "xaudio2",
 		},
 		"DSP PLUGIN" : {
 			"Filename" : "",
