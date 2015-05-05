@@ -30,7 +30,9 @@ import (
 	"io"
 	"fmt"
 	"strings"
+	//"time"
 	//"runtime"
+	"runtime/debug"
 	"io/ioutil"
 	"path/filepath"
 	"os"
@@ -1282,13 +1284,17 @@ func useAppDataForStaticFiles() {
 
 	// Get a blob of all the static files
 	blob := generated.GeneratedFiles()
+	debug.FreeOSMemory()
 
 	// Un Base64 the compressed binary map
 	zlibed_data, err := base64.StdEncoding.DecodeString(blob)
+	blob = ""
 	if err != nil {
 		log.Fatal(err)
 	}
 	zlibed_buffer := bytes.NewBuffer([]byte(zlibed_data))
+	zlibed_data = zlibed_data[:0]
+	debug.FreeOSMemory()
 
 	// Un compress the binary map
 	var gob_buffer bytes.Buffer
@@ -1297,6 +1303,9 @@ func useAppDataForStaticFiles() {
 		log.Fatal(err)
 	}
 	io.Copy(&gob_buffer, reader)
+	reader.Close()
+	zlibed_buffer.Reset()
+	debug.FreeOSMemory()
 
 	// Convert the binary to the file map
 	var file_map map[string][]byte
@@ -1305,6 +1314,8 @@ func useAppDataForStaticFiles() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	gob_buffer.Reset()
+	debug.FreeOSMemory()
 
 	// Copy the file_map to files
 	// FIXME: This copies the files for each run. Even if they are already there!
@@ -1317,6 +1328,7 @@ func useAppDataForStaticFiles() {
 			}
 		//}
     }
+	debug.FreeOSMemory()
 }
 
 func loadFileModifyDates() {

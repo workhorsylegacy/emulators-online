@@ -7,6 +7,8 @@ if [ "$#" -ne 1 ]; then
 	exit 1
 fi
 
+rm -f emulators_online_$1.exe
+
 # Build the Dreamcast Identifier
 cd client/identify_dreamcast_games
 python setup.py py2exe
