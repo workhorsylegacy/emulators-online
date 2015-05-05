@@ -278,6 +278,11 @@ func getDB() {
 }
 
 func setDB(console_data map[string]map[string]map[string]interface{}) {
+	// Just return if we are running any long running tasks
+	if len(long_running_tasks) > 0 {
+		return
+	}
+
 	// Load the game database
 	db = console_data
 
