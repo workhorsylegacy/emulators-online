@@ -161,6 +161,23 @@ function on_websocket_data(data) {
 
 		// Show the default search
 		on_search();
+	} else if (data['action'] == 'set_db') {
+		var value = data['value'];
+
+		$.ajax({
+			type: "POST",
+			url: "http://emulators-online.com/data/index.php",
+			dataType: 'json',
+			data: {
+				action: "set_value",
+				id: g_user_id,
+				key: "game_db",
+				value: value
+			}
+		})
+		.done(function( msg ) {
+			console.log("sent game db to web server.");
+		});
 	} else if (action == 'long_running_tasks') {
 		var notification_footer = $('#notification_footer');
 		notification_footer.empty();
