@@ -1307,13 +1307,15 @@ func useAppDataForStaticFiles() {
 	}
 
 	// Copy the file_map to files
+	// FIXME: This copies the files for each run. Even if they are already there!
+	// We need a way to quickly check if the files in the exe are different
     for file_name, data := range file_map {
-		if ! helpers.IsFile(file_name) {
+		//if ! helpers.IsFile(file_name) {
 			err := ioutil.WriteFile(file_name, data, 0644)
 			if err != nil {
 				log.Fatal(err)
 			}
-		}
+		//}
     }
 }
 
