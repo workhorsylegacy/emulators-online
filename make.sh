@@ -7,7 +7,28 @@ if [ "$#" -ne 1 ]; then
 	exit 1
 fi
 
+# Make sure python is installed
+if ! type python >/dev/null 2>&1; then
+	echo "Python was not found. Please install Python 3." >&2
+	exit 1
+fi
+
+# Make sure Go is installed
+if ! type go >/dev/null 2>&1; then
+	echo "Go was not found. Please install Go." >&2
+	exit 1
+fi
+
+# Make sure GCC is installed
+if ! type gcc >/dev/null 2>&1; then
+	echo "GCC was not found. Please install MinGW." >&2
+	exit 1
+fi
+
+# Remove the exes
 rm -f emulators_online_$1.exe
+rm -f client/identify_dreamcast_games/identify_dreamcast_games.exe
+rm -f client/identify_playstation2_games/identify_playstation2_games.exe
 
 # Build the Dreamcast Identifier
 cd client/identify_dreamcast_games
