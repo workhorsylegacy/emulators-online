@@ -39,8 +39,9 @@ function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 	socket = null;
 
 	try {
+		// NOTE: Even though we are catching the exception, this will still print an error in the console
 		socket = new WebSocket(host);
-	} catch(e) { 
+	} catch(e) {
 		socket = null;
 	}
 
@@ -74,23 +75,28 @@ function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 		};
 
 		socket.onclose = function() {
-			// Show the error page after 1 second, and start the reconnection loop
-			// This prevents the error page from flickering on when we move pages
-			setTimeout(function() {
-				if(on_close_cb) {
-					on_close_cb();
-				}
-
-				// Re-connect again in 3 seconds
-				setTimeout(function() {
-					setup_websocket(on_data);
-				}, 3000);
-			}, 1000);
+			reconnect_websocket(port, on_data, on_open_cb, on_close_cb);
 		};
 
 		socket.onerror = function(err) {
 		};
 	} else {
-		console.log("invalid socket");
+		reconnect_websocket(port, on_data, on_open_cb, on_close_cb);
 	}
+}
+
+function reconnect_websocket(port, on_data, on_open_cb, on_close_cb) {
+	// Show the error page after 1 second, and start the reconnection loop
+	// This prevents the error page from flickering on when we move pages
+	setTimeout(function() {
+		if(on_close_cb) {
+			on_close_cb();
+		}
+
+		// Re-connect again in 3 seconds
+		setTimeout(function() {
+			console.log("Reconnecting to WebSocket ...");
+			setup_websocket(port, on_data, on_open_cb, on_close_cb);
+		}, 2000);
+	}, 1000);
 }
