@@ -24,7 +24,6 @@
 
 package main
 
-//go:generate go run client/generate/generate_included_files.go
 
 import (
 	"io"
@@ -1345,7 +1344,6 @@ func loadFileModifyDates() {
 			err = json.Unmarshal(file_data, &console_dates)
 			if err != nil {
 				log.Fatal(err)
-				// sys.stderr.write("The file is not valid json "{0}"\r\n".format(file_name))
 			}
 
 			// Remove any non existent files from the modify db
@@ -1375,26 +1373,7 @@ func main() {
 		//"playstation1",
 		"playstation2",
 	}
-/*
-	// Compress the string
-	example_data := "aaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbb"
-	fmt.Printf("example_data: %v, %v\r\n", example_data, len(example_data))
 
-	var out_buffer bytes.Buffer
-	writer := zlib.NewWriter(&out_buffer)
-	writer.Write([]byte(example_data))
-	writer.Close()
-	zlibed_data := out_buffer.Bytes()
-	fmt.Printf("zlibed_data: %v, %v\r\n", string(zlibed_data), len(zlibed_data))
-
-	// base64 the compressed string
-	b64ed_data := base64.StdEncoding.EncodeToString(zlibed_data)
-	fmt.Printf("b64ed_data: %v, %v\r\n", b64ed_data, len(b64ed_data))
-
-	// Escape the data to be safe in a url
-	escaped_data := url.QueryEscape(b64ed_data)
-	fmt.Printf("escaped_data: %v, %v\r\n", escaped_data, len(escaped_data))
-*/
 	// Initialize the globals
 	db = make(map[string]map[string]map[string]interface{})
 	file_modify_dates = map[string]map[string]int64{}
@@ -1427,17 +1406,9 @@ func main() {
 	// Get the DirectX Version
 	helpers.StartBackgroundSearchForDirectXVersion()
 
-	//icon := "static/favicon.ico"
-	//hover_text := "Emu Archive"
-	//server = nil
-	//port := 8080
-	//server_thread = nil
-
 	server_address := fmt.Sprintf("127.0.0.1:%v", ws_port)
 	http.Handle("/ws", websocket.Handler(webSocketCB))
 	http.HandleFunc("/", httpCB)
-	//http.HandleFunc("/configure.html", httpCB)
-	//http.Handle("/(.*)", http.FileServer(http.Dir(".")))
 	fmt.Printf("Server running at: http://%s\r\n",  server_address)
 	err = http.ListenAndServe(server_address, nil)
 	if err != nil {
