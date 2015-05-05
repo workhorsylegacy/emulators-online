@@ -25,7 +25,7 @@
 
 var socket = null;
 
-function socket_send_data(message) {
+function web_socket_send_data(message) {
 	// Convert message to json
 	message = JSON.stringify(message);
 

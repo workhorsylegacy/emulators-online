@@ -460,7 +460,7 @@ setup_websocket(port, on_websocket_data, function() {
 				'action' : 'set_db',
 				'value' : value
 			};
-			socket_send_data(message);
+			web_socket_send_data(message);
 		}
 	});
 }, function() {
@@ -814,7 +814,7 @@ function action_get_directx_version() {
 	var message = {
 		'action' : 'get_directx_version'
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_is_installed(program_name) {
@@ -822,7 +822,7 @@ function action_is_installed(program_name) {
 		'action' : 'is_installed',
 		'program' : program_name
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_install(file_name) {
@@ -831,7 +831,7 @@ function action_install(file_name) {
 		'dir' : 'downloads',
 		'file' : file_name
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_uninstall(program_name) {
@@ -839,7 +839,7 @@ function action_uninstall(program_name) {
 		'action' : 'uninstall',
 		'program' : program_name
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_download(file, url, name, referer) {
@@ -851,7 +851,7 @@ function action_download(file, url, name, referer) {
 		'name' : name,
 		'referer' : referer
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_get_button_map(console_name, button_map) {
@@ -860,7 +860,7 @@ function action_get_button_map(console_name, button_map) {
 		'console' : console_name,
 		'value' : button_map
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_set_button_map(console_name, button_map) {
@@ -869,7 +869,7 @@ function action_set_button_map(console_name, button_map) {
 		'console' : console_name,
 		'value' : button_map
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_set_game_directory(console_name, directory_name) {
@@ -878,7 +878,7 @@ function action_set_game_directory(console_name, directory_name) {
 		'console' : console_name, 
 		'directory_name' : directory_name
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function action_set_bios(console_name, type_name, file_data, is_default) {
@@ -889,7 +889,7 @@ function action_set_bios(console_name, type_name, file_data, is_default) {
 		'is_default' : is_default,
 		'value' : btoa(file_data)
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }
 
 function setup_ui() {
@@ -1087,7 +1087,7 @@ function setup_ui() {
 			'action' : 'set_game_directory',
 			'console' : 'dreamcast'
 		};
-		socket_send_data(message);
+		web_socket_send_data(message);
 		console.log('set_game_directory');
 	});
 
@@ -1098,7 +1098,7 @@ function setup_ui() {
 			'action' : 'set_game_directory',
 			'console' : 'playstation2'
 		};
-		socket_send_data(message);
+		web_socket_send_data(message);
 		console.log('set_game_directory');
 	});
 

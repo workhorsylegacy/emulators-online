@@ -118,7 +118,7 @@ class Dolphin(base_console.BaseConsole):
 				'RecursiveISOPaths' : True,
 				'NANDRootPath' : os.path.expanduser('~/Documents/Dolphin Emulator/Wii'),
 				'WirelessMac' : '00:17:ab:96:76:3d', # FIXME Get the real MAC Address here
-				'ISOPath0' : os.path.abspath('/emu_archive/games/Nintendo/GameCube')
+				'ISOPath0' : os.path.abspath('/emulators-online/images/Nintendo/GameCube')
 			},
 			'Interface' : {
 				'ConfirmStop' : False,

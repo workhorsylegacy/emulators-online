@@ -22,7 +22,7 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var db = {};
+var g_db = {};
 var g_user_id = null;
 
 function assert_os_and_browser_requirements() {
@@ -154,7 +154,7 @@ function make_game_icon(console_name, name, data, i) {
 				'console' : console_name,
 				'bios' : data['bios']
 			}
-			socket_send_data(message);
+			web_socket_send_data(message);
 		});
 	});
 }
@@ -180,7 +180,7 @@ function on_search(evt) {
 
 	// If there are no games, tell the user to add some
 	var total_games = 0;
-	$.each(db, function(console_name, console_data) {
+	$.each(g_db, function(console_name, console_data) {
 		total_games += Object.keys(console_data).length;
 	});
 	if(total_games == 0) {
@@ -194,11 +194,11 @@ function on_search(evt) {
 	// Skip empty searches
 	if(search_raw.length == 0) {
 		var i = 0;
-		var console_names = Object.keys(db);
+		var console_names = Object.keys(g_db);
 		console_names.sort();
 		$.each(console_names, function(i, console_name) {
 			// Skip empty consoles
-			var console_data = db[console_name];
+			var console_data = g_db[console_name];
 			if(Object.keys(console_data).length == 0) {
 				return true;
 			}
@@ -226,11 +226,11 @@ function on_search(evt) {
 	// Match game developer
 	var match_developer_db = [];
 	var lower_search = search_raw.toLowerCase();
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}
@@ -250,11 +250,11 @@ function on_search(evt) {
 	// Match game publisher
 	var match_publisher_db = [];
 	var lower_search = search_raw.toLowerCase();
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}
@@ -273,11 +273,11 @@ function on_search(evt) {
 	// Match game genre
 	var match_genre_db = [];
 	var lower_search = search_raw.toLowerCase();
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}
@@ -297,11 +297,11 @@ function on_search(evt) {
 	// Match whole game name
 	var match_whole_db = [];
 	var lower_search = search_raw.toLowerCase();
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}
@@ -321,11 +321,11 @@ function on_search(evt) {
 	var match_words_db = {};
 	var search_words = get_searchable_words(search_raw);
 
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}
@@ -362,11 +362,11 @@ function on_search(evt) {
 	var match_parts_db = {};
 	var search_words = get_searchable_words(search_raw);
 
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}
@@ -401,11 +401,11 @@ function on_search(evt) {
 
 	// Create new icons from the search
 	var i = 0;
-	var console_names = Object.keys(db);
+	var console_names = Object.keys(g_db);
 	console_names.sort();
 	$.each(console_names, function(i, console_name) {
 		// Skip empty consoles
-		var console_data = db[console_name];
+		var console_data = g_db[console_name];
 		if(Object.keys(console_data).length == 0) {
 			return true;
 		}

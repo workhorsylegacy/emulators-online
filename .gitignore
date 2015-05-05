@@ -30,7 +30,7 @@ Thumbs.db
 *.pyc
 db/*
 downloads/*
-games/*
+images/*
 emulators/*
 server/build/
 server/dist/

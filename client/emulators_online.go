@@ -486,17 +486,17 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 	var path_prefix string
 	switch console {
 		case "gamecube":
-			path_prefix = "games/Nintendo/GameCube"
+			path_prefix = "images/Nintendo/GameCube"
 		case "nintendo64":
-			path_prefix = "games/Nintendo/Nintendo64"
+			path_prefix = "images/Nintendo/Nintendo64"
 		case "saturn":
-			path_prefix = "games/Sega/Saturn"
+			path_prefix = "images/Sega/Saturn"
 		case "dreamcast":
-			path_prefix = "games/Sega/Dreamcast"
+			path_prefix = "images/Sega/Dreamcast"
 		case "playstation1":
-			path_prefix = "games/Sony/Playstation1"
+			path_prefix = "images/Sony/Playstation1"
 		case "playstation2":
-			path_prefix = "games/Sony/Playstation2"
+			path_prefix = "images/Sony/Playstation2"
 	}
 
 	// Get the total number of files
@@ -1274,7 +1274,7 @@ func useAppDataForStaticFiles() {
 		"config",
 		"downloads",
 		"emulators",
-		"games",
+		"images",
 		"client",
 		"static",
 		"client/identify_dreamcast_games",

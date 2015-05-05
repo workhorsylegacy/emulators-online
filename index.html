@@ -92,7 +92,7 @@ $.ajax({
 		value = String.fromCharCode.apply(null, value);
 		value = JSON.parse(value);
 
-		db = value;
+		g_db = value;
 		$('#search_text').on('input propertychange paste', on_search);
 
 		// Show the default search
@@ -119,7 +119,7 @@ var setDbInterval = setInterval(function() {
 		'action' : 'set_db',
 		'value' : game_db
 	};
-	socket_send_data(message);
+	web_socket_send_data(message);
 }, 300);
 
 function on_websocket_data(data) {
@@ -156,7 +156,7 @@ function on_websocket_data(data) {
 		};
 		webrtc_send_data(peerid, message);
 	} else if (action == 'get_db') {
-		db = data['value'];
+		g_db = data['value'];
 		$('#search_text').on('input propertychange paste', on_search);
 
 		// Show the default search
@@ -264,7 +264,7 @@ function on_webrtc_data(conn) {
 					'file_name' : file_name,
 					'peerid' : conn.peer
 				};
-				socket_send_data(message);
+				web_socket_send_data(message);
 			} else if (action == 'response_has_file') {
 				var peerid = conn.peer;
 				var value = in_message['value'];
@@ -291,7 +291,7 @@ function on_webrtc_data(conn) {
 					'pos' : pos,
 					'peerid' : conn.peer
 				};
-				socket_send_data(message);
+				web_socket_send_data(message);
 			} else if (action == 'response_get_file') {
 				// Get the chunk
 				var peerid = conn.peer;
