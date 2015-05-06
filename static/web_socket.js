@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-var socket = null;
+var g_socket = null;
 
 function web_socket_send_data(message) {
 	// Convert message to json
@@ -31,29 +31,32 @@ function web_socket_send_data(message) {
 	//console.log("sending message: " + message);
 
 	// Send the message
-	socket.send(message);
+	g_socket.send(message);
 }
 
 function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 	var host = "ws://localhost:" + port.toString() + "/ws";
-	socket = null;
+	g_socket = null;
 
 	try {
 		// NOTE: Even though we are catching the exception, this will still print an error in the console
-		socket = new WebSocket(host);
+		g_socket = new WebSocket(host);
 	} catch(e) {
-		socket = null;
+		g_socket = null;
 	}
 
 	// event handlers for websocket
-	if(socket) {
-		socket.onopen = function() {
+	if(g_socket) {
+		g_socket.onopen = function() {
 			if(on_open_cb) {
-				on_open_cb();
+				try {
+					on_open_cb();
+				} catch(e) {
+				}
 			}
 		};
 
-		socket.onmessage = function(msg) {
+		g_socket.onmessage = function(msg) {
 			// Read the message
 			var message =  msg.data;
 			//console.log("received message: " + message);
@@ -74,11 +77,11 @@ function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 			on_data(data);
 		};
 
-		socket.onclose = function() {
+		g_socket.onclose = function() {
 			reconnect_websocket(port, on_data, on_open_cb, on_close_cb);
 		};
 
-		socket.onerror = function(err) {
+		g_socket.onerror = function(err) {
 		};
 	} else {
 		reconnect_websocket(port, on_data, on_open_cb, on_close_cb);
@@ -86,16 +89,19 @@ function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 }
 
 function reconnect_websocket(port, on_data, on_open_cb, on_close_cb) {
+	console.log("Reconnecting to WebSocket ...");
 	// Show the error page after 1 second, and start the reconnection loop
 	// This prevents the error page from flickering on when we move pages
 	setTimeout(function() {
 		if(on_close_cb) {
-			on_close_cb();
+			try {
+				on_close_cb();
+			} catch(e) {
+			}
 		}
 
 		// Re-connect again in 3 seconds
 		setTimeout(function() {
-			console.log("Reconnecting to WebSocket ...");
 			setup_websocket(port, on_data, on_open_cb, on_close_cb);
 		}, 2000);
 	}, 1000);
