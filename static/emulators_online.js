@@ -19,6 +19,7 @@
 
 var g_db = {};
 var g_user_id = null;
+var g_is_localhost = (["127.0.0.1", "localhost"].indexOf(document.location.hostname.toLowerCase()) != -1);
 
 function assert_os_and_browser_requirements() {
 	var errors = [];
