@@ -1,7 +1,7 @@
 
 # If there are no arguments, print the correct usage and exit
 if [ "$#" -ne 1 ]; then
-	echo "Build and run emulators_online.exe" >&2
+	echo "Build and run emulators_online_client.exe" >&2
 	echo "Usage: make.sh port" >&2
 	echo "Example: make.sh 9090" >&2
 	exit 1
@@ -26,7 +26,7 @@ if ! type gcc >/dev/null 2>&1; then
 fi
 
 # Remove the exes
-rm -f emulators_online_$1.exe
+rm -f emulators_online_client.exe
 rm -f client/identify_dreamcast_games/identify_dreamcast_games.exe
 rm -f client/identify_playstation2_games/identify_playstation2_games.exe
 
@@ -49,7 +49,6 @@ echo "Generating files"
 go run client/generate/generate_included_files.go
 
 # Build the Go exe
-echo "Building emulators_online.exe"
-go build client/emulators_online.go
-mv emulators_online.exe emulators_online_$1.exe
-emulators_online_$1.exe $1 local
+echo "Building emulators_online_client.exe"
+go build client/emulators_online_client.go
+emulators_online_client.exe $1 local
