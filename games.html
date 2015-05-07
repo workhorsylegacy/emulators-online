@@ -94,7 +94,22 @@ setup_websocket(port, on_websocket_data, function() {
 	$("#error_header").show();
 });
 
+function browser_set_game_db(value) {
+	// Un base64, Un compress, Un array, and Un json the db
+	value = atob(value);
+	value = pako.inflate(value);
+	value = String.fromCharCode.apply(null, value);
+	value = JSON.parse(value);
+
+	g_db = value;
+	$('#search_text').on('input propertychange paste', on_search);
+
+	// Show the default search
+	on_search();
+}
+
 // Get the game database from the emulators-online.com
+// If that fails try loading it from localStorage
 $.ajax({
 	type: "POST",
 	url: "http://emulators-online.com/data/index.php",
@@ -110,22 +125,22 @@ $.ajax({
 		game_db = value;
 		$('#empty_game_db').hide();
 
-		// Un base64, Un compress, Un array, and Un json the db
-		value = atob(value);
-		value = pako.inflate(value);
-		value = String.fromCharCode.apply(null, value);
-		value = JSON.parse(value);
-
-		g_db = value;
-		$('#search_text').on('input propertychange paste', on_search);
-
-		// Show the default search
-		on_search();
+		browser_set_game_db(value);
 	} else {
 		game_db = null;
 		$('#empty_game_db').show();
 	}
 
+	console.log("Loaded game db from http://emulators-online.com");
+	is_game_db_downloaded = true;
+})
+.fail(function() {
+	if (localStorage.getItem("game_db") != null) {
+		var value = localStorage.getItem("game_db");
+		browser_set_game_db(value);
+	}
+
+	console.log("Loaded game db from localStorage");
 	is_game_db_downloaded = true;
 });
 
@@ -188,6 +203,10 @@ function on_websocket_data(data) {
 	} else if (data['action'] == 'set_db') {
 		var value = data['value'];
 
+		// Save the game db in localStorage
+		localStorage.setItem("game_db", value);
+
+		// Save the game db on the web server
 		$.ajax({
 			type: "POST",
 			url: "http://emulators-online.com/data/index.php",
@@ -200,7 +219,10 @@ function on_websocket_data(data) {
 			}
 		})
 		.done(function( msg ) {
-			console.log("sent game db to web server.");
+			console.log("sent game db to web server and localStorage.");
+		})
+		.fail(function() {
+			console.log("sent game db to localStorage.");
 		});
 	} else if (action == 'long_running_tasks') {
 		var notification_footer = $('#notification_footer');

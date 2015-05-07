@@ -466,8 +466,8 @@ var port = location.port || 9090;
 setup_websocket(port, on_websocket_data, function() {
 	setup_ui();
 
-	// Get the game database from the internet
-	// and save it in the database
+	// Get the game database from the emulators-online.com
+	// If that fails try loading it from localStorage
 	$.ajax({
 		type: "POST",
 		url: "http://emulators-online.com/data/index.php",
@@ -486,6 +486,21 @@ setup_websocket(port, on_websocket_data, function() {
 			};
 			web_socket_send_data(message);
 		}
+
+		console.log("Loaded game db from http://emulators-online.com");
+	})
+	.fail(function() {
+		if (localStorage.getItem("game_db") != null) {
+			var value = localStorage.getItem("game_db");
+
+			message = {
+				'action' : 'set_db',
+				'value' : value
+			};
+			web_socket_send_data(message);
+		}
+
+		console.log("Loaded game db from localStorage");
 	});
 }, function() {
 	$('#config_programs').hide();
@@ -803,6 +818,10 @@ function on_websocket_data(data) {
 	} else if (data['action'] == 'set_db') {
 		var value = data['value'];
 
+		// Save the game db in localStorage
+		localStorage.setItem("game_db", value);
+
+		// Save the game db on the web server
 		$.ajax({
 			type: "POST",
 			url: "http://emulators-online.com/data/index.php",
@@ -815,7 +834,10 @@ function on_websocket_data(data) {
 			}
 		})
 		.done(function( msg ) {
-			console.log("sent game db to web server.");
+			console.log("sent game db to web server and localStorage.");
+		})
+		.fail(function() {
+			console.log("sent game db to localStorage.");
 		});
 	} else if(data['action'] == 'long_running_tasks') {
 		var notification_footer = $('#notification_footer');
