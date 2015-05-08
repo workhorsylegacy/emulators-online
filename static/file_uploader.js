@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-var FileUploader = function(file_id, progress_percent_id, doneCB) {
+var FileUploader = function(file_id, progress_percent_id, done_cb) {
 	file_reader = null;
 	file_name = null;
 	progress_percent = document.getElementById(progress_percent_id);
@@ -55,8 +55,9 @@ var FileUploader = function(file_id, progress_percent_id, doneCB) {
 	function on_done(evt) {
 		// Set the progress bar to 100%
 		progress_percent.textContent = '100%';
+		progress_percent.style.display = 'none';
 
-		doneCB(file_name, evt.target.result);
+		done_cb(file_name, evt.target.result);
 	}
 
 	function handle_file_select(evt) {
