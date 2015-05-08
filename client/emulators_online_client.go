@@ -277,23 +277,36 @@ func setDB(console_data map[string]map[string]map[string]interface{}) {
 		return
 	}
 
-	// Load the game database
-	db = console_data
+	// Loading existing game database
+	if console_data != nil {
+		// Load the game database
+		db = console_data
 
-	for _, console := range consoles {
-		// Get the names of all the games
-		keys := []string{}
-		for k := range db[console] {
-			keys = append(keys, k)
-		}
-
-		// Remove any games if there is no game file
-		for _, name := range keys {
-			data := db[console][name]
-			binary := data["binary"].(string)
-			if ! helpers.IsFile(binary) {
-				delete(db[console], name)
+		for _, console := range consoles {
+			// Get the names of all the games
+			keys := []string{}
+			for k := range db[console] {
+				keys = append(keys, k)
 			}
+
+			// Remove any games if there is no game file
+			for _, name := range keys {
+				data := db[console][name]
+				binary := data["binary"].(string)
+				if ! helpers.IsFile(binary) {
+					delete(db[console], name)
+				}
+			}
+		}
+	// Loading blank game database
+	} else {
+		// Re Initialize the globals
+		db = make(map[string]map[string]map[string]interface{})
+		file_modify_dates = map[string]map[string]int64{}
+
+		for _, console := range consoles {
+			db[console] = make(map[string]map[string]interface{})
+			file_modify_dates[console] = map[string]int64{}
 		}
 	}
 }
@@ -1122,7 +1135,6 @@ func webSocketCB(ws *websocket.Conn) {
 
 				setDB(value)
 			} else {
-				value = make(map[string]map[string]map[string]interface{})
 				setDB(value)
 			}
 

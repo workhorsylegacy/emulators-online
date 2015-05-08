@@ -183,7 +183,8 @@
 
 				<div id="navigation">
 					<ul>
-						<li id="tab_7zip" class="selected"><a href="#" onclick="show_navigation('7zip')">7-Zip</a></li>
+						<li id="tab_settings" class="selected"><a href="#" onclick="show_navigation('settings')">Settings</a></li>
+						<li id="tab_7zip" class="not_selected"><a href="#" onclick="show_navigation('7zip')">7-Zip</a></li>
 						<li id="tab_vcd" class="not_selected"><a href="#" onclick="show_navigation('vcd')" style="display: none;">Virtual Clone Drive</a></li>
 						<li id="tab_dreamcast" class="not_selected"><a href="#" onclick="show_navigation('dreamcast')">Dreamcast</a></li>
 						<li id="tab_saturn" class="not_selected"><a href="#" onclick="show_navigation('saturn')" style="display: none;">Saturn</a></li>
@@ -194,7 +195,14 @@
 					</ul>
 				</div>
 
-				<div id="table_7zip" class="config_table">
+				<div id="table_settings" class="config_table">
+					<h2>Clear Game Database</h2>
+					<p>
+						<input id="btn_clear_game_db" type="button" value="Clear Game Database" />
+					</p>
+				</div>
+
+				<div id="table_7zip" class="config_table" style="display: none">
 					<h2>7-ZIP</h2>
 					<p>
 						Allows uncompressing of zip, rar, and 7z files. Needed to install emulators.
@@ -953,6 +961,45 @@ function setup_ui() {
 	action_is_installed('PCSX2');
 	action_is_installed('Mupen 64 Plus');
 	action_get_directx_version();
+
+	var btn = $("#btn_clear_game_db");
+	btn.on('click', function() {
+		// Remove the game db from js
+		g_db = {};
+
+		// Remove the game db from localStorage
+		if (localStorage.getItem("game_db") != null) {
+			localStorage.removeItem("game_db");
+		}
+		console.log("Removed game db from the browser's localStorage");
+
+		// Remove the game db from the client
+		message = {
+			'action' : 'set_db',
+			'value' : null
+		};
+		web_socket_send_data(message);
+		console.log("Removed game db from the client");
+
+		// Remove the game db from emulators-online.com
+		$.ajax({
+			type: "POST",
+			url: "http://emulators-online.com/data/index.php",
+			dataType: 'json',
+			data: {
+				action: "set_value",
+				id: g_user_id,
+				key: "game_db",
+				value: null
+			}
+		})
+		.done(function(value) {
+			console.log("Removed game db from http://emulators-online.com");
+		})
+		.fail(function() {
+			console.log("Failed to remove game db from http://emulators-online.com");
+		});
+	});
 
 	var btn = $("#btn_install_7zip");
 	btn.on('click', function() {
