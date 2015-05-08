@@ -13,15 +13,19 @@ Install python 3.X
 -----
 http://www.python.org
 ~~~bash
-python -m pip install -U py2exe
 python -m pip install -U pyreadline
+python -m pip install -U py2exe
 ~~~
 
 Install 32 bit MinGW
 -----
 http://sourceforge.net/projects/mingw
 
-Install base and gcc-c++ packages
+Install packages:
+
+mingw32-base
+
+mingw32-gcc-g++
 
 Add C:\MinGW\bin to your path
 
