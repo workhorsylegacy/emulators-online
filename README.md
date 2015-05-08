@@ -49,9 +49,9 @@ Checkout the code
 cd C:/WORKSPACE_GO/src
 git clone http://github.com/workhorsy/emulators-online
 cd emulators-online
-git clone https://github.com/workhorsy/emu_archive_meta_data_nintendo images/Nintendo
-git clone https://github.com/workhorsy/emu_archive_meta_data_sega images/Sega
-git clone https://github.com/workhorsy/emu_archive_meta_data_sony images/Sony
+git clone http://github.com/workhorsy/images_nintendo images/Nintendo
+git clone http://github.com/workhorsy/images_sega images/Sega
+git clone http://github.com/workhorsy/images_sony images/Sony
 ~~~
 
 
