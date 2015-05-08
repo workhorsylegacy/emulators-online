@@ -50,7 +50,9 @@ func findDirectxVersion(version_channel chan int) {
 
 	// Get the DirectX version
 	var version int
-	if strings.Contains(raw_version, "11") {
+	if strings.Contains(raw_version, "12") {
+		version = 12
+	} else if strings.Contains(raw_version, "11") {
 		version = 11
 	} else if strings.Contains(raw_version, "10") {
 		version = 10
