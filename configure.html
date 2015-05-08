@@ -196,6 +196,11 @@
 				</div>
 
 				<div id="table_settings" class="config_table">
+					<h2>User ID</h2>
+					<p>
+						<input id="text_user_id" type="text" size="25" />
+					</p>
+
 					<h2>Clear Game Database</h2>
 					<p>
 						<input id="btn_clear_game_db" type="button" value="Clear Game Database" />
@@ -961,6 +966,9 @@ function setup_ui() {
 	action_is_installed('PCSX2');
 	action_is_installed('Mupen 64 Plus');
 	action_get_directx_version();
+
+	var text = $("#text_user_id");
+	text.val(g_user_id);
 
 	var btn = $("#btn_clear_game_db");
 	btn.on('click', function() {
