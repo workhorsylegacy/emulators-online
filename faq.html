@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Emulators Online - HTML based emulator frontend</title>
+		<script src="static/jquery-2.1.3.min.js"></script>
+		<script src="static/emulators_online.js"></script>
+		<script src="static/web_socket.js"></script>
+		<script src="static/pako.min.js"></script>
+		<link type="text/css" href="static/default.css" media="screen" rel="Stylesheet" />
+		<link rel="shortcut icon" href="static/favicon.ico" />
+	</head>
+	<body>
+		<div id="search_header" class="header">
+			<a href="index.html">Main</a>
+			&nbsp;&nbsp;&nbsp;
+			<a href="configure.html">Configure</a>
+			&nbsp;&nbsp;&nbsp;
+			<a href="faq.html">FAQ</a>
+			&nbsp;&nbsp;&nbsp;
+			<a href="games.html">Games</a>
+
+			<span id="error_header" class="header" style="display: none;">
+				Run the
+				<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online_client.exe">emulators_online_client.exe</a>
+				client to play games.
+			</span>
+		</div>
+
+		<div id="content" style="padding: 20px;">
+			<div>
+				<p>
+				<span class="question">Q.</span> What does this website do?<br />
+				<span class="answer">A.</span> It is a frontend for 
+				<a href="http://en.wikipedia.org/wiki/Video_game_console_emulator">video game console emulators</a>. 
+				It lets you manage, search for, and play games on you computer.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> Can I help?<br />
+				<span class="answer">A.</span> Please do! You can file bugs and make pull requests on GitHub.<br />
+				<a href="http://github.com/workhorsy/emulators-online">http://github.com/workhorsy/emulators-online</a>
+				</p>
+
+				<p>
+				<span class="question">Q.</span> What OSes does this run on?<br />
+				<span class="answer">A.</span> Many emulators run only on Windows. So Windows 7, 8, and 8.1 for now.
+				I plan on adding Linux support too.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> What web browsers are supported?<br />
+				<span class="answer">A.</span> Firefox, Chrome, and Opera are tested regularly. Others may happen to work. When
+				the website runs, it checks for features, and will tell you if some are missing.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> Can I put this on my own web server?<br />
+				<span class="answer">A.</span> Yes. As long as you comply with the <a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL V3 License</a>.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> Can I run this on my own machine when offline?<br />
+				<span class="answer">A.</span> Yes. Run the 
+				<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online_client.exe">emulators_online_client.exe</a> 
+				client and visit <a href="http://localhost:9090">http://localhost:9090</a> in a web browser.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> Why does my game show up, but not have an image?<br />
+				<span class="answer">A.</span> All title screen images are taken from screen captures. You can contribute images at github:<br />
+				<a href="http://github.com/workhorsy/images_nintendo">http://github.com/workhorsy/images_nintendo</a><br />
+				<a href="http://github.com/workhorsy/images_sega">http://github.com/workhorsy/images_sega</a><br />
+				<a href="http://github.com/workhorsy/images_sony">http://github.com/workhorsy/images_sony</a>
+				</p>
+
+				<p>
+				<span class="question">Q.</span> What emulators will be added next?<br />
+				<span class="answer">A.</span> <a href="http://dolphin-emu.org">Dolphin</a>, 
+				<a href="http://segaretro.org/SSF">SSF</a>, 
+				<a href="http://code.google.com/p/mupen64plus/">Mupen64</a>, 
+				<a href="http://pcsxr.codeplex.com">PCSX-Reloaded</a>, 
+				and 
+				<a href="http://byuu.org/emulation/higan/">Higan</a>
+				are in the pipe-line.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> Why do I need to run an exe? Can't you do it all in JavaScript?<br />
+				<span class="answer">A.</span> Unfortunately, there is no way for a website to run and install emulators on your computer. 
+				If you are concerned by security, you can audit the source code, and build the exe yourself. The website and exe 
+				communicate via a
+				<a href="http://en.wikipedia.org/wiki/WebSocket">WebSocket</a>.
+				</p>
+
+				<p>
+				<span class="question">Q.</span> Can you host games on the web server?<br />
+				<span class="answer">A.</span> No. That would violate copyright. Plus it would require a very large amount of bandwidth, to
+				host games for consoles such as Dreamcast, Playstation 2, and GameCube. However I have been
+				experimenting with using <a href="http://webrtc.org">WebRTC</a> to have browsers directly share games between each other in 
+				a peer-to-peer style.
+				</p>
+			</div>
+
+			<div id="disqus_thread"></div>
+			<script type="text/javascript">
+				// Load Disqus if not running on localhost
+				if (! g_is_localhost) {
+					/* * * CONFIGURATION VARIABLES * * */
+					var disqus_shortname = 'emulators-online';
+
+					/* * * DON'T EDIT BELOW THIS LINE * * */
+					(function() {
+						var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+						dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					})();
+				}
+			</script>
+			<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+		</div>
+
+		<div id="notification_footer" style="display: none;">
+		</div>
+
+		<footer>
+			<p>Copyright &copy; 2015 Matthew Brennan Jones</p>
+			<p><a href="https://github.com/workhorsy/emulators-online">https://github.com/workhorsy/emulators-online</a></p>
+			<p></p>
+			<p>
+				This software is Licensed under 
+				<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL Version 3</a>.
+			</p>
+		</footer>
+	</body>
+	<script>
+jQuery(function($) {
+
+assert_os_and_browser_requirements();
+setup_user_id();
+
+// Connect to the client on the web socket
+var port = location.port || 9090;
+setup_websocket(port, on_websocket_data, function() {
+	$("#error_header").hide();
+}, function() {
+	$("#error_header").show();
+});
+
+function on_websocket_data(data) {
+	var action = data['action'];
+
+	if (action == 'log') {
+		console.log('Log: ' + data['value']);
+	} else if (action == 'long_running_tasks') {
+		var notification_footer = $('#notification_footer');
+		notification_footer.empty();
+		var long_running_tasks = data['value'];
+		if(!$.isEmptyObject(long_running_tasks)) {
+			$.each(long_running_tasks, function(task_name, percentage) {
+				notification_footer.append("<p>" + task_name + " " + percentage.toFixed(2) + "%</p>");
+			});
+			notification_footer.css("display", "block");
+		} else {
+			notification_footer.css("display", "none");
+		}
+	} else {
+		console.log('Data: ' + data);
+	}
+}
+});
+
+	</script>
+</html>
