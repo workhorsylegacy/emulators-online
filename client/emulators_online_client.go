@@ -1263,6 +1263,74 @@ func webSocketCB(ws *websocket.Conn) {
 	http.Handle("/ws", websocket.Handler(webSocketCB))
 }
 
+func uncompress7Zip() {
+	// Just return if 7zip already exists
+	if helpers.IsFile("7za.exe") {
+		return
+	}
+
+	// Get a blob of 7zip
+	blob := generated.GetCompressed7zip()
+	debug.FreeOSMemory()
+
+	// Un Base64 the compressed gob
+	zlibed_data, err := base64.StdEncoding.DecodeString(blob)
+	blob = ""
+	if err != nil {
+		log.Fatal(err)
+	}
+	zlibed_buffer := bytes.NewBuffer([]byte(zlibed_data))
+	zlibed_data = zlibed_data[:0]
+	debug.FreeOSMemory()
+
+	// Un compress the gob
+	var gob_buffer bytes.Buffer
+	reader, err := zlib.NewReader(zlibed_buffer)
+	if err != nil {
+		log.Fatal(err)
+	}
+	io.Copy(&gob_buffer, reader)
+	reader.Close()
+	zlibed_buffer.Reset()
+	debug.FreeOSMemory()
+
+	// Convert the gob to an array
+	var file_data []byte
+	decoder := gob.NewDecoder(&gob_buffer)
+	err = decoder.Decode(&file_data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	gob_buffer.Reset()
+	debug.FreeOSMemory()
+
+	// Copy the file_data to an exe
+	err = ioutil.WriteFile("7za.exe", file_data, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	debug.FreeOSMemory()
+}
+
+func UncompressWith7zip(in_file string) {
+	// Get the command and arguments
+	command := "7za.exe"
+	args := []string {
+		"x",
+		"-y",
+		fmt.Sprintf(`%s`, in_file),
+	}
+
+	// Run the command and wait for it to complete
+	cmd := exec.Command(command, args...)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("Failed to run command: %s\r\n", err)
+	}
+}
+
 func useAppDataForStaticFiles() {
 	// Make the AppData/Local/emulators-online directory
 	app_data := filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Local", "emulators-online")
@@ -1273,6 +1341,9 @@ func useAppDataForStaticFiles() {
 
 	// Change to the AppData directory
 	os.Chdir(app_data)
+
+	// Make 7za.exe
+	uncompress7Zip()
 
 	// Make any directories if they don't exists
 	dirs := []string {
@@ -1293,38 +1364,42 @@ func useAppDataForStaticFiles() {
 	}
 
 	// Get a blob of all the static files
-	blob := generated.GeneratedFiles()
+	blob := generated.GetCompressedFiles()
 	debug.FreeOSMemory()
 
-	// Un Base64 the compressed binary map
+	// Un Base64 the compressed gob map
 	zlibed_data, err := base64.StdEncoding.DecodeString(blob)
 	blob = ""
 	if err != nil {
 		log.Fatal(err)
 	}
-	zlibed_buffer := bytes.NewBuffer([]byte(zlibed_data))
-	zlibed_data = zlibed_data[:0]
 	debug.FreeOSMemory()
 
-	// Un compress the binary map
-	var gob_buffer bytes.Buffer
-	reader, err := zlib.NewReader(zlibed_buffer)
+	// Write the gob to file
+	err = ioutil.WriteFile("gob.7z", zlibed_data, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	io.Copy(&gob_buffer, reader)
-	reader.Close()
-	zlibed_buffer.Reset()
+
+	// Uncompress the gob to file
+	UncompressWith7zip("gob.7z")
+
+	// Read the gob from file
+	file_data, err := ioutil.ReadFile("gob")
+	if err != nil {
+		log.Fatal(err)
+	}
 	debug.FreeOSMemory()
 
-	// Convert the binary to the file map
+	// Convert the gob to the file map
 	var file_map map[string][]byte
-	decoder := gob.NewDecoder(&gob_buffer)
+	buffer := bytes.NewBuffer([]byte(file_data))
+	decoder := gob.NewDecoder(buffer)
 	err = decoder.Decode(&file_map)
 	if err != nil {
 		log.Fatal(err)
 	}
-	gob_buffer.Reset()
+	buffer.Reset()
 	debug.FreeOSMemory()
 
 	// Copy the file_map to files
@@ -1338,6 +1413,11 @@ func useAppDataForStaticFiles() {
 			}
 		//}
     }
+
+	// Remove the temp files
+	os.Remove("gob")
+	os.Remove("gob.7z")
+
 	debug.FreeOSMemory()
 }
 
@@ -1407,11 +1487,14 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	
+
 	// If "local" use the static files in the current directory
 	// If not use the static files in AppData
 	if len(os.Args) < 3 || os.Args[2] != "local" {
 		useAppDataForStaticFiles()
+	} else {
+		// Make 7za.exe
+		uncompress7Zip()
 	}
 
 	// Get the DirectX Version

@@ -19,10 +19,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	//"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	//"strings"
 	"bytes"
 	"compress/zlib"
@@ -30,13 +32,39 @@ import (
 	"encoding/gob"
 )
 
+func CompressWith7zip(in_file string, out_file string) {
+	// Get the command and arguments
+	command := "../../7za.exe"
+	args := []string {
+		"a",
+		"-t7z",
+		"-m0=lzma2",
+		"-mx=9",
+		fmt.Sprintf("%s", out_file),
+		fmt.Sprintf("%s", in_file),
+	}
+
+	// Run the command and wait for it to complete
+	cmd := exec.Command(command, args...)
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("Failed to run command: %s\r\n", err)
+	}
+}
 
 func main() {
+	// Generate a file that will generate everything
+	out, _ := os.Create("client/generated/generated_files.go")
+	out.Write([]byte("package generated\r\n\r\n"))
+
 	// Get a list of all the files to store
 	file_names := []string {
 		"configure.html",
 		"games.html",
 		"index.html",
+		"faq.html",
 		"static/agplv3-155x51.png",
 		"static/default.css",
 		"static/emulators_online.js",
@@ -74,7 +102,7 @@ func main() {
 		file_map[file_name] = data
 	}
 
-	// Convert the map to binary
+	// Convert the map to a gob
 	var gob_buffer bytes.Buffer
 	encoder := gob.NewEncoder(&gob_buffer)
 	err := encoder.Encode(file_map)
@@ -82,25 +110,63 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Compress the binary map
-	var zlib_buffer bytes.Buffer
-	writer, err := zlib.NewWriterLevel(&zlib_buffer, zlib.BestCompression)
+	// Write the gob to file
+	ioutil.WriteFile("client/generated/gob", gob_buffer.Bytes(), 0644)
+	gob_buffer.Reset()
+
+	// Compress the gob to file
+	os.Chdir("client/generated")
+	CompressWith7zip("gob", "gob.7z")
+	os.Chdir("../..")
+
+	// Read the compressed gob from file
+	file_data, err := ioutil.ReadFile("client/generated/gob.7z")
 	if err != nil {
 		log.Fatal(err)
 	}
-	writer.Write(gob_buffer.Bytes())
-	writer.Close()
 
-	// Base64 the compressed binary map
-	base64ed_data := base64.StdEncoding.EncodeToString(zlib_buffer.Bytes())
+	// Base64 the compressed gob
+	base64ed_data := base64.StdEncoding.EncodeToString(file_data)
 
-	// Generate a file that will store everything
-	out, _ := os.Create("client/generated/generated_files.go")
-	out.Write([]byte("package generated\r\n\r\n"))
-	out.Write([]byte("func GeneratedFiles() string {\r\n"))
+	// Write the files generating function
+	out.Write([]byte("func GetCompressedFiles() string {\r\n"))
 	out.Write([]byte("    return \""))
 	out.Write([]byte(base64ed_data))
 	out.Write([]byte("\"\r\n"))
 	out.Write([]byte("}\r\n"))
+
+	// Read 7zip into an array
+	file_data, err = ioutil.ReadFile("7za.exe")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Convert the 7zip array to a gob
+	encoder = gob.NewEncoder(&gob_buffer)
+	err = encoder.Encode(file_data)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Compress the gob
+	var zlib_buffer bytes.Buffer
+	writer, err := zlib.NewWriterLevel(&zlib_buffer, zlib.BestCompression)
+ 	if err != nil {
+ 		log.Fatal(err)
+ 	}
+	writer.Write(gob_buffer.Bytes())
+	writer.Close()
+
+	// Base64 the compressed gob
+	base64ed_data = base64.StdEncoding.EncodeToString(zlib_buffer.Bytes())
+
+	// Write the 7zip generating function
+	out.Write([]byte("func GetCompressed7zip() string {\r\n"))
+	out.Write([]byte("    return \""))
+	out.Write([]byte(base64ed_data))
+	out.Write([]byte("\"\r\n"))
+	out.Write([]byte("}\r\n"))
+
+	// Close the file
 	out.Close()
 }

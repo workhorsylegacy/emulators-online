@@ -48,7 +48,9 @@ cd ../..
 echo "Generating files"
 go run client/generate/generate_included_files.go
 
-# Build the Go exe
+# Build the client exe
 echo "Building emulators_online_client.exe"
 go build client/emulators_online_client.go
+
+# Run the client
 emulators_online_client.exe $1 local
