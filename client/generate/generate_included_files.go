@@ -61,6 +61,7 @@ func main() {
 
 	// Get a list of all the files to store
 	file_names := []string {
+		"unrarw32.exe",
 		"configure.html",
 		"games.html",
 		"index.html",

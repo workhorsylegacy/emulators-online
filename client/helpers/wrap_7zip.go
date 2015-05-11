@@ -19,6 +19,7 @@
 package helpers
 
 import (
+	"strings"
 	"fmt"
 	"os/exec"
 	"bytes"
@@ -27,26 +28,30 @@ import (
 func Uncompress(compressed_file string, out_dir string) {
 	fmt.Printf("!!!!!!!!!!!!!! uncomressing!\r\n")
 
-	// Get the command and arguments
-	command := "7za.exe"
-	args := []string {
-		"x",
-		"-y",
-		fmt.Sprintf(`%s`, compressed_file),
-		fmt.Sprintf("-o%s", out_dir),
-	}
+	if strings.HasSuffix(compressed_file, ".7z") {
+		// Get the command and arguments
+		command := "7za.exe"
+		args := []string {
+			"x",
+			"-y",
+			fmt.Sprintf(`%s`, compressed_file),
+			fmt.Sprintf("-o%s", out_dir),
+		}
 
-	// Run the command and wait for it to complete
-	cmd := exec.Command(command, args...)
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("Failed to run command: %s\r\n", err)
-		fmt.Printf("stdout: %s\r\n", stdout.Bytes())
-		fmt.Printf("stderr: %s\r\n", stderr.Bytes())
+		// Run the command and wait for it to complete
+		cmd := exec.Command(command, args...)
+		var stdout bytes.Buffer
+		var stderr bytes.Buffer
+		cmd.Stdout = &stdout
+		cmd.Stderr = &stderr
+		err := cmd.Run()
+		if err != nil {
+			fmt.Printf("Failed to run command: %s\r\n", err)
+			fmt.Printf("stdout: %s\r\n", stdout.Bytes())
+			fmt.Printf("stderr: %s\r\n", stderr.Bytes())
+		}
+	} else if strings.HasSuffix(compressed_file, ".rar") {
+		
 	}
 }
 
