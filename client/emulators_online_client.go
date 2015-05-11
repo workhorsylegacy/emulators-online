@@ -882,41 +882,20 @@ func install(data map[string]interface{}) {
 		cmd.Stdout = &out
 		cmd.Run()
 		os.Chdir("..")
-	case "7z920.exe":
-		os.Chdir(dir)
-		cmd := exec.Command(file, "/S")
-		var out bytes.Buffer
-		cmd.Stdout = &out
-		cmd.Run()
-		os.Chdir("..")
 	case "nullDC_104_r136.7z":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "nullDC_104_r136.7z"), "emulators/NullDC")
+		helpers.Uncompress(filepath.Join(dir, "nullDC_104_r136.7z"), "emulators/NullDC")
 	case "demul0582.rar":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "demul0582.rar"), "emulators/Demul")
+		helpers.Uncompress(filepath.Join(dir, "demul0582.rar"), "emulators/Demul")
 	case "SSF_012_beta_R4.zip":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "SSF_012_beta_R4.zip"), "emulators")
+		helpers.Uncompress(filepath.Join(dir, "SSF_012_beta_R4.zip"), "emulators")
 	case "dolphin-master-4.0-5363-x64.7z":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "dolphin-master-4.0-5363-x64.7z"), "emulators")
+		helpers.Uncompress(filepath.Join(dir, "dolphin-master-4.0-5363-x64.7z"), "emulators")
 	case "mupen64plus-bundle-win32-2.0.zip":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "mupen64plus-bundle-win32-2.0.zip"), "emulators/Mupen64Plus")
+		helpers.Uncompress(filepath.Join(dir, "mupen64plus-bundle-win32-2.0.zip"), "emulators/Mupen64Plus")
 	case "pcsxr-1.9.93-win32.zip":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsxr-1.9.93-win32.zip"), "emulators")
+		helpers.Uncompress(filepath.Join(dir, "pcsxr-1.9.93-win32.zip"), "emulators")
 	case "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z":
-		wrap := helpers.Wrap7zip{}
-		helpers.Setup(&wrap)
-		helpers.Uncompress(&wrap, filepath.Join(dir, "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z"), "emulators")
+		helpers.Uncompress(filepath.Join(dir, "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z"), "emulators")
 		err := os.Rename("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86", "emulators/pcsx2")
 		if err != nil {
 			log.Fatal(err)
@@ -990,15 +969,6 @@ func isInstalled(data map[string]interface{}) {
 			"action" : "is_installed",
 			"value" : exist,
 			"name" : "Visual C++ 2013 redist",
-		}
-		WebSocketSend(&message)
-	case "7-Zip":
-		exist := helpers.PathExists("C:/Program Files/7-Zip/7z.exe") || 
-				helpers.PathExists("C:/Program Files (x86)/7-Zip/7z.exe")
-		message := map[string]interface{} {
-			"action" : "is_installed",
-			"value" : exist,
-			"name" : "7-Zip",
 		}
 		WebSocketSend(&message)
 	case "VirtualCloneDrive":

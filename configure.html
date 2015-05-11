@@ -19,6 +19,8 @@
 			&nbsp;&nbsp;&nbsp;
 			<a href="faq.html">FAQ</a>
 			&nbsp;&nbsp;&nbsp;
+			<a href="about.html">About</a>
+			&nbsp;&nbsp;&nbsp;
 			<a href="games.html">Games</a>
 		</div>
 
@@ -188,7 +190,6 @@
 				<div id="navigation">
 					<ul>
 						<li id="tab_settings" class="selected"><a href="#" onclick="show_navigation('settings')">Settings</a></li>
-						<li id="tab_7zip" class="not_selected"><a href="#" onclick="show_navigation('7zip')">7-Zip</a></li>
 						<li id="tab_vcd" class="not_selected"><a href="#" onclick="show_navigation('vcd')" style="display: none;">Virtual Clone Drive</a></li>
 						<li id="tab_dreamcast" class="not_selected"><a href="#" onclick="show_navigation('dreamcast')">Dreamcast</a></li>
 						<li id="tab_saturn" class="not_selected"><a href="#" onclick="show_navigation('saturn')" style="display: none;">Saturn</a></li>
@@ -208,19 +209,6 @@
 					<h2>Clear Game Database</h2>
 					<p>
 						<input id="btn_clear_game_db" type="button" value="Clear Game Database" />
-					</p>
-				</div>
-
-				<div id="table_7zip" class="config_table" style="display: none">
-					<h2>7-ZIP</h2>
-					<p>
-						Allows uncompressing of zip, rar, and 7z files. Needed to install emulators.
-					</p>
-
-					<h2>Install</h2>
-					<p>
-						<span style="color: red;">FIXME: Uninstall does not work.</span>
-						<input id="btn_install_7zip" type="button" value="Loading ..." disabled />
 					</p>
 				</div>
 
@@ -533,7 +521,6 @@ var button_map_ssf = {};
 var is_directx_end_user_runtime_installed = false;
 var is_vcpp_2010_redist_installed = false;
 var is_vcpp_2013_redist_installed = false;
-var is_7zip_installed = false;
 var is_vcd_installed = false;
 var is_nulldc_installed = false;
 var is_demul_installed = false;
@@ -578,15 +565,6 @@ function on_websocket_data(data) {
 			is_vcpp_2010_redist_installed = data['value'];
 		} else if (data['name'] == 'Visual C++ 2013 redist') {
 			is_vcpp_2013_redist_installed = data['value'];
-		} else if (data['name'] == '7-Zip') {
-			is_7zip_installed = data['value'];
-			if(is_7zip_installed) {
-				$('#btn_install_7zip').val('Uninstall');
-				$('#btn_install_7zip').prop('disabled', true);
-			} else {
-				$('#btn_install_7zip').val('Install');
-				$('#btn_install_7zip').prop('disabled', false);
-			}
 		} else if (data['name'] == 'VirtualCloneDrive') {
 			is_vcd_installed = data['value'];
 			if(is_vcd_installed) {
@@ -961,7 +939,6 @@ function setup_ui() {
 	action_is_installed('DirectX End User Runtime');
 	action_is_installed('Visual C++ 2010 redist');
 	action_is_installed('Visual C++ 2013 redist');
-	action_is_installed('7-Zip');
 	action_is_installed('VirtualCloneDrive');
 	action_is_installed('NullDC');
 	action_is_installed('Demul');
@@ -1012,18 +989,6 @@ function setup_ui() {
 		.fail(function() {
 			console.log("Failed to remove game db from http://emulators-online.com");
 		});
-	});
-
-	var btn = $("#btn_install_7zip");
-	btn.on('click', function() {
-		// Download the exe
-		action_download('7z920.exe', 'http://www.7-zip.org/a/7z920.exe', '7-Zip', '');
-
-		// Run the exe
-		action_install('7z920.exe');
-
-		// Figure out if 7-Zip is installed
-		action_is_installed('7-Zip');
 	});
 
 	var btn = $("#btn_install_vcd");

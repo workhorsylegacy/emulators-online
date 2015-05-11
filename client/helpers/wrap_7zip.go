@@ -22,29 +22,13 @@ import (
 	"fmt"
 	"os/exec"
 	"bytes"
-	"log"
 )
 
-type Wrap7zip struct {
-	exe string
-}
-
-func Setup(self *Wrap7zip) {
-	// Check if 7zip is installed
-	if IsFile("C:/Program Files/7-Zip/7z.exe") {
-		self.exe = "C:/Program Files/7-Zip/7z.exe"
-	} else if IsFile("C:/Program Files (x86)/7-Zip/7z.exe") {
-		self.exe = "C:/Program Files (x86)/7-Zip/7z.exe"
-	} else {
-		log.Fatal("7-Zip wrapper could not locate 7z.exe\r\n")
-	}
-}
-
-func Uncompress(self *Wrap7zip, compressed_file string, out_dir string) {
+func Uncompress(compressed_file string, out_dir string) {
 	fmt.Printf("!!!!!!!!!!!!!! uncomressing!\r\n")
 
 	// Get the command and arguments
-	command := fmt.Sprintf(`%s`, self.exe)
+	command := "7za.exe"
 	args := []string {
 		"x",
 		"-y",
@@ -54,11 +38,15 @@ func Uncompress(self *Wrap7zip, compressed_file string, out_dir string) {
 
 	// Run the command and wait for it to complete
 	cmd := exec.Command(command, args...)
-	var out bytes.Buffer
-	cmd.Stdout = &out
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 	err := cmd.Run()
 	if err != nil {
 		fmt.Printf("Failed to run command: %s\r\n", err)
+		fmt.Printf("stdout: %s\r\n", stdout.Bytes())
+		fmt.Printf("stderr: %s\r\n", stderr.Bytes())
 	}
 }
 
