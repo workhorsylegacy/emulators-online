@@ -62,6 +62,7 @@ func main() {
 	// Get a list of all the files to store
 	file_names := []string {
 		"unrarw32.exe",
+		"about.html",
 		"configure.html",
 		"games.html",
 		"index.html",
@@ -88,6 +89,13 @@ func main() {
 		"client/identify_playstation2_games/db_playstation2_official_ko.json",
 		"client/identify_playstation2_games/db_playstation2_official_us.json",
 		"client/identify_playstation2_games/identify_playstation2_games.exe",
+		"licenses/license_7zip",
+		"licenses/license_identify_dreamcast_games",
+		"licenses/license_identify_playstation2_games",
+		"licenses/license_iso9660",
+		"licenses/license_py_read_udf",
+		"licenses/license_read_udf",
+		"licenses/license_unrar",
 	}
 
 	// Read the files into a map

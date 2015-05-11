@@ -1318,11 +1318,12 @@ func useAppDataForStaticFiles() {
 	// Make any directories if they don't exists
 	dirs := []string {
 		"cache",
+		"client",
 		"config",
 		"downloads",
 		"emulators",
 		"images",
-		"client",
+		"licenses",
 		"static",
 		"client/identify_dreamcast_games",
 		"client/identify_playstation2_games",
