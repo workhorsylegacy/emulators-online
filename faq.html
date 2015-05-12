@@ -50,6 +50,14 @@
 				</p>
 
 				<p>
+				<span class="question">Q.</span> Why don't the emulators run in the browser?<br />
+				<span class="answer">A.</span> Unfortunately the technology to do this properly, does not exist. Emscripten is too slow, 
+				because it is single threaded, and does not support auto vectorization (SIMD). Java and Flash 
+				are insecure, slow, and being abandoned as browser plugins (NPAPI). Plus, we would have to 
+				port PCSX2 and Dolphin. Which would be impractical, because of the speed of their development.
+				</p>
+
+				<p>
 				<span class="question">Q.</span> What web browsers are supported?<br />
 				<span class="answer">A.</span> Firefox, Chrome, and Opera are tested regularly. Others may happen to work. When
 				the website runs, it checks for features, and will tell you if some are missing.
