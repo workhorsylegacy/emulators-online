@@ -885,6 +885,7 @@ func install(data map[string]interface{}) {
 	case "nullDC_104_r136.7z":
 		helpers.Uncompress(filepath.Join(dir, "nullDC_104_r136.7z"), "emulators/NullDC")
 	case "demul0582.rar":
+		os.Mkdir("emulators/Demul", os.ModeDir)
 		helpers.Uncompress(filepath.Join(dir, "demul0582.rar"), "emulators/Demul")
 	case "SSF_012_beta_R4.zip":
 		helpers.Uncompress(filepath.Join(dir, "SSF_012_beta_R4.zip"), "emulators")
