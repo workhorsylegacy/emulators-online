@@ -94,7 +94,6 @@ func main() {
 		"licenses/license_identify_playstation2_games",
 		"licenses/license_iso9660",
 		"licenses/license_py_read_udf",
-		"licenses/license_read_udf",
 		"licenses/license_unrar",
 	}
 
