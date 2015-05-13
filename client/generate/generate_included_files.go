@@ -89,6 +89,7 @@ func main() {
 		"client/identify_games/db_playstation2_official_us.json",
 		"client/identify_games/identify_games.exe",
 		"licenses/license_7zip",
+		"licenses/license_emulatos_online",
 		"licenses/license_identify_dreamcast_games",
 		"licenses/license_identify_playstation2_games",
 		"licenses/license_iso9660",
