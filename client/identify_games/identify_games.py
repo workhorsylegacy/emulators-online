@@ -2,8 +2,6 @@
 import sys
 import json
 
-from identify_dreamcast_games import get_dreamcast_game_info
-from identify_playstation2_games import get_playstation2_game_info
 
 if len(sys.argv) < 3:
 	print("Usage: python identify_games.py console game")
@@ -15,8 +13,10 @@ game_bin = sys.argv[2]
 info = None
 
 if console == 'playstation2':
+	from identify_playstation2_games import get_playstation2_game_info
 	info = get_playstation2_game_info(game_bin)
 elif console == 'dreamcast':
+	from identify_dreamcast_games import get_dreamcast_game_info
 	info = get_dreamcast_game_info(game_bin)
 
 if info:
