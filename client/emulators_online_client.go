@@ -684,7 +684,7 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 	return nil
 }
 
-func setGameDirectory(data map[string]interface{}) {
+func taskSetGameDirectory(data map[string]interface{}) {
 	// Just return if there is already a long running "Searching for dreamcast games" task
 	name := fmt.Sprintf("Searching for %s games", data["console"].(string))
 	if _, ok := long_running_tasks[name]; ok {
@@ -1161,7 +1161,7 @@ func webSocketCB(ws *websocket.Conn) {
 			pidl := win32.SHBrowseForFolder(&browse_info)
 			if pidl > 0 {
 				message_map["directory_name"] = win32.SHGetPathFromIDList(pidl)
-				setGameDirectory(message_map)
+				go taskSetGameDirectory(message_map)
 			}
 		} else if message_map["action"] == "request_get_file" {
 			fmt.Printf("websocket request_get_file");
