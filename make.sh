@@ -9,13 +9,46 @@ fi
 
 # Make sure python is installed
 if ! type python >/dev/null 2>&1; then
-	echo "Python was not found. Please install Python 3." >&2
+	echo "Python was not found. Please install a 32 bit Python 3." >&2
+	exit 1
+fi
+
+# Make sure python is 32 bit
+python_bits=$(python -c 'import struct;print(struct.calcsize("P") * 8)')
+if [ $python_bits -ne 32 ]; then
+	echo "Python was found, but it is not 32 bit! Please install a 32 bit Python 3."
+	exit 1
+fi
+
+# Make sure python is 3.X
+python_version=$(python -c 'import sys;print(sys.version_info[0])')
+if [ $python_version -ne 3 ]; then
+	echo "Python was found, but it is not version 3.X! Please install a 32 bit Python 3."
+	exit 1
+fi
+
+# Make sure the Python module pyreadline is installed
+if ! $(python -c "import pyreadline" &> /dev/null); then
+	echo "Python module pyreadline was not found. Please install." >&2
+	exit 1
+fi
+
+# Make sure the Python module py2exe is installed
+if ! $(python -c "import py2exe" &> /dev/null); then
+	echo "Python module py2exe was not found. Please install." >&2
 	exit 1
 fi
 
 # Make sure Go is installed
 if ! type go >/dev/null 2>&1; then
-	echo "Go was not found. Please install Go." >&2
+	echo "Go was not found. Please install 32 bit Go." >&2
+	exit 1
+fi
+
+# Make sure Go is 32 bit
+go_arch=$(go env GOARCH)
+if [ $go_arch -ne 386 ]; then
+	echo "Go was found, but it is not 32 bit! Please install 32 bit Go."
 	exit 1
 fi
 
