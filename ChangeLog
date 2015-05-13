@@ -1,2 +1,3 @@
 * Release 0.1.0
+	* Fixed Bug #11: Move Dreamcast and Playstation 2 game identifiers into a single exe
 	* Fixed Bug #1: Include stand alone 7zip and Unrar

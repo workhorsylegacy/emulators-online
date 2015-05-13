@@ -60,20 +60,12 @@ fi
 
 # Remove the exes
 rm -f emulators_online_client.exe
-rm -f client/identify_dreamcast_games/identify_dreamcast_games.exe
-rm -f client/identify_playstation2_games/identify_playstation2_games.exe
+rm -f client/identify_games/identify_games.exe
 
-# Build the Dreamcast Identifier
-cd client/identify_dreamcast_games
+# Build the game Identifier
+cd client/identify_games
 python setup.py py2exe
-mv dist/identify_dreamcast_games.exe identify_dreamcast_games.exe
-rm -rf dist
-cd ../..
-
-# Build the Playstation 2 Identifier
-cd client/identify_playstation2_games
-python setup.py py2exe
-mv dist/identify_playstation2_games.exe identify_playstation2_games.exe
+mv dist/identify_games.exe identify_games.exe
 rm -rf dist
 cd ../..
 

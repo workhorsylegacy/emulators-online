@@ -552,9 +552,9 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		var info map[string]interface{}
 		var cmd *exec.Cmd
 		if console == "dreamcast" {
-			cmd = exec.Command("client/identify_dreamcast_games/identify_dreamcast_games.exe", entry)
+			cmd = exec.Command("client/identify_games/identify_games.exe", console, entry)
 		} else if console == "playstation2" {
-			cmd = exec.Command("client/identify_playstation2_games/identify_playstation2_games.exe", entry)
+			cmd = exec.Command("client/identify_games/identify_games.exe", console, entry)
 		} else {
 			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
 		}
@@ -1326,8 +1326,7 @@ func useAppDataForStaticFiles() {
 		"images",
 		"licenses",
 		"static",
-		"client/identify_dreamcast_games",
-		"client/identify_playstation2_games",
+		"client/identify_games",
 	}
 	for _, dir_name := range dirs {
 		if ! helpers.IsDir(dir_name) {
