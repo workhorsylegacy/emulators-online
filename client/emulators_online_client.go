@@ -1113,7 +1113,7 @@ func webSocketCB(ws *websocket.Conn) {
 			getDirectXVersion()
 
 		} else if message_map["action"] == "set_game_directory" {
-			// First try checking if Firefox or Chrome is the foreground window
+			// First try checking if the browser is the foreground window
 			hwnd := win32.GetForegroundWindow()
 			text := win32.GetWindowText(hwnd)
 
