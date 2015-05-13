@@ -985,9 +985,11 @@ function setup_ui() {
 		})
 		.done(function(value) {
 			console.log("Removed game db from http://emulators-online.com");
+			alert("Cleared the game database.");
 		})
 		.fail(function() {
 			console.log("Failed to remove game db from http://emulators-online.com");
+			alert("Cleared the game database.");
 		});
 	});
 
