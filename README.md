@@ -31,7 +31,7 @@ Add C:\MinGW\bin to your path
 
 Install 32 bit Go
 -----
-https://storage.googleapis.com/golang/go1.4.2.windows-386.msi
+https://storage.googleapis.com/golang/go1.5.1.windows-386.msi
 
 Set GOPATH environmental variable
 -----
