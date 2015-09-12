@@ -52,12 +52,12 @@ function assert_os_and_browser_requirements() {
 	if (!("getGamepads" in navigator)) {
 		errors.push("Your browser does not support Gamepads.");
 	}
-
+/*
 	// Check for WebRTC
 	if (!("RTCPeerConnection" in window) && !("mozRTCPeerConnection" in window) && !("webkitRTCPeerConnection" in window)) {
 		errors.push("Your browser does not support WebRTC.");
 	}
-	
+*/
 	// Show an error message it features are missing
 	if (errors.length) {
 		var error_message = "This application will not run correctly!\r\n";
