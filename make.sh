@@ -60,6 +60,12 @@ if [ -z "$GOPATH" ]; then
 	exit 1
 fi
 
+# Make sure Go packages are installed
+if ! $(go list 'golang.org/x/net/websocket' &> /dev/null); then
+	echo "Go package 'golang.org/x/net/websocket' is not installed. Please install it."
+	exit 1
+fi
+
 # Make sure GCC is installed
 if ! type gcc >/dev/null 2>&1; then
 	echo "GCC was not found. Please install MinGW." >&2
