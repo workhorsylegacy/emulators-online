@@ -92,4 +92,4 @@ echo "Building emulators_online_client.exe ..."
 go build client/emulators_online_client.go
 
 # Run the client
-emulators_online_client.exe $1 local
+./emulators_online_client.exe $1 local
