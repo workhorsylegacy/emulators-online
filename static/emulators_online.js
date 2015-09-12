@@ -34,7 +34,7 @@ function assert_os_and_browser_requirements() {
 
 	// Show an alert if not on a good browser
 	if (agent.indexOf('firefox') == -1 && agent.indexOf('chrome') == -1) {
-		errors.push('It only works in Firefox, Chrome, or Opera browsers.');
+		errors.push('It only works in Firefox, Chrome, Opera or Edge browsers.');
 	}
 
 	// Check for localStorage

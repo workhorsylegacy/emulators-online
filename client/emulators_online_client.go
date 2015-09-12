@@ -1122,6 +1122,7 @@ func webSocketCB(ws *websocket.Conn) {
 				! strings.Contains(text, " - Mozilla Firefox") && 
 				! strings.Contains(text, " - Google Chrome") && 
 				! strings.Contains(text, " - Opera") && 
+				! strings.Contains(text, " ‎- Microsoft Edge") && // NOTE: The "-" is actually "â€Ž-" for some reason
 				! strings.Contains(text, " - Internet Explorer") {
 				// If not, find any Firefox window
 				hwnd, text = win32.FindWindowWithTitleText(" - Mozilla Firefox")
@@ -1132,19 +1133,23 @@ func webSocketCB(ws *websocket.Conn) {
 						// If not, find any Opera window
 						hwnd, text = win32.FindWindowWithTitleText(" - Opera")
 						if hwnd < 1 || len(text)==0 {
-							// If not, find any Internet Explorer window
-							hwnd, text = win32.FindWindowWithTitleText(" - Internet Explorer")
+							// If not, find any Microsoft Edge window
+							hwnd, text = win32.FindWindowWithTitleText(" ‎- Microsoft Edge") // NOTE: The "-" is actually "â€Ž-" for some reason
 							if hwnd < 1 || len(text)==0 {
-								// If not, find the Desktop window
-								hwnd = win32.GetDesktopWindow()
-								text = "Desktop"
+								// If not, find any Internet Explorer window
+								hwnd, text = win32.FindWindowWithTitleText(" - Internet Explorer")
+								if hwnd < 1 || len(text)==0 {
+									// If not, find the Desktop window
+									hwnd = win32.GetDesktopWindow()
+									text = "Desktop"
+								}
 							}
 						}
 					}
 				}
 			}
 			if hwnd < 1 || len(text)==0 {
-				log.Fatal("Failed to find any Firefox, Chrome, Opera, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
+				log.Fatal("Failed to find any Firefox, Chrome, Opera, Edge, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
 			}
 
 			// FIXME: How do we pass the string to display?
