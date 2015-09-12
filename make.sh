@@ -56,7 +56,7 @@ fi
 
 # Make sure GOPATH is set
 if [ -z "$GOPATH" ]; then
-	echo "Go environmental variable GOPATH is not set. Please set GOPATH to go binary location."
+	echo "Go environmental variable GOPATH is not set. Please set GOPATH to workspace location."
 	exit 1
 fi
 
