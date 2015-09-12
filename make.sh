@@ -7,6 +7,8 @@ if [ "$#" -ne 1 ]; then
 	exit 1
 fi
 
+echo "Checking for system requirements ..."
+
 # Make sure python is installed
 if ! type python >/dev/null 2>&1; then
 	echo "Python was not found. Please install a 32 bit Python 3." >&2
@@ -70,11 +72,11 @@ rm -rf dist
 cd ../..
 
 # Put everything inside the generated Go file
-echo "Generating files"
+echo "Generating files ..."
 go run client/generate/generate_included_files.go
 
 # Build the client exe
-echo "Building emulators_online_client.exe"
+echo "Building emulators_online_client.exe ..."
 go build client/emulators_online_client.go
 
 # Run the client
