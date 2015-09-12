@@ -54,6 +54,12 @@ if [ $go_arch -ne 386 ]; then
 	exit 1
 fi
 
+# Make sure GOPATH is set
+if [ -z "$GOPATH" ]; then
+	echo "Go environmental variable GOPATH is not set. Please set GOPATH to go binary location."
+	exit 1
+fi
+
 # Make sure GCC is installed
 if ! type gcc >/dev/null 2>&1; then
 	echo "GCC was not found. Please install MinGW." >&2
