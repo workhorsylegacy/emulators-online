@@ -90,7 +90,7 @@ function setup_websocket(port, on_data, on_open_cb, on_close_cb) {
 
 function reconnect_websocket(port, on_data, on_open_cb, on_close_cb) {
 	console.log("Reconnecting to WebSocket ...");
-	// Show the error page after 1 second, and start the reconnection loop
+	// Show the error page after 2 seconds, and start the reconnection loop
 	// This prevents the error page from flickering on when we move pages
 	setTimeout(function() {
 		if(on_close_cb) {
@@ -100,7 +100,7 @@ function reconnect_websocket(port, on_data, on_open_cb, on_close_cb) {
 			}
 		}
 
-		// Re-connect again in 3 seconds
+		// Re-connect again in 2 seconds
 		setTimeout(function() {
 			setup_websocket(port, on_data, on_open_cb, on_close_cb);
 		}, 2000);
