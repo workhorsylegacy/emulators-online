@@ -1,11 +1,4 @@
 
-#echo $PATH
-
-#./get_bash_path.bat
-##PATH="c:/Users/Matt/Desktop/fuck"
-#echo $PATH
-
-#exit 1
 
 # If there are no arguments, print the correct usage and exit
 if [ "$#" -ne 1 ]; then
@@ -14,6 +7,17 @@ if [ "$#" -ne 1 ]; then
 	echo "Example: make.sh 9090" >&2
 	exit 1
 fi
+
+# Get a fresh copy of the PATH.
+# Have it copied from a new Bash session to a temp file
+echo "Updating PATH ..."
+bash=`cmd //c "echo %ProgramFiles%\\Git\\git-bash.exe"`
+bash_path=`cmd //c "echo %TEMP%\\bash_path"`
+bash=`sed 's,\\\\,/,g' <<< $bash`
+bash_path=`sed 's,\\\\,/,g' <<< $bash_path`
+./get_bash_path.bat "$bash" "$bash_path" &> /dev/null
+sleep 3 # FIXME: Having to wait for the schtasks sucks
+PATH=`cat $bash_path`
 
 echo "Checking for system requirements ..."
 

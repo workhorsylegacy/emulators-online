@@ -1,3 +1,5 @@
-schtasks /delete /f /tn "My App2"
-schtasks /create /f /tn "My App2" /sc once /st 00:00 /tr "'C:/Program Files/Git/git-bash.exe' -c 'echo $PATH > c:/Users/Matt/Desktop/fuck'"
-schtasks /run /tn "My App2"
+
+
+schtasks /delete /f /tn "Build"
+schtasks /create /f /tn "Build" /sc once /st 23:59 /tr "'%~1' -c 'echo $PATH > %~2'"
+schtasks /run /tn "Build"
