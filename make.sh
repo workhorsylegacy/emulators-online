@@ -1,4 +1,12 @@
 
+#echo $PATH
+
+#./get_bash_path.bat
+##PATH="c:/Users/Matt/Desktop/fuck"
+#echo $PATH
+
+#exit 1
+
 # If there are no arguments, print the correct usage and exit
 if [ "$#" -ne 1 ]; then
 	echo "Build and run emulators_online_client.exe" >&2
