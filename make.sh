@@ -4,7 +4,7 @@
 # It is hosted at: https://github.com/workhorsy/emulators-online
 
 
-function main {
+function build {
 	# Get the location of Bash and a temp file
 	bash=`cmd //c "echo %ProgramFiles%\\Git\\git-bash.exe"`
 	temp_file=`cmd //c "echo %TEMP%\\bash_path"`
@@ -15,20 +15,14 @@ function main {
 	# Get a fresh copy of the PATH
 	echo "Updating PATH ..."
 	./get_bash_path.bat "$bash" "$temp_file" "PATH" &> /dev/null
-	while [ ! -f $temp_file ]
-	do
-		sleep 0.3
-	done
+	while [ ! -f $temp_file ]; do sleep 0.3; done
 	PATH=`cat "$temp_file"`
 	rm -f $temp_file
 
 	# Get a fresh copy of the GOPATH
 	echo "Updating GOPATH ..."
 	./get_bash_path.bat "$bash" "$temp_file" "GOPATH" &> /dev/null
-	while [ ! -f $temp_file ]
-	do
-		sleep 0.3
-	done
+	while [ ! -f $temp_file ]; do sleep 0.3; done
 	GOPATH=`cat "$temp_file"`
 	rm -f $temp_file
 
@@ -86,8 +80,7 @@ function main {
 	fi
 
 	# Make sure Go is 32 bit
-	go_arch=$(go env GOARCH)
-	if [ $go_arch -ne 386 ]; then
+	if [ $(go env GOARCH) -ne 386 ]; then
 		echo "Go was found, but it is not 32 bit! Please install 32 bit Go."
 		return
 	fi
@@ -130,10 +123,10 @@ function main {
 # If there are no arguments, print the correct usage
 if [ "$#" -ne 1 ]; then
 	echo "Build and run emulators_online_client.exe" >&2
-	echo "Usage: make.sh port" >&2
-	echo "Example: make.sh 9090" >&2
+	echo "Usage: ./make.sh port" >&2
+	echo "Example: ./make.sh 9090" >&2
 # Or build the software
 else
-	main $@
+	build $@
 fi
 
