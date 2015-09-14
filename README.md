@@ -59,7 +59,7 @@ Build and run the exe
 -----
 ~~~bash
 cd C:/WORKSPACE_GO/src/emulators-online
-make.sh 9090
+. ./make.sh 9090
 ~~~
 
 Visit this url
