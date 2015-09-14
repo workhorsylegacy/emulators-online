@@ -1,5 +1,6 @@
 
 
+
 function main {
 	# Get the location of Bash and a temp file
 	bash=`cmd //c "echo %ProgramFiles%\\Git\\git-bash.exe"`
@@ -123,5 +124,5 @@ if [ "$#" -ne 1 ]; then
 	echo "Example: make.sh 9090" >&2
 # Or build the software
 else
-	main
+	main $@
 fi
