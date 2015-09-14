@@ -14,14 +14,18 @@ function build {
 
 	# Get a fresh copy of the PATH
 	echo "Updating PATH ..."
-	./get_bash_path.bat "$bash" "$temp_file" "PATH" &> /dev/null
+	echo $(schtasks //delete //f //tn "Build")
+	echo $(schtasks //create //f //tn "Build" //sc once //st 23:59 //tr "'$bash' -c 'echo \$PATH > $temp_file'")
+	echo $(schtasks //run //tn "Build")
 	while [ ! -f $temp_file ]; do sleep 0.3; done
 	PATH=`cat "$temp_file"`
 	rm -f $temp_file
 
 	# Get a fresh copy of the GOPATH
 	echo "Updating GOPATH ..."
-	./get_bash_path.bat "$bash" "$temp_file" "GOPATH" &> /dev/null
+	echo $(schtasks //delete //f //tn "Build")
+	echo $(schtasks //create //f //tn "Build" //sc once //st 23:59 //tr "'$bash' -c 'echo \$GOPATH > $temp_file'")
+	echo $(schtasks //run //tn "Build")
 	while [ ! -f $temp_file ]; do sleep 0.3; done
 	GOPATH=`cat "$temp_file"`
 	rm -f $temp_file
