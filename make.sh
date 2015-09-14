@@ -1,6 +1,5 @@
 
 
-
 function main {
 	# Get the location of Bash and a temp file
 	bash=`cmd //c "echo %ProgramFiles%\\Git\\git-bash.exe"`
@@ -32,33 +31,40 @@ function main {
 	echo "Checking for system requirements ..."
 
 	# Make sure python is installed
+	PYTHON=""
 	if ! type python >/dev/null 2>&1; then
-		echo "Python was not found. Please install a 32 bit Python 3." >&2
-		return
+		if ! type py >/dev/null 2>&1; then
+			echo "Python was not found. Please install a 32 bit Python 3." >&2
+			return
+		else
+			PYTHON="py"
+		fi
+	else
+		PYTHON="python"
 	fi
 
 	# Make sure python is 32 bit
-	python_bits=$(python -c 'import struct;print(struct.calcsize("P") * 8)')
+	python_bits=$($PYTHON -c 'import struct;print(struct.calcsize("P") * 8)')
 	if [ $python_bits -ne 32 ]; then
 		echo "Python was found, but it is not 32 bit! Please install a 32 bit Python 3."
 		return
 	fi
 
 	# Make sure python is 3.X
-	python_version=$(python -c 'import sys;print(sys.version_info[0])')
+	python_version=$($PYTHON -c 'import sys;print(sys.version_info[0])')
 	if [ $python_version -ne 3 ]; then
 		echo "Python was found, but it is not version 3.X! Please install a 32 bit Python 3."
 		return
 	fi
 
 	# Make sure the Python module pyreadline is installed
-	if ! $(python -c "import pyreadline" &> /dev/null); then
+	if ! $($PYTHON -c "import pyreadline" &> /dev/null); then
 		echo "Python module pyreadline was not found. Please install." >&2
 		return
 	fi
 
 	# Make sure the Python module py2exe is installed
-	if ! $(python -c "import py2exe" &> /dev/null); then
+	if ! $($PYTHON -c "import py2exe" &> /dev/null); then
 		echo "Python module py2exe was not found. Please install." >&2
 		return
 	fi
@@ -100,7 +106,7 @@ function main {
 
 	# Build the game Identifier
 	cd client/identify_games
-	python setup.py py2exe
+	$PYTHON setup.py py2exe
 	mv dist/identify_games.exe identify_games.exe
 	rm -rf dist
 	cd ../..
@@ -126,3 +132,4 @@ if [ "$#" -ne 1 ]; then
 else
 	main $@
 fi
+
