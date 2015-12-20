@@ -1,3 +1,6 @@
+# Important!!!
+This project is in the very early stages. It may not work for you. I have not had any time to work on it recently. I plan on working on it more later.
+
 # emulators-online
 HTML based front end for video game console emulators
 
