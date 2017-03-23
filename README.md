@@ -12,7 +12,7 @@ Python, but is slowly being converted to Go. For now, Python is required to
 to build the Go exe, but is not required at runtime.
 
 
-Install python 3.X
+Install python 3.4
 -----
 http://www.python.org
 ~~~bash
@@ -32,9 +32,9 @@ mingw32-gcc-g++
 
 Add C:\MinGW\bin to your path
 
-Install 32 bit Go
+Install 32 bit Go 1.8
 -----
-https://storage.googleapis.com/golang/go1.5.1.windows-386.msi
+https://golang.org
 
 Set GOPATH environmental variable
 -----
