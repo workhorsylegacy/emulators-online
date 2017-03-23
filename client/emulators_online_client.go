@@ -186,7 +186,7 @@ func FromBase64Json(message string) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Unjson the message
 	err = json.Unmarshal(buffer, &retval)
 	if err != nil {
@@ -227,7 +227,7 @@ func FromCompressedBase64Json(message string) (map[string]map[string]map[string]
 	var uncompressed_buffer bytes.Buffer
 	reader, err := zlib.NewReader(zlibed_buffer)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	io.Copy(&uncompressed_buffer, reader)
 
@@ -351,7 +351,7 @@ func setBios(data map[string]interface{}) (error) {
 		if is_default {
 			err := ioutil.WriteFile("emulators/pcsx2/bios/default_bios", []byte(data_type), 0644)
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 		}
 	} else if console == "dreamcast" {
@@ -556,7 +556,7 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 		} else if console == "playstation2" {
 			cmd = exec.Command("client/identify_games/identify_games.exe", console, entry)
 		} else {
-			log.Fatal(fmt.Sprintf("Unexpected console: %s", console))
+			panic(fmt.Sprintf("Unexpected console: %s", console))
 		}
 
 		// Run the command and get the info for this game
@@ -636,9 +636,9 @@ func taskGetGameInfo(channel_task_progress chan LongRunningTask, channel_is_done
 	// Send the updated game db to the browser
 	value, err := ToCompressedBase64Json(db)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	
+
 	message := map[string]interface{} {
 		"action" : "set_db",
 		"value" : value,
@@ -899,7 +899,7 @@ func install(data map[string]interface{}) {
 		helpers.Uncompress(filepath.Join(dir, "pcsx2-v1.3.1-93-g1aebca3-windows-x86.7z"), "emulators")
 		err := os.Rename("emulators/pcsx2-v1.3.1-93-g1aebca3-windows-x86", "emulators/pcsx2")
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 	}
 
@@ -944,7 +944,7 @@ func isInstalled(data map[string]interface{}) {
 		check_64_dx11, _ := filepath.Glob("C:/Windows/SysWOW64/d3dx11_*.dll")
 		check_32_dx10, _ := filepath.Glob("C:/Windows/System32/d3dx10_*.dll")
 		check_32_dx11, _ := filepath.Glob("C:/Windows/System32/d3dx11_*.dll")
-		exist := (len(check_64_dx10) > 0 && len(check_64_dx11) > 0) || 
+		exist := (len(check_64_dx10) > 0 && len(check_64_dx11) > 0) ||
 				(len(check_32_dx10) > 0 && len(check_32_dx11) > 0)
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -954,7 +954,7 @@ func isInstalled(data map[string]interface{}) {
 		WebSocketSend(&message)
 	case "Visual C++ 2010 redist": // msvcr100.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
-		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") || 
+		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr100.dll") ||
 				helpers.PathExists("C:/Windows/System32/msvcr100.dll")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -964,7 +964,7 @@ func isInstalled(data map[string]interface{}) {
 		WebSocketSend(&message)
 	case "Visual C++ 2013 redist": // msvcr120.dll
 		// Paths on Windows 8.1 X86_32 and X86_64
-		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") || 
+		exist := helpers.PathExists("C:/Windows/SysWOW64/msvcr120.dll") ||
 				helpers.PathExists("C:/Windows/System32/msvcr120.dll")
 		message := map[string]interface{} {
 			"action" : "is_installed",
@@ -1101,7 +1101,7 @@ func webSocketCB(ws *websocket.Conn) {
 				str_value :=  message_map["value"].(string)
 				value, err = FromCompressedBase64Json(str_value)
 				if err != nil {
-					log.Fatal(err)
+					panic(err)
 				}
 
 				setDB(value)
@@ -1118,10 +1118,10 @@ func webSocketCB(ws *websocket.Conn) {
 			text := win32.GetWindowText(hwnd)
 
 			// If the focused window is not a known browser, find them manually
-			if len(text)==0 || 
-				! strings.Contains(text, " - Mozilla Firefox") && 
-				! strings.Contains(text, " - Google Chrome") && 
-				! strings.Contains(text, " - Opera") && 
+			if len(text)==0 ||
+				! strings.Contains(text, " - Mozilla Firefox") &&
+				! strings.Contains(text, " - Google Chrome") &&
+				! strings.Contains(text, " - Opera") &&
 				! strings.Contains(text, " ‎- Microsoft Edge") && // NOTE: The "-" is actually "â€Ž-" for some reason
 				! strings.Contains(text, " - Internet Explorer") {
 				// If not, find any Firefox window
@@ -1149,7 +1149,7 @@ func webSocketCB(ws *websocket.Conn) {
 				}
 			}
 			if hwnd < 1 || len(text)==0 {
-				log.Fatal("Failed to find any Firefox, Chrome, Opera, Edge, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
+				panic("Failed to find any Firefox, Chrome, Opera, Edge, Internet Explorer, or the Desktop window to put the Folder Dialog on top of.\r\n")
 			}
 
 			// FIXME: How do we pass the string to display?
@@ -1183,7 +1183,7 @@ func webSocketCB(ws *websocket.Conn) {
 			} else {
 				f, err = os.Open(file_name)
 				if err != nil {
-					log.Fatal(err)
+					panic(err)
 				}
 				open_files[file_name] = f
 			}
@@ -1191,7 +1191,7 @@ func webSocketCB(ws *websocket.Conn) {
 			// Get the file size
 			fi, err := f.Stat()
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 			file_length := fi.Size()
 
@@ -1199,11 +1199,11 @@ func webSocketCB(ws *websocket.Conn) {
 			fmt.Printf("pos: %v\r\n", pos)
 			_, err = f.Seek(pos, 0)
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 			read_len, err := f.Read(buffer)
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 
 			// Send the message
@@ -1232,7 +1232,7 @@ func webSocketCB(ws *websocket.Conn) {
 
 		// Unknown message from the client
 		} else {
-			log.Fatal(fmt.Sprintf("Unknown action from client: %s\r\n", message_map["action"]))
+			panic(fmt.Sprintf("Unknown action from client: %s\r\n", message_map["action"]))
 		}
 	}
 	g_websocket_needs_restart = false
@@ -1253,7 +1253,7 @@ func uncompress7Zip() {
 	zlibed_data, err := base64.StdEncoding.DecodeString(blob)
 	blob = ""
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	zlibed_buffer := bytes.NewBuffer([]byte(zlibed_data))
 	zlibed_data = zlibed_data[:0]
@@ -1263,7 +1263,7 @@ func uncompress7Zip() {
 	var gob_buffer bytes.Buffer
 	reader, err := zlib.NewReader(zlibed_buffer)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	io.Copy(&gob_buffer, reader)
 	reader.Close()
@@ -1275,7 +1275,7 @@ func uncompress7Zip() {
 	decoder := gob.NewDecoder(&gob_buffer)
 	err = decoder.Decode(&file_data)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	gob_buffer.Reset()
 	debug.FreeOSMemory()
@@ -1283,7 +1283,7 @@ func uncompress7Zip() {
 	// Copy the file_data to an exe
 	err = ioutil.WriteFile("7za.exe", file_data, 0644)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	debug.FreeOSMemory()
 }
@@ -1347,14 +1347,14 @@ func useAppDataForStaticFiles() {
 	zlibed_data, err := base64.StdEncoding.DecodeString(blob)
 	blob = ""
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	debug.FreeOSMemory()
 
 	// Write the gob to file
 	err = ioutil.WriteFile("gob.7z", zlibed_data, 0644)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	// Uncompress the gob to file
@@ -1363,7 +1363,7 @@ func useAppDataForStaticFiles() {
 	// Read the gob from file
 	file_data, err := ioutil.ReadFile("gob")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	debug.FreeOSMemory()
 
@@ -1373,7 +1373,7 @@ func useAppDataForStaticFiles() {
 	decoder := gob.NewDecoder(buffer)
 	err = decoder.Decode(&file_map)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	buffer.Reset()
 	debug.FreeOSMemory()
@@ -1385,7 +1385,7 @@ func useAppDataForStaticFiles() {
 		//if ! helpers.IsFile(file_name) {
 			err := ioutil.WriteFile(file_name, data, 0644)
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 		//}
     }
@@ -1405,12 +1405,12 @@ func loadFileModifyDates() {
 		if helpers.IsFile(file_name) {
 			file_data, err := ioutil.ReadFile(file_name)
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 			console_dates := file_modify_dates[console]
 			err = json.Unmarshal(file_data, &console_dates)
 			if err != nil {
-				log.Fatal(err)
+				panic(err)
 			}
 
 			// Remove any non existent files from the modify db
@@ -1429,7 +1429,10 @@ func loadFileModifyDates() {
 }
 
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	// Catch any panics to show to user
+	defer helpers.RecoverPanicTo(func(message string) {
+		fmt.Fprintf(os.Stderr, "%v\n", message)
+	})
 
 	// Set what game consoles to support
 	consoles = []string{
@@ -1460,7 +1463,7 @@ func main() {
 	if len(os.Args) >= 2 {
 		ws_port, err = strconv.ParseInt(os.Args[1], 10, 0)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 	}
 
@@ -1482,8 +1485,6 @@ func main() {
 	fmt.Printf("Server running at: http://%s\r\n",  server_address)
 	err = http.ListenAndServe(server_address, nil)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }
-
-

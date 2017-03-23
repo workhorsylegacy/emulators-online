@@ -135,4 +135,3 @@ if [ "$#" -ne 1 ]; then
 else
 	build $@
 fi
-
