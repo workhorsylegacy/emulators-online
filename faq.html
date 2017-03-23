@@ -33,8 +33,8 @@
 			<div>
 				<p>
 				<span class="question">Q.</span> What does this website do?<br />
-				<span class="answer">A.</span> It is a frontend for 
-				<a href="http://en.wikipedia.org/wiki/Video_game_console_emulator">video game console emulators</a>. 
+				<span class="answer">A.</span> It is a frontend for
+				<a href="http://en.wikipedia.org/wiki/Video_game_console_emulator">video game console emulators</a>.
 				It lets you manage, search for, and play games on you computer.
 				</p>
 
@@ -58,12 +58,12 @@
 
 				<p>
 				<span class="question">Q.</span> Why don't the emulators run in the browser?<br />
-				<span class="answer">A.</span> Unfortunately the technology to do this properly, does not exist. 
-				<a href="http://emscripten.org">Emscripten</a> is too slow, 
-				because it is single threaded, and does not support 
-				<a href="http://en.wikipedia.org/wiki/Automatic_vectorization">auto vectorization</a> (SIMD). Java and Flash 
-				are insecure, slow, and being abandoned as browser plugins 
-				(<a href="http://en.wikipedia.org/wiki/NPAPI">NPAPI</a>). Plus, we would have to 
+				<span class="answer">A.</span> Unfortunately the technology to do this properly, does not exist.
+				<a href="http://emscripten.org">Emscripten</a> is too slow,
+				because it is single threaded, and does not support
+				<a href="http://en.wikipedia.org/wiki/Automatic_vectorization">auto vectorization</a> (SIMD). Java and Flash
+				are insecure, slow, and being abandoned as browser plugins
+				(<a href="http://en.wikipedia.org/wiki/NPAPI">NPAPI</a>). Plus, we would have to
 				port PCSX2 and Dolphin. Which would be impractical, because of the speed of their development.
 				</p>
 
@@ -86,8 +86,8 @@
 
 				<p>
 				<span class="question">Q.</span> Can I run this on my own machine when offline?<br />
-				<span class="answer">A.</span> Yes. Run the 
-				<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online_client.exe">emulators_online_client.exe</a> 
+				<span class="answer">A.</span> Yes. Run the
+				<a href="https://github.com/workhorsy/emulators-online/releases/download/Alpha/emulators_online_client.exe">emulators_online_client.exe</a>
 				client and visit <a href="http://localhost:9090">http://localhost:9090</a> in a web browser.
 				</p>
 
@@ -105,11 +105,11 @@
 
 				<p>
 				<span class="question">Q.</span> What emulators will be added next?<br />
-				<span class="answer">A.</span> <a href="http://dolphin-emu.org">Dolphin</a>, 
-				<a href="http://segaretro.org/SSF">SSF</a>, 
-				<a href="http://code.google.com/p/mupen64plus/">Mupen64</a>, 
-				<a href="http://pcsxr.codeplex.com">PCSX-Reloaded</a>, 
-				and 
+				<span class="answer">A.</span> <a href="http://dolphin-emu.org">Dolphin</a>,
+				<a href="http://segaretro.org/SSF">SSF</a>,
+				<a href="http://code.google.com/p/mupen64plus/">Mupen64</a>,
+				<a href="http://pcsxr.codeplex.com">PCSX-Reloaded</a>,
+				and
 				<a href="http://byuu.org/emulation/higan/">Higan</a>
 				are in the pipe-line.
 				</p>
@@ -118,8 +118,8 @@
 
 				<p>
 				<span class="question">Q.</span> Why do I need to run an exe? Can't you do it all in JavaScript?<br />
-				<span class="answer">A.</span> Unfortunately, there is no way for a website to run and install emulators on your computer. 
-				If you are concerned by security, you can audit the source code, and build the exe yourself. The website and exe 
+				<span class="answer">A.</span> Unfortunately, there is no way for a website to run and install emulators on your computer.
+				If you are concerned by security, you can audit the source code, and build the exe yourself. The website and exe
 				communicate via a
 				<a href="http://en.wikipedia.org/wiki/WebSocket">WebSocket</a>.
 				</p>
@@ -130,27 +130,10 @@
 				<span class="question">Q.</span> Can you host games on the web server?<br />
 				<span class="answer">A.</span> No. That would violate copyright. Plus it would require a very large amount of bandwidth, to
 				host games for consoles such as Dreamcast, Playstation 2, and GameCube. However I have been
-				experimenting with using <a href="http://webrtc.org">WebRTC</a> to have browsers directly share games between each other in 
+				experimenting with using <a href="http://webrtc.org">WebRTC</a> to have browsers directly share games between each other in
 				a peer-to-peer style.
 				</p>
 			</div>
-
-			<div id="disqus_thread"></div>
-			<script type="text/javascript">
-				// Load Disqus if not running on localhost
-				if (! g_is_localhost) {
-					/* * * CONFIGURATION VARIABLES * * */
-					var disqus_shortname = 'emulators-online';
-
-					/* * * DON'T EDIT BELOW THIS LINE * * */
-					(function() {
-						var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-						dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-					})();
-				}
-			</script>
-			<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 		</div>
 
 		<div id="notification_footer" style="display: none;">
@@ -161,7 +144,7 @@
 			<p><a href="https://github.com/workhorsy/emulators-online">https://github.com/workhorsy/emulators-online</a></p>
 			<p></p>
 			<p>
-				This software is Licensed under 
+				This software is Licensed under
 				<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL Version 3</a>.
 			</p>
 		</footer>

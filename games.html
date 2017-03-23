@@ -50,23 +50,6 @@
 			<br style="clear: both"/>
 
 			<div id="output"></div>
-
-			<div id="disqus_thread"></div>
-			<script type="text/javascript">
-				// Load Disqus if not running on localhost
-				if (! g_is_localhost) {
-					/* * * CONFIGURATION VARIABLES * * */
-					var disqus_shortname = 'emulators-online';
-
-					/* * * DON'T EDIT BELOW THIS LINE * * */
-					(function() {
-						var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-						dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-					})();
-				}
-			</script>
-			<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 		</div>
 
 		<div id="notification_footer" style="display: none;">
@@ -77,7 +60,7 @@
 			<p><a href="https://github.com/workhorsy/emulators-online">https://github.com/workhorsy/emulators-online</a></p>
 			<p></p>
 			<p>
-				This software is Licensed under 
+				This software is Licensed under
 				<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL Version 3</a>.
 			</p>
 		</footer>
@@ -159,7 +142,7 @@ var setDbInterval = setInterval(function() {
 	}
 
 	clearInterval(setDbInterval);
-		
+
 	// Send the game database to the client
 	message = {
 		'action' : 'set_db',

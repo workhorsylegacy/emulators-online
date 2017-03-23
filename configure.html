@@ -180,7 +180,7 @@
 					to begin.
 				</p>
 				<p>
-					The client is fully open source. You can build it yourself if desired. 
+					The client is fully open source. You can build it yourself if desired.
 					Fore more details see <a href="https://github.com/workhorsy/emulators-online">https://github.com/workhorsy/emulators-online</a>.
 				</p>
 			</div>
@@ -269,13 +269,13 @@
 						</p>
 					</div>
 					<p id="demul_directx_end_user_runtime_not_installed">
-						The DirectX End-User Runtime must be installed before Demul can be run: 
+						The DirectX End-User Runtime must be installed before Demul can be run:
 						<a target="_blank" href="http://download.microsoft.com/download/1/7/1/1718CCC4-6315-4D8E-9543-8E28A4E18C4C/dxwebsetup.exe">
 							http://download.microsoft.com/download/1/7/1/1718CCC4-6315-4D8E-9543-8E28A4E18C4C/dxwebsetup.exe
 						</a>
 					</p>
 					<p id="demul_vcpp_2010_redist_not_installed">
-						The Visual C++ 2010 X86 Redistributable Package must be installed before Demul can be run: 
+						The Visual C++ 2010 X86 Redistributable Package must be installed before Demul can be run:
 						<a target="_blank" href="http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe">
 							http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe
 						</a>
@@ -380,7 +380,7 @@
 						</p>
 					</div>
 					<p id="playstation2_vcpp_2013_redist_not_installed">
-						The Visual C++ 2013 X86 Redistributable Package must be installed before PCSX2 can be run: 
+						The Visual C++ 2013 X86 Redistributable Package must be installed before PCSX2 can be run:
 						<a target="_blank" href="http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe">
 							http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe
 						</a>
@@ -411,23 +411,6 @@
 			</div>
 
 			<div id="output"></div>
-
-			<div id="disqus_thread"></div>
-			<script type="text/javascript">
-				// Load Disqus if not running on localhost
-				if (! g_is_localhost) {
-					/* * * CONFIGURATION VARIABLES * * */
-					var disqus_shortname = 'emulators-online';
-
-					/* * * DON'T EDIT BELOW THIS LINE * * */
-					(function() {
-						var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-						dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-					})();
-				}
-			</script>
-			<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 		</div>
 
 		<div id="notification_footer" style="display: none;">
@@ -438,7 +421,7 @@
 			<p><a href="https://github.com/workhorsy/emulators-online">https://github.com/workhorsy/emulators-online</a></p>
 			<p></p>
 			<p>
-				This software is Licensed under 
+				This software is Licensed under
 				<a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL Version 3</a>.
 			</p>
 		</footer>
@@ -918,7 +901,7 @@ function action_set_button_map(console_name, button_map) {
 function action_set_game_directory(console_name, directory_name) {
 	var message = {
 		'action' : 'set_game_directory',
-		'console' : console_name, 
+		'console' : console_name,
 		'directory_name' : directory_name
 	};
 	web_socket_send_data(message);
