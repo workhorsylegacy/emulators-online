@@ -21,8 +21,11 @@ package helpers
 
 import (
 	"os"
+	"fmt"
+	"runtime"
 	"strings"
 	"math"
+	"path/filepath"
 )
 
 func Round(f float64) float64 {
@@ -120,4 +123,36 @@ func PathExists(path_name string) (bool) {
 
 	// Return false otherwise
 	return true
+}
+
+func getPanicFileAndLine(err string) (string) {
+	var name, file string
+	var line int
+	var pc [16]uintptr
+
+	n := runtime.Callers(3, pc[:])
+	for _, pc := range pc[:n] {
+		fn := runtime.FuncForPC(pc)
+		if fn == nil {
+			continue
+		}
+		file, line = fn.FileLine(pc)
+		name = fn.Name()
+		if ! strings.HasPrefix(name, "runtime.") {
+			break
+		}
+	}
+
+	if file != "" {
+		file = filepath.Base(file)
+	}
+
+	return fmt.Sprintf("%v\nfrom: %s (%d)", err, file, line)
+}
+
+func RecoverPanicTo(cb func(string)) {
+	if err := recover(); err != nil {
+		message := getPanicFileAndLine(fmt.Sprintf("%v", err))
+		cb(message)
+	}
 }

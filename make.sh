@@ -3,6 +3,7 @@
 # It uses the GNU AGPL 3 license
 # It is hosted at: https://github.com/workhorsy/emulators-online
 
+#set -e
 
 function build {
 	# Get the location of Bash and a temp file

@@ -30,7 +30,6 @@ import (
 	"path/filepath"
 	"os"
 	"errors"
-	"log"
 	"os/exec"
 	"compress/zlib"
 	"encoding/base64"
