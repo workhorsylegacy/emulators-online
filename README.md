@@ -6,9 +6,9 @@ HTML based front end for video game console emulators
 
 http://emulators-online.com
 
-It uses WebSockets to connect the HTML front-end, to a Go back-end. The 
-back-end manages the emulators and game files. The project was written in 
-Python, but is slowly being converted to Go. For now, Python is required to 
+It uses WebSockets to connect the HTML front-end, to a Go back-end. The
+back-end manages the emulators and game files. The project was written in
+Python, but is slowly being converted to Go. For now, Python is required to
 to build the Go exe, but is not required at runtime.
 
 
@@ -62,7 +62,7 @@ Build and run the exe
 -----
 ~~~bash
 cd C:/WORKSPACE_GO/src/emulators-online
-. ./make.sh 9090
+./make.sh 9090
 ~~~
 
 Visit this url
