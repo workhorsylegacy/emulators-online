@@ -50,7 +50,7 @@ Checkout the code
 -----
 ~~~bash
 cd C:/WORKSPACE_GO/src
-git clone http://github.com/workhorsy/emulators-online
+git clone http://github.com/workhorsylegacy/emulators-online
 cd emulators-online
 git clone http://github.com/workhorsy/images_nintendo images/Nintendo
 git clone http://github.com/workhorsy/images_sega images/Sega
